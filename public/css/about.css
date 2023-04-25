@@ -1,0 +1,54 @@
+
+  .box{
+      position: fixed;
+      width: 90%;
+      max-width: 1302px;
+      height: 60vh;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+
+      background: rgba(0, 0, 0, 0.41);
+      border: 10px solid #E2EBE2;
+  }
+  .title{
+      font-family: 'Roboto Slab';
+      font-style: normal;
+      font-weight: 700;
+      font-size: 5vw;
+      text-align: center;
+      text-transform: capitalize;
+
+      color: #FFFFFF;
+  }
+  .content{
+      margin: 0px 5%;
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 400;
+      font-size: 1.9vw;
+      line-height: 3vw;
+      /* or 133% */
+
+      text-align: justify;
+      text-indent: 30px;
+
+      color: #FFFFFF;
+  }
+
+  @media screen and (max-width: 768px) {
+    .box {
+      width: 90%;
+      height: auto;
+      max-height: 80vh;
+    }
+
+    .title {
+      font-size: 8vw;
+    }
+
+    .content {
+      font-size: 4vw;
+      line-height: 5vw;
+    }
+  }
