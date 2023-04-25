@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Shipment;
 use App\Models\Consignee;
+use App\Models\Dataset;
 
 class ShipmentController extends Controller
 {
@@ -12,6 +13,12 @@ class ShipmentController extends Controller
         $shipments = Shipment::all();
         $consignees = Consignee::all();
         return view('admin.shipmentPanel.index', compact('shipments', 'consignees'));
+    }
+
+    function close_shipment(){
+        $shipments = Dataset::all();
+        $consignees = Consignee::all();
+        return view('admin.shipmentPanel.close_shipments', compact('shipments', 'consignees'));
     }
 
     function add(Request $request){

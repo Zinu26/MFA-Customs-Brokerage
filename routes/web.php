@@ -79,10 +79,12 @@ Route::controller(ConsigneeController::class)->group(function(){
     Route::post('/admin/archive_consignee/{id}', 'archive_client')->name('archive_client');
     Route::post('/admin/restore_consignee/{id}', 'restore_client')->name('restore_client');
     Route::get('/admin/consignee/{id}/open_shipment', 'open_shipment')->name('open_shipment');
+    Route::get('/admin/consignee/{id}/closed_shipment', 'close_shipment')->name('close_shipment');
 });
 
 Route::controller(ShipmentController::class)->group(function(){
     Route::get('/admin/shipments', 'index')->name('shipments');
     Route::post('/admin/shipments', 'add')->name('add_shipment');
     Route::post('/admin/update_shipments/{id}', 'edit')->name('edit_shipment');
+    Route::get('/admin/close_shipments', 'close_shipment')->name('close_shipments');
 });

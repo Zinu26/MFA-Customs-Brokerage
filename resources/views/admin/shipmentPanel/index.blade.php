@@ -10,7 +10,7 @@
       <p>Shipments</p>
       <div>
         @include('admin.shipmentPanel.create')
-        <a href="">
+        <a href="close_shipments">
             <button class="btn btn-danger"><i class="fa fa-folder-minus"></i> Close Shipments</button>
         </a>
       </div>
