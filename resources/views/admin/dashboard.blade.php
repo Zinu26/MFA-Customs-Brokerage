@@ -1,5 +1,6 @@
 <link rel="stylesheet" href="/css/dashboard.css" />
 @include('layouts.inc.sidebarNav')
+@include('layouts.inc.message')
 
 <title>MFA Customs Brokerage</title>
 

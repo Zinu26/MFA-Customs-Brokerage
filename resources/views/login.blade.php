@@ -1,10 +1,13 @@
 @include('layouts.inc.header')
 @include('layouts.inc.topbarNav')
+@include('layouts.inc.message')
 
 <link rel="stylesheet" href="/css/login.css">
 <title>MFA Customs Brokerage</title>
 
+
 <div class="box">
+
     <span class="borderLine"></span>
     <form action="{{ route('login.submit') }}" method="POST" autocomplete="off">
         @csrf

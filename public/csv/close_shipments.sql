@@ -27,7 +27,7 @@ SET time_zone = "+00:00";
 -- Table structure for table `dataset`
 --
 
-CREATE TABLE `dataset` (
+CREATE TABLE `datasets` (
   `id` int(3) NOT NULL,
   `consignee_name` varchar(34) DEFAULT NULL,
   `entry_number` int(6) DEFAULT NULL,
@@ -57,7 +57,7 @@ CREATE TABLE `dataset` (
 -- Dumping data for table `dataset`
 --
 
-INSERT INTO `dataset` (`id`, `consignee_name`, `entry_number`, `bl_number`, `arrival_date`, `process_started`, `process_finished`, `delivered_date`, `pickedup_date`, `shipment_size`, `shipment_details`, `shipping_line`, `origin_of_shipment`, `origin`, `destination`, `distance`, `weight`, `process_time`, `delivery_time`, `predicted_delivery_time`, `predicted_delivery_date`, `delivery_status`, `status`) VALUES
+INSERT INTO `datasets` (`id`, `consignee_name`, `entry_number`, `bl_number`, `arrival_date`, `process_started`, `process_finished`, `delivered_date`, `pickedup_date`, `shipment_size`, `shipment_details`, `shipping_line`, `origin_of_shipment`, `origin`, `destination`, `distance`, `weight`, `process_time`, `delivery_time`, `predicted_delivery_time`, `predicted_delivery_date`, `delivery_status`, `status`) VALUES
 (1, 'MEGAMAX CONCEPTS INC.', 227963, '5.50E+11', 'July 25, 2021', 'July 26, 2021', 'July 30, 2021', 'July 31, 2021', 'July 31, 2021', '1x40', 'FURNITURES', 'EVERGREEN', 'BARI, ITALY', 'MANILA NORTH PORT, PHILIPPINES', 'Lot 4 F2 F3 F. Pasco Avenue, Santolan, Pasig City 1610', 19, '3774.6', '4', '6', '7.13', 'August 01, 2021', 'Early', 0),
 (2, 'MEGAMAX CONCEPTS INC.', 253039, 'UCCS4330', 'August 19, 2021', 'August 19, 2021', 'August 24, 2021', 'August 27, 2021', 'August 27, 2021', '1x40', 'FURNITURES', 'PXL', 'PASIR GUDANG, MALAYSIA', 'MANILA NORTH PORT, PHILIPPINES', 'Lot 4 F2 F3 F. Pasco Avenue, Santolan, Pasig City 1610', 19, '9070', '5', '8', '8.41', 'August 27, 2021', 'On Time', 0),
 (3, 'MEGAMAX CONCEPTS INC.', 275136, 'SM21E010416', 'September 06, 2021', 'September 07, 2021', 'September 10, 2021', 'September 10, 2021', '', '1x20', 'FURNITURES', 'PXL', 'SHANGHAI, CHINA', 'MANILA NORTH PORT, PHILIPPINES', 'Lot 4 F2 F3 F. Pasco Avenue, Santolan, Pasig City 1610', 19, '2,173.29', '3', '4', '5.14', 'September 11, 2021', 'Early', 0),
@@ -180,7 +180,7 @@ INSERT INTO `dataset` (`id`, `consignee_name`, `entry_number`, `bl_number`, `arr
 (120, 'MANUCHAR PHILIPPINES INC.', 97180, 'EGLV050250216466', 'October 01, 2022', 'October 05, 2022', 'October 07, 2022', 'October 10, 2022', 'October 10, 2022', '2X20', 'SODIUM BICARBONATE FOOD GRADE FCC', 'EVERGREEN LINE', 'LAEM CHABANG, THAILAND', 'MANILA SOUTH PORT, PHILIPPINES', 'Unit 801, 8/F The Trade and Financial Tower 7th ave. Cor 32nd St., Bonifacio Global City, Taguig City.', 14, '49,980.00', '2', '9', '9.17', 'October 10, 2022', 'On Time', 0),
 (121, 'MANUCHAR PHILIPPINES INC.', 97813, 'BCC0180847', 'October 01, 2022', 'October 06, 2022', 'October 10, 2022', 'October 10, 2022', 'October 10, 2022', '3X20', 'SODIUM BICARBONATE FOOD GRADE FCC', 'CMA: CGM ASIA SHIPPING PTE., LTD,', 'SINGAPORE', 'MANILA SOUTH PORT, PHILIPPINES', 'Unit 801, 8/F The Trade and Financial Tower 7th ave. Cor 32nd St., Bonifacio Global City, Taguig City.', 14, '74,970.00', '4', '9', '8.72', 'October 09, 2022', 'Late', 0),
 (122, 'MANUCHAR PHILIPPINES INC.', 98703, 'COAU7237192850', 'March 27, 2022', 'March 29, 2022', 'April 03, 2022', 'April 04, 2022', 'April 04, 2022', '1X20', 'SODIUM BICARBONATE FOOD GRADE FCC', 'NEW GOLDEN SEA SHIPPING PTE. LTD.', 'LAEM CHABANG, THAILAND', 'MANILA NORTH PORT, PHILIPPINES', 'Unit 801, 8/F The Trade and Financial Tower 7th ave. Cor 32nd St., Bonifacio Global City, Taguig City.', 17, '24,990.00', '5', '8', '8.08', 'April 04, 2022', 'On Time', 0);
-INSERT INTO `dataset` (`id`, `consignee_name`, `entry_number`, `bl_number`, `arrival_date`, `process_started`, `process_finished`, `delivered_date`, `pickedup_date`, `shipment_size`, `shipment_details`, `shipping_line`, `origin_of_shipment`, `origin`, `destination`, `distance`, `weight`, `process_time`, `delivery_time`, `predicted_delivery_time`, `predicted_delivery_date`, `delivery_status`, `status`) VALUES
+INSERT INTO `datasets` (`id`, `consignee_name`, `entry_number`, `bl_number`, `arrival_date`, `process_started`, `process_finished`, `delivered_date`, `pickedup_date`, `shipment_size`, `shipment_details`, `shipping_line`, `origin_of_shipment`, `origin`, `destination`, `distance`, `weight`, `process_time`, `delivery_time`, `predicted_delivery_time`, `predicted_delivery_date`, `delivery_status`, `status`) VALUES
 (123, 'MANUCHAR PHILIPPINES INC.', 103995, 'CULVTAO2207645A', 'October 19, 2022', 'October 20, 2022', 'October 26, 2022', 'October 28, 2022', '', '3X40', 'SODIUM ALUMINOSILICATE', 'T.G.LINES CO., LTD.', 'QINGDAO, CHINA', 'MANILA SOUTH PORT, PHILIPPINES', 'Unit 801, 8/F The Trade and Financial Tower 7th ave. Cor 32nd St., Bonifacio Global City, Taguig City.', 14, '82,251.00', '6', '9', '10.22', 'October 29, 2022', 'Early', 0),
 (124, 'MANUCHAR PHILIPPINES INC.', 106681, 'COAU7237184430', 'April 02, 2022', 'April 03, 2022', 'April 10, 2022', 'April 12, 2022', 'April 12, 2022', '1X20', 'SODIUM BICARBONATE FOOD GRADE FCC', 'NEW GOLDEN SEA SHIPPING PTE. LTD.', 'LAEM CHABANG, THAILAND', 'MANILA NORTH PORT, PHILIPPINES', 'Unit 801, 8/F The Trade and Financial Tower 7th ave. Cor 32nd St., Bonifacio Global City, Taguig City.', 17, '24,990.00', '7', '10', '9.73', 'April 11, 2022', 'Late', 0),
 (125, 'MANUCHAR PHILIPPINES INC.', 107833, 'KMTCSHAJ819198', 'November 02, 2022', 'November 02, 2022', 'November 10, 2022', 'November 10, 2022', 'November 10, 2022', '2X20', 'SILICONE OIL 100 CST', 'KOREA MARINE TRANSPORT CO., LTD.', 'SHANGHAI, CHINA', 'MANILA SOUTH PORT, PHILIPPINES', 'Unit 801, 8/F The Trade and Financial Tower 7th ave. Cor 32nd St., Bonifacio Global City, Taguig City.', 14, '39,712.00', '8', '8', '9.75', 'November 11, 2022', 'Early', 0),
@@ -297,7 +297,7 @@ INSERT INTO `dataset` (`id`, `consignee_name`, `entry_number`, `bl_number`, `arr
 (236, 'MHYLINK TRADING', 96714, 'EGLV093200109482', 'March 25, 2022', 'March 25, 2022', 'March 29, 2022', 'March 30, 2022', 'March 30, 2022', '3X20', '52.5 MT HDPE HM5000', 'EVERGREEN LINE', 'PASIR GUDANG, MALAYSIA', 'MANILA NORTH PORT, PHILIPPINES', '35 G. Miranda St., Cor G. Marcelo St., Dizon Compound Brgy., Maysan Valenzuela City.', 14, '52,710.00', '4', '5', '7.97', 'April 02, 2022', 'Late', 0),
 (237, 'MHYLINK TRADING', 97190, 'PGUCB22000832', 'March 26, 2022', 'March 26, 2022', 'March 29, 2022', 'April 03, 2022', '', '9X20', '157.50 MT HDPE HF7000', 'REGIONAL CONTAINER LINES', 'PASIR GUDANG, MALAYSIA', 'MANILA NORTH PORT, PHILIPPINES', '35 G. Miranda St., Cor G. Marcelo St., Dizon Compound Brgy., Maysan Valenzuela City.', 14, '158,130.00', '3', '8', '6.18', 'October 16, 2022', 'Early', 0),
 (238, 'MHYLINK TRADING', 99896, 'KMTCPUSG034588', 'October 10, 2022', 'October 13, 2022', 'October 14, 2022', 'October 15, 2022', 'October 15, 2022', '1X20', '16 MT PLASTICIZER VOLUNTARY UPGRADED FOR CUSTOMS PURPOSES', 'KOREA MARINE TRANSPORT CO., LTD.', 'BUSAN, KOREA', 'MANILA SOUTH PORT, PHILIPPINES', '35 G. Miranda St., Cor G. Marcelo St., Dizon Compound Brgy., Maysan Valenzuela City.', 16, '17,600.00', '1', '5', '7.54', 'October 18, 2022', 'On Time', 0);
-INSERT INTO `dataset` (`id`, `consignee_name`, `entry_number`, `bl_number`, `arrival_date`, `process_started`, `process_finished`, `delivered_date`, `pickedup_date`, `shipment_size`, `shipment_details`, `shipping_line`, `origin_of_shipment`, `origin`, `destination`, `distance`, `weight`, `process_time`, `delivery_time`, `predicted_delivery_time`, `predicted_delivery_date`, `delivery_status`, `status`) VALUES
+INSERT INTO `datasets` (`id`, `consignee_name`, `entry_number`, `bl_number`, `arrival_date`, `process_started`, `process_finished`, `delivered_date`, `pickedup_date`, `shipment_size`, `shipment_details`, `shipping_line`, `origin_of_shipment`, `origin`, `destination`, `distance`, `weight`, `process_time`, `delivery_time`, `predicted_delivery_time`, `predicted_delivery_date`, `delivery_status`, `status`) VALUES
 (239, 'MHYLINK TRADING', 99976, 'SELA50418400', 'October 11, 2022', 'October 11, 2022', 'October 13, 2022', 'October 18, 2022', 'October 18, 2022', '2X20', '32MT EEP', 'HMM CO., LTD.', 'BUSAN, KOREA', 'MANILA NORTH PORT, PHILIPPINES', '35 G. Miranda St., Cor G. Marcelo St., Dizon Compound Brgy., Maysan Valenzuela City.', 14, '34,720.00', '2', '7', '8.29', 'October 20, 2022', 'Late', 0),
 (240, 'MHYLINK TRADING', 101429, 'KMLMNS2290001', 'October 12, 2022', 'October 13, 2022', 'October 17, 2022', 'October 21, 2022', 'October 21, 2022', '1X20', 'TEXTILE AUXILIARY GA-1042', 'KING MAX LOGISTICS CORPORATION', 'TAICHUNG, TAIWAN', 'MANILA SOUTH PORT, PHILIPPINES', '35 G. Miranda St., Cor G. Marcelo St., Dizon Compound Brgy., Maysan Valenzuela City.', 16, '15,778.00', '4', '9', '7.84', 'April 06, 2022', 'On Time', 0),
 (241, 'MHYLINK TRADING', 103263, 'EGLV093200133072', 'March 30, 2022', 'April 02, 2022', 'April 08, 2022', 'April 06, 2022', 'April 06, 2022', '3X20', '52.5 MT LDPE LDF260GG', 'EVERGREEN LINE', 'TANJUNG PELEPAS, MALAYSIA', 'MANILA NORTH PORT, PHILIPPINES', '35 G. Miranda St., Cor G. Marcelo St., Dizon Compound Brgy., Maysan Valenzuela City.', 14, '52,710.00', '6', '7', '5.28', 'November 13, 2022', 'Early', 0),
@@ -399,7 +399,7 @@ INSERT INTO `dataset` (`id`, `consignee_name`, `entry_number`, `bl_number`, `arr
 --
 -- Indexes for table `dataset`
 --
-ALTER TABLE `dataset`
+ALTER TABLE `datasets`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -409,7 +409,7 @@ ALTER TABLE `dataset`
 --
 -- AUTO_INCREMENT for table `dataset`
 --
-ALTER TABLE `dataset`
+ALTER TABLE `datasets`
   MODIFY `id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=332;
 COMMIT;
 

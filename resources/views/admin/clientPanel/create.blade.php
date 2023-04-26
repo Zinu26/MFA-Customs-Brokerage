@@ -11,15 +11,8 @@
             @csrf
                 <div class="modal-body">
                     <div class="input-group">
-                    <span class="input-group-text" style="background-color: #4EA646; font-weight: 600; color: white;">Consignee</span>
-                    <select name="consignee_name" class="form-control" id="exampleFormControlSelect1" required>
-                        <option value="" disabled selected>Select consignee</option>
-                        <?php
-                        foreach ($consignees as $consignee) {
-                            echo "<option value='{$consignee['name']}'>{$consignee['name']}</option>";
-                        }
-                        ?>
-                    </select>
+                        <span class="input-group-text" style="background-color: #4EA646; font-weight: 600; color: white;">Consignee Name</span>
+                        <input type="text" name="consignee_name" value="{{$consignee->name}}" placeholder="Consignee Name" aria-label="consignee_name" class="form-control" required readonly>
                     </div></br>
                     <div class="input-group">
                         <span class="input-group-text" style="background-color: #4EA646; font-weight: 600; color: white;">Item Description</span>
@@ -37,18 +30,8 @@
                     <input type="text" name="BL_number" placeholder="BL Number" aria-label="BL Number" class="form-control" required>
                     </div></br>
                     <div class="input-group">
-                        <span class="input-group-text" style="background-color: #4EA646; font-weight: 600; color: white;">Shipping Line</span>
-                        <select name="shipping_line" class="form-select" required onchange="showOtherInput(this)">
-                            <option value="">Select a shipping line</option>
-                            <?php
-                            // assuming you have an array of shipping lines called $shipping_lines
-                            foreach ($shipping_lines as $line) {
-                                echo '<option value="' . $line . '">' . $line . '</option>';
-                            }
-                            ?>
-                            <option value="other">Other</option>
-                        </select>
-                        <input type="text" name="other_shipping_line" placeholder="Other Shipping Line" aria-label="Other Shipping Line" class="form-control d-none">
+                    <span class="input-group-text" style="background-color: #4EA646; font-weight: 600; color: white;">Shipping Line</span>
+                    <input type="text" name="shipping_line" placeholder="Shipping Line" aria-label="Shipping Line" class="form-control" required>
                     </div></br>
                     <div class="input-group">
                     <span class="input-group-text" style="background-color: #4EA646; font-weight: 600; color: white;">Arrival Time</span>
@@ -101,16 +84,3 @@
           </div>
         </div>
       </div>
-
-      <script>
-        function showOtherInput(select) {
-            var otherInput = document.getElementsByName("other_shipping_line")[0];
-            if (select.value === "other") {
-                otherInput.classList.remove("d-none");
-                otherInput.setAttribute("required", true);
-            } else {
-                otherInput.classList.add("d-none");
-                otherInput.removeAttribute("required");
-            }
-        }
-        </script>

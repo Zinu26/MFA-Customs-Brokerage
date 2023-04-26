@@ -93,7 +93,7 @@ class UserController extends Controller
 
         $user->save();
 
-        return redirect()->back()->with('success', 'User data updated successfully.');
+        return redirect()->back()->with('success', 'Admin details have been updated successfully.');
     }
 
     public function edit_employee(Request $request, $id)
@@ -134,7 +134,7 @@ class UserController extends Controller
         $user->isArchived = true;
         $user->save();
 
-        return redirect()->back()->with('success', 'User data updated successfully.');
+        return redirect()->back()->with('warning', 'User data archived successfully.');
     }
 
     function restore_user($id)
@@ -144,7 +144,7 @@ class UserController extends Controller
         $user->isArchived = false;
         $user->save();
 
-        return redirect()->back()->with('success', 'User data updated successfully.');
+        return redirect()->back()->with('success', 'User data restored successfully.');
     }
 
 }
