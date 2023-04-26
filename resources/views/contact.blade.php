@@ -1,3 +1,4 @@
+@include('layouts.inc.header')
 @include('layouts.inc.topbarNav')
 
 <link rel="stylesheet" href="/css/contact.css">
@@ -12,28 +13,29 @@
     <div class="box">
         <div class="contact form">
             <h3>Send a Message</h3>
-            <form>
+            <form method="POST" action="">
+            @csrf
                 <div class="formBox">
                     <div class="row50">
                         <div class="inputBox">
                             <span>Full Name</span>
-                            <input type="text" placeholder="Full Name">
+                            <input type="text" name="name" placeholder="Full Name">
                         </div>
                     </div>
                     <div class="row50">
                         <div class="inputBox">
                             <span>Email</span>
-                            <input type="text" placeholder="email">
+                            <input type="text" name="email" placeholder="Email">
                         </div>
                         <div class="inputBox">
                             <span>Contact No.</span>
-                            <input type="text" placeholder="contact">
+                            <input type="text" name="contact" placeholder="Contact">
                         </div>
                     </div>
                     <div class="row100">
                         <div class="inputBox">
                             <span>Message</span>
-                            <textarea  placeholder="Write your message here..."></textarea>
+                            <textarea  name="message" placeholder="Write your message here..."></textarea>
                         </div>
                     </div>
                     <div class="row100">

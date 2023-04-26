@@ -44,7 +44,7 @@
                             <input type="date" @if($shipment->process_started != null) value="{{$shipment->process_started}}"  @endif name="process_started" placeholder="Process Start" aria-label="Process Start" class="form-control">
 
                             <span class="input-group-text" style="background-color: #4EA646; font-weight: 600; color: white;">Process End</span>
-                            <input type="date" @if($shipment->process_ended != null) value="{{$shipment->process_ended}}"  @endif name="process_ended" placeholder="Process End" aria-label="Process End" class="form-control">
+                            <input type="date" @if($shipment->process_finished != null) value="{{$shipment->process_finished}}"  @endif name="process_ended" placeholder="Process End" aria-label="Process End" class="form-control">
                         </div></br>
                         <div class="row">
                         <div class="form-group col-md-3">
