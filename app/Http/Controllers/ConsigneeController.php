@@ -65,7 +65,7 @@ class ConsigneeController extends Controller
         $client->status = true;
         $client->save();
 
-        return redirect()->back()->with('success', 'Client data updated successfully.');
+        return redirect()->back()->with('warning', 'Client data haven been archived successfully.');
     }
 
     function restore_client($id)
@@ -75,7 +75,7 @@ class ConsigneeController extends Controller
         $client->status = false;
         $client->save();
 
-        return redirect()->back()->with('success', 'Client data updated successfully.');
+        return redirect()->back()->with('success', 'Client data have been restored successfully.');
     }
 
     function open_shipment($id){

@@ -6,6 +6,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ConsigneeController;
 use App\Http\Controllers\ShipmentController;
 
+
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes

@@ -15,6 +15,8 @@
     </div>
   </div>
 
+  @include('layouts.inc.message')
+
   <div id="content">
     <table id="datatableid" class="table table-bordered table-dark">
       <thead>
