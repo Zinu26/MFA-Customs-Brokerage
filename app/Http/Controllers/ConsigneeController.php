@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Consignee;
+use App\Models\Shipment;
+use App\Models\Dataset;
 
 class ConsigneeController extends Controller
 {
@@ -63,7 +65,7 @@ class ConsigneeController extends Controller
         $client->status = true;
         $client->save();
 
-        return redirect()->back()->with('success', 'Client data updated successfully.');
+        return redirect()->back()->with('warning', 'Client data haven been archived successfully.');
     }
 
     function restore_client($id)
@@ -73,13 +75,20 @@ class ConsigneeController extends Controller
         $client->status = false;
         $client->save();
 
-        return redirect()->back()->with('success', 'Client data updated successfully.');
+        return redirect()->back()->with('success', 'Client data have been restored successfully.');
     }
 
     function open_shipment($id){
-        $clients = Consignee::findOrFail($id);
+        $consignee = Consignee::findOrFail($id);
+        $shipments = Shipment::where('consignee_name', $consignee->name)->get();
 
+        return view('admin.clientPanel.open_shipments', compact('consignee', 'shipments'));
+    }
 
-        return redirect()->route('admin.clientPanel.openShipment');
+    function close_shipment($id){
+        $consignee = Consignee::findOrFail($id);
+        $shipments = Dataset::where('consignee_name', $consignee->name)->get();
+
+        return view('admin.clientPanel.close_shipments', compact('consignee', 'shipments'));
     }
 }

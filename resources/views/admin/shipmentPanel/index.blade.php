@@ -10,12 +10,14 @@
       <p>Shipments</p>
       <div>
         @include('admin.shipmentPanel.create')
-        <a href="">
+        <a href="close_shipments">
             <button class="btn btn-danger"><i class="fa fa-folder-minus"></i> Close Shipments</button>
         </a>
       </div>
     </div>
   </div>
+
+  @include('layouts.inc.message')
 
   <div id="content">
     <table id="datatableid" class="table table-bordered table-dark">

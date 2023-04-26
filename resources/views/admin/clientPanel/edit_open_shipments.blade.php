@@ -49,42 +49,42 @@
                         <input type="date" @if($shipment->process_ended != null) value="{{$shipment->process_ended}}"  @endif name="process_ended" placeholder="Process End" aria-label="Process End" class="form-control">
                     </div></br>
                     <div class="row">
-                        <div class="form-group col-md-3">
-                            <label for="shipmentStatus{{$shipment->id}}">Shipment Status</label>
-                            <select class="form-control" id="shipmentStatus{{$shipment->id}}" name="shipment_status">
-                                <option value="" disabled selected>---Select---</option>
-                                <option value="AG" {{ $shipment->shipment_status == 'AG' ? 'selected' : '' }}>AG</option>
-                                <option value="AS" {{ $shipment->shipment_status == 'AS' ? 'selected' : '' }}>AS</option>
-                                <option value="AP" {{ $shipment->shipment_status == 'AP' ? 'selected' : '' }}>AP</option>
-                            </select>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="doStatus{{$shipment->id}}">DO Status</label>
-                            <select class="form-control" id="doStatus{{$shipment->id}}" name="do_status">
-                                <option value="" disabled selected>---Select---</option>
-                                <option value="Pending" {{ $shipment->do_status == 'Pending' ? 'selected' : '' }}>Pending</option>
-                                <option value="On Going" {{ $shipment->do_status == 'On Going' ? 'selected' : '' }}>On Going</option>
-                                <option value="Done" {{ $shipment->do_status == 'Done' ? 'selected' : '' }}>Done</option>
-                            </select>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="billingStatus{{$shipment->id}}">Billing Status</label>
-                            <select class="form-control" id="billingStatus{{$shipment->id}}" name="billing_status">
-                                <option value="" disabled selected>---Select---</option>
-                                <option value="Pending" {{ $shipment->billing_status == 'Pending' ? 'selected' : '' }}>Pending</option>
-                                <option value="On Going" {{ $shipment->billing_status == 'On Going' ? 'selected' : '' }}>On Going</option>
-                                <option value="Done" {{ $shipment->billing_status == 'Done' ? 'selected' : '' }}>Done</option>
-                            </select>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="deliveryStatus{{$shipment->id}}">Delivery Status</label>
-                            <select class="form-control" id="deliveryStatus{{$shipment->id}}" name="delivery_status">
-                                <option value="" disabled selected>---Select---</option>
-                                <option value="Pending" {{ $shipment->delivery_status == 'Pending' ? 'selected' : '' }}>Pending</option>
-                                <option value="On Going" {{ $shipment->delivery_status == 'On Going' ? 'selected' : '' }}>On Going</option>
-                                <option value="Done" {{ $shipment->delivery_status == 'Done' ? 'selected' : '' }}>Done</option>
-                            </select>
-                        </div>
+                    <div class="form-group col-md-3">
+                        <label for="exampleFormControlSelect1">Shipment Status</label>
+                        <select class="form-control" id="exampleFormControlSelect1" name="shipment_status">
+                        <option value="" disabled selected>---Select---</option>
+                        <option value="AG">AG</option>
+                        <option value="AS">AS</option>
+                        <option value="AP">AP</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="exampleFormControlSelect1">DO Status</label>
+                        <select class="form-control" id="exampleFormControlSelect1" name="do_status">
+                            <option value="" disabled selected>---Select---</option>
+                            <option value="Pending">Pending</option>
+                            <option value="On Going">On Going</option>
+                            <option value="Done">Done</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="exampleFormControlSelect1">Billing Status</label>
+                            <select class="form-control" id="exampleFormControlSelect1" name="billing_status">
+                            <option value="" disabled selected>---Select---</option>
+                            <option value="Pending">Pending</option>
+                            <option value="On Going">On Going</option>
+                            <option value="Done">Done</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="exampleFormControlSelect1">Delivery</label>
+                        <select class="form-control" id="exampleFormControlSelect1" name="delivery_status">
+                            <option value="" disabled selected>---Select---</option>
+                            <option value="Pending">Pending</option>
+                            <option value="On Going">On Going</option>
+                            <option value="Done">Done</option>
+                        </select>
+                    </div>
                     </div>
                 </div>
                 <div class="modal-footer">

@@ -1,7 +1,7 @@
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#viewModal{{$shipment->id}}"><i class="fa fa-eye"></i></button>
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal{{$shipment->id}}"><i class="fa fa-eye"></i></button>
 
     <!--Add modal-->
-    <div class="modal fade bd-example-modal-lg" id="viewModal{{$shipment->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="color: black;">
+    <div class="modal fade bd-example-modal-lg" id="editModal{{$shipment->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="color: black;">
         <div class="modal-dialog modal-dialog-centered modal-lg">
           <div class="modal-content">
             <div class="modal-header">

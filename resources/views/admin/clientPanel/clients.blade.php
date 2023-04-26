@@ -15,6 +15,8 @@
     </div>
   </div>
 
+  @include('layouts.inc.message')
+
   <div id="content">
     <table id="datatableid" class="table table-bordered table-dark">
       <thead>
@@ -22,7 +24,6 @@
           <th class="text-center">S.N.</th>
           <th class="text-center">Name of Consignee</th>
           <th class="text-center">TIN Number</th>
-          <th class="text-center">Contact Number</th>
           <th class="text-center">Email</th>
           <th class="text-center">Address</th>
           <th class="text-center">Operation</th>
@@ -31,14 +32,13 @@
       <tbody>
         @foreach($clients as $client)
             @if($client->status == false)
-                <tr>
+                <tr class="text-center">
                     <td>{{ $loop->iteration }}</td>
-                    <td><a href="" style="text-decoration: none; color:#fff;">{{ $client->name }}</a></td>
+                    <td><a href="{{route('open_shipment', $client->id)}}" style="text-decoration: none; color:#fff;">{{ $client->name }}</a></td>
                     <td>{{ $client->tin }}</td>
-                    <td>{{ $client->contact }}</td>
                     <td>{{ $client->email }}</td>
                     <td>{{ $client->address }}</td>
-                    <td class="text-center col-2">
+                    <td  class="text-center col-2">
                         @include('admin.clientPanel.view')
                         @include('admin.clientPanel.edit')
                         @include('admin.clientPanel.archive')

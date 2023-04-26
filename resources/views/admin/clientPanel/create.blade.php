@@ -11,15 +11,8 @@
             @csrf
                 <div class="modal-body">
                     <div class="input-group">
-                    <span class="input-group-text" style="background-color: #4EA646; font-weight: 600; color: white;">Consignee</span>
-                    <select name="consignee_name" class="form-control" id="exampleFormControlSelect1" required>
-                        <option value="" disabled selected>Select consignee</option>
-                        <?php
-                        foreach ($consignees as $consignee) {
-                            echo "<option value='{$consignee['name']}'>{$consignee['name']}</option>";
-                        }
-                        ?>
-                    </select>
+                        <span class="input-group-text" style="background-color: #4EA646; font-weight: 600; color: white;">Consignee Name</span>
+                        <input type="text" name="consignee_name" value="{{$consignee->name}}" placeholder="Consignee Name" aria-label="consignee_name" class="form-control" required readonly>
                     </div></br>
                     <div class="input-group">
                         <span class="input-group-text" style="background-color: #4EA646; font-weight: 600; color: white;">Item Description</span>

@@ -5,11 +5,10 @@
 <title>MFA Customs Brokerage</title>
 <div class="table">
     <div class="table-header">
-      <p>{{$consignee->name}}</p>
+      <p>Close Shipments</p>
       <div>
-        @include('admin.clientPanel.create')
-        <a href="{{route('close_shipment', $consignee->id)}}">
-            <button class="btn btn-danger"><i class="fa fa-folder-minus"></i> Close Shipments</button>
+        <a href="{{route('shipments')}}">
+            <button class="btn btn-success"><i class="fa fa-folder-plus"></i> Open Shipments</button>
         </a>
       </div>
     </div>
@@ -23,10 +22,7 @@
             <th class="text-center">Consignees</th>
             <th class="text-center">Arrival</th>
             <th class="text-center">Predicted Delivery Date</th>
-            <th class="text-center">DO Status</th>
-            <th class="text-center">Shipment Status</th>
-            <th class="text-center">Billing</th>
-            <th class="text-center">Delivery</th>
+            <th class="text-center">Delivery Status</th>
             <th class="text-center">Option</th>
         </tr>
       </thead>
@@ -35,21 +31,19 @@
             <tr class="text-center">
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $shipment->consignee_name }}</td>
-                    <td>{{ $shipment->arrival }}</td>
+                    <td>{{ $shipment->arrival_date }}</td>
                     <td>{{ $shipment->predicted_delivery_date }}</td>
-                    <td>{{ $shipment->do_status }}</td>
-                    <td>{{ $shipment->shipment_status }}</td>
-                    <td>{{ $shipment->billing_status }}</td>
                     <td>{{ $shipment->delivery_status }}</td>
-                    <td  class="text-center col-2">
-                        @include('admin.clientPanel.view_open_shipments')
-                        @include('admin.clientPanel.edit_open_shipments')
+                    <td  class="text-center col-1">
+                        @include('admin.clientPanel.view_close_shipments')
                     </td>
                 </tr>
         @endforeach
       </tbody>
     </table>
   </div>
+
+
 
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" integrity="sha384-mQ93GR66B00ZXjt0YO5KlohRA5SY2XofN4zfuZxLkoj1gXtW8ANNCe9d5Y3eG5eD" crossorigin="anonymous"></script>

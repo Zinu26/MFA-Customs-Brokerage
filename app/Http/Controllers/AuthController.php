@@ -18,14 +18,16 @@ class AuthController extends Controller
         $credentials = $request->only('username', 'password');
 
         if (Auth::attempt($credentials)) {
-            // Authentication passed...
+            $loginSuccessful = true;
+            session()->flash('success', 'You have successfully logged in.');
             return redirect()->route('admin.dashboard');
         }
 
         return back()->withErrors([
             'username' => 'The provided credentials do not match our records.',
-        ]);
+        ])->withInput();
     }
+
 
     public function logout()
     {
