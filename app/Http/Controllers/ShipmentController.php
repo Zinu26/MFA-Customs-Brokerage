@@ -56,6 +56,8 @@ class ShipmentController extends Controller
                 $shipment->process_finished = $request->input('process_ended');
             }
         }
+        // Add model feed
+
         $shipment->shipment_status = $request->input('shipment_status');
         $shipment->do_status = $request->input('do_status');
         $shipment->billing_status = $request->input('billing_status');
@@ -72,6 +74,7 @@ class ShipmentController extends Controller
             $dataset->arrival_date = $shipment->arrival;
             $dataset->process_started = $shipment->process_started;
             $dataset->process_finished = $shipment->process_finished;
+            //Add prediction result
             $dataset->shipment_size = $shipment->size;
             $dataset->shipment_details = $shipment->item_description;
             $dataset->shipping_line = $shipment->shipping_line;

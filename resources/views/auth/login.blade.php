@@ -1,73 +1,50 @@
-@extends('layouts.app')
+@include('layouts.inc.header')
+@include('layouts.inc.topbarNav')
+@include('layouts.inc.message')
 
-@section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Login') }}</div>
+<link rel="stylesheet" href="/css/login.css">
+<title>MFA Customs Brokerage</title>
 
-                <div class="card-body">
-                    <form method="POST" action="{{ route('login') }}">
-                        @csrf
 
-                        <div class="row mb-3">
-                            <label for="email" class="col-md-4 col-form-label text-md-end">{{ __('Email Address') }}</label>
+<div class="box">
 
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
-
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <label for="password" class="col-md-4 col-form-label text-md-end">{{ __('Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
-
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <div class="col-md-6 offset-md-4">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-
-                                    <label class="form-check-label" for="remember">
-                                        {{ __('Remember Me') }}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row mb-0">
-                            <div class="col-md-8 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Login') }}
-                                </button>
-
-                                @if (Route::has('password.request'))
-                                    <a class="btn btn-link" href="{{ route('password.request') }}">
-                                        {{ __('Forgot Your Password?') }}
-                                    </a>
-                                @endif
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
+    <span class="borderLine"></span>
+    <form action="{{ route('submit.login') }}" method="POST" autocomplete="off">
+        @csrf
+        <h3>
+            <script src="https://cdn.lordicon.com/ritcuqlt.js"></script>
+            <lord-icon
+                src="https://cdn.lordicon.com/ajkxzzfb.json"
+                trigger="loop"
+                delay="2000"
+                colors="primary:#b4b4b4,secondary:#4bb3fd"
+                style="width:50px;height:50px">
+            </lord-icon>
+        </h3>
+        <h2>Sign in</h2>
+        <div class="inputBox">
+            <input type="text" name="username" id="username" required="required" class="@error('username') is-invalid @enderror">
+            <span>Username</span>
+            <i></i>
+            @error('username')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
         </div>
-    </div>
+        <div class="inputBox">
+            <input type="password" name="password" class="@error('password') is-invalid @enderror" id="password" required="required">
+            <span>Password</span>
+            <i></i>
+            @error('password')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+        <div class="links">
+            <a href="#">Forgot Password</a>
+        </div>
+        <input type="submit" name="login" value="Login">
+    </form>
 </div>
-@endsection

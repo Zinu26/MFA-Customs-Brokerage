@@ -53,7 +53,7 @@ Route::get('/login', function(){
     return view('login');
 })->name('login');
 
-Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
+Route::post('/user/login', [AuthController::class, 'login'])->name('submit.login');
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/admin/dashboard', function(){
@@ -90,3 +90,7 @@ Route::controller(ShipmentController::class)->group(function(){
     Route::post('/admin/update_shipments/{id}', 'edit')->name('edit_shipment');
     Route::get('/admin/close_shipments', 'close_shipment')->name('close_shipments');
 });
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
