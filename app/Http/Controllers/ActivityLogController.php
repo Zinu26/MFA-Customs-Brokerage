@@ -12,10 +12,21 @@ use League\Csv\CannotInsertRecord;
 
 class ActivityLogController extends Controller
 {
-    public function download()
+    public function download(Request $request)
     {
+        // Retrieve the start and end dates from the request
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
         // Retrieve the activity logs as a collection
-        $logs = ActivityLog::all();
+        $logs = ActivityLog::query();
+
+        // Filter the logs by the start and end dates, if provided
+        if ($startDate && $endDate) {
+            $logs->whereBetween('created_at', [$startDate, $endDate]);
+        }
+
+        $logs = $logs->get();
 
         // Create a new CSV writer object
         $csv = Writer::createFromString('');
@@ -49,4 +60,5 @@ class ActivityLogController extends Controller
         // Return the CSV file as a download response
         return response($csv->toString(), 200, $headers);
     }
+
 }

@@ -7,6 +7,7 @@ use App\Http\Controllers\ConsigneeController;
 use App\Http\Controllers\ShipmentController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\ChatBotController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,18 +20,25 @@ use App\Http\Controllers\Admin\DashboardController;
 |
 */
 
+// Route::get('/', function () {
+//     return view('landing');
+// });
+
 Route::get('/', function () {
-    return view('landing');
+    return view('home');
 });
 
-Auth::routes(['verify' => true]);
+Route::post('send', [ChatBotController::class, 'sendChat']);
 
 Route::prefix('admin')->group(function() {
     Route::get('/dashboard',[App\Http\Controllers\Admin\DashboardController::class, 'index']);
 });
 
+
 Route::get('/users/{user}/activity-logs', [ActivityLogController::class, 'index']);
 Route::get('/activity-logs/download', [ActivityLogController::class, 'download'])->name('activity-logs.download');
+
+// Route::post('/chatbot', [ChatBotController::class, 'handleRequest']);
 
 
 Route::get('/about', function(){
@@ -84,7 +92,3 @@ Route::controller(ShipmentController::class)->group(function(){
     Route::post('/admin/update_shipments/{id}', 'edit')->name('edit_shipment');
     Route::get('/admin/close_shipments', 'close_shipment')->name('close_shipments');
 });
-
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

@@ -9,17 +9,64 @@
 			<div class="head-title">
 				<div class="left">
 					<h1>Dashboard</h1>
-					<ul class="breadcrumb">
-						<li>
-							<a href="#">Dashboard</a>
-						</li>
-						<li><i class='bx bx-chevron-right' ></i></li>
-						<li>
-							<a class="active" href="#">Home</a>
-						</li>
-					</ul>
 				</div>
-				<a href="{{ route('activity-logs.download') }}" class="btn btn-primary">Download Activity Log</a>
+				<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#activityLogsModal">
+                    Activity Logs
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="activityLogsModal" tabindex="-1" aria-labelledby="activityLogsModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="activityLogsModalLabel">Download Activity Logs</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Please select an option to download:</p>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#activityLogsDateModal">Download by Date Range</button>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <a href="{{ route('activity-logs.download') }}" class="btn btn-secondary btn-block">Download All</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Date Range Modal -->
+                <div class="modal fade" id="activityLogsDateModal" tabindex="-1" aria-labelledby="activityLogsDateModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="activityLogsDateModalLabel">Download Activity Logs by Date Range</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{{ route('activity-logs.download') }}" method="GET">
+                                    @csrf
+                                    <div class="form-group">
+                                        <label for="start_date">Start Date:</label>
+                                        <input type="date" name="start_date" class="form-control" id="start_date">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="end_date">End Date:</label>
+                                        <input type="date" name="end_date" class="form-control" id="end_date">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Download</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 			</div>
 
 			<ul class="box-info">
