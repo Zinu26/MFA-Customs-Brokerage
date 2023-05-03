@@ -5,8 +5,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ConsigneeController;
 use App\Http\Controllers\ShipmentController;
-
-
+use App\Http\Controllers\ActivityLogController;
+use App\Http\Controllers\Admin\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,21 +20,17 @@ use App\Http\Controllers\ShipmentController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('landing');
 });
 
 Auth::routes(['verify' => true]);
 
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
 Route::prefix('admin')->group(function() {
-
     Route::get('/dashboard',[App\Http\Controllers\Admin\DashboardController::class, 'index']);
 });
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/users/{user}/activity-logs', [ActivityLogController::class, 'index']);
+Route::get('/activity-logs/download', [ActivityLogController::class, 'download'])->name('activity-logs.download');
 
 
 Route::get('/about', function(){
@@ -56,9 +52,7 @@ Route::get('/login', function(){
 Route::post('/user/login', [AuthController::class, 'login'])->name('submit.login');
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::get('/admin/dashboard', function(){
-    return view('admin.dashboard');
-})->name('admin.dashboard');
+Route::get('/admin/dashboard', [DashboardController::class, 'dashboard'])->name('admin.dashboard');
 
 Route::controller(UserController::class)->group(function(){
     Route::get('/admin/admin_list', 'admin_page')->name('admin_list');

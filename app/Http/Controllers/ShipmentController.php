@@ -7,6 +7,8 @@ use App\Models\Shipment;
 use App\Models\Consignee;
 use App\Models\Dataset;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use App\Models\ActivityLog;
 
 
 class ShipmentController extends Controller
@@ -41,6 +43,13 @@ class ShipmentController extends Controller
         $shipment->delivery_status = $request->input('delivery_status');
         $shipment->save();
 
+        // log the activity
+        $log = new ActivityLog;
+        $log->user_id = Auth::id();
+        $log->loggable()->associate($shipment);
+        $log->activity = 'shipment_added';
+        $log->changes = $shipment->toJson();
+        $log->save();
 
         return redirect()->back()->with('success', 'Shipment data added successfully.');
     }
@@ -82,6 +91,20 @@ class ShipmentController extends Controller
             $dataset->status = false;
             $dataset->save();
         }
+
+        // Log activity
+        $activity = 'Shipment ' . $shipment->id . ' details were updated';
+        $changes = $shipment->getChanges();
+        $logData = [
+            'user_id' => Auth::id(),
+            'loggable' => $shipment,
+            'activity' => $activity,
+            'changes' => json_encode($changes),
+        ];
+        $logData['loggable_type'] = get_class($shipment);
+        $logData['loggable_id'] = $shipment->id;
+
+        ActivityLog::create($logData);
 
         return redirect()->back()->with('success', 'Shipment data have been updated successfully.');
     }
