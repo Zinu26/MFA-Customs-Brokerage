@@ -3,10 +3,10 @@
     bottom: 20px;
     right: 20px;
     z-index: 9999;
-  }
+}
 
-  /* Chatbot toggle */
-  #chatbot-toggle {
+/* Chatbot toggle */
+#chatbot-toggle {
     position: fixed;
     bottom: 20px;
     right: 20px;
@@ -22,17 +22,17 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     cursor: pointer;
     animation: pulse 2s infinite;
-  }
+}
 
-  .chatbot-img {
+.chatbot-img {
     width: 60px;
     height: 60px;
     border-radius: 50%;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     transition: all 0.2s ease-in-out;
-  }
+}
 
-  .chatbot-window {
+.chatbot-window {
     display: none;
     flex-direction: column;
     align-items: flex-start;
@@ -47,24 +47,24 @@
     overflow: hidden;
     position: relative;
     transition: all 0.3s ease-in-out;
-  }
+}
 
-  .chatbot-header {
+.chatbot-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 10px;
     width: 100%;
     background-color: #29924c;
-  }
+}
 
-  .chatbot-title {
+.chatbot-title {
     margin: 0;
     font-size: 16px;
     font-weight: bold;
-  }
+}
 
-  .chatbot-close {
+.chatbot-close {
     background: transparent;
     border: none;
     outline: none;
@@ -72,31 +72,31 @@
     padding: 0;
     margin: 0;
     transition: all 0.2s ease-in-out;
-  }
+}
 
-  .chatbot-close:hover {
+.chatbot-close:hover {
     transform: rotate(90deg);
-  }
+}
 
-  .chatbot-body {
+.chatbot-body {
     padding: 10px;
     width: 100%;
     overflow-y: scroll;
     scrollbar-width: none;
-  }
+}
 
-  .chatbot-body::-webkit-scrollbar {
+.chatbot-body::-webkit-scrollbar {
     display: none;
-  }
+}
 
 .user-message-container {
     display: flex;
     align-items: center;
     justify-content: flex-end;
     margin-bottom: 10px;
-  }
+}
 
-  #chatbot-input {
+#chatbot-input {
     position: absolute;
     bottom: 0;
     width: 100%;
@@ -104,77 +104,81 @@
     border: none;
     border-top: 1px solid #ddd;
     font-size: 14px;
-  }
+}
 
-  .user-message {
+.user-message {
     background-color: #007bff;
     color: white;
     padding: 10px;
     border-radius: 5px;
     max-width: 80%;
     word-wrap: break-word;
-    }
+}
 
-    .bot-message-container {
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        margin-bottom: 10px;
-        }
+.bot-message-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 10px;
+}
 
-        .bot-message {
-        background-color: #f0f0f0;
-        color: black;
-        padding: 10px;
-        border-radius: 5px;
-        max-width: 80%;
-        word-wrap: break-word;
-        }
+.bot-message {
+    background-color: #f0f0f0;
+    color: black;
+    padding: 10px;
+    border-radius: 5px;
+    max-width: 80%;
+    word-wrap: break-word;
+}
 
-        .bot-message a {
-        color: #007bff;
-        text-decoration: none;
-        }
+.bot-message a {
+    color: #007bff;
+    text-decoration: none;
+}
 
-        .bot-message a:hover {
-        text-decoration: underline;
-        }
+.bot-message a:hover {
+    text-decoration: underline;
+}
 
-        .message-timestamp {
-        font-size: 12px;
-        margin-left: 5px;
-        color: #aaa;
-        }
+.message-timestamp {
+    font-size: 12px;
+    margin-left: 5px;
+    color: #aaa;
+}
 
-        .message-placeholder {
-        width: 80%;
-        height: 20px;
-        margin-bottom: 10px;
-        border-radius: 5px;
-        animation: loading 1s ease-in-out infinite;
-        }
+.message-placeholder {
+    width: 80%;
+    height: 20px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    animation: loading 1s ease-in-out infinite;
+}
 
-        @keyframes loading {
-        0% {
-        background-color: #ddd;
-        }
-        50% {
-        background-color: #f0f0f0;
-        }
-        100% {
-        background-color: #ddd;
-        }
-        }
-
-  /* Animation for chatbot toggle button */
-  @keyframes pulse {
+@keyframes loading {
     0% {
-      transform: scale(1);
+        background-color: #ddd;
     }
+
     50% {
-      transform: scale(1.1);
+        background-color: #f0f0f0;
     }
+
     100% {
-      transform: scale(1);
+        background-color: #ddd;
     }
-  }
+}
+
+/* Animation for chatbot toggle button */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
