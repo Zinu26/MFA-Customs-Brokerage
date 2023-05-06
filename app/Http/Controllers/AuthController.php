@@ -66,22 +66,23 @@ class AuthController extends Controller
         $tin = $request->input('tin');
 
         // Check if the email and tin exist in the consignees table
-        $consignee = Consignee::where('email', $email)
-            ->where('tin', $tin)
+        $user = User::where('email', $email)
             ->first();
+        $consignee = Consignee::where('tin', $tin)
+        ->first();
 
-        if (!$consignee) {
+        if (!$consignee && !$user) {
             session()->flash('failed', 'The provided credentials do not match our records.');
             return back()->withErrors(['login' => 'The provided credentials do not match our records.'])->withInput();
         }
 
         // The email and tin are correct, log the user in
-        if ($consignee) {
+        if ($consignee && $user) {
             session()->flash('success', 'You have successfully logged in.');
 
             // Create a new activity log record for this user
             ActivityLog::create([
-                'user_id' => $consignee->id,
+                'user_id' => $user->id,
                 'loggable_id' => $consignee->id,
                 'loggable_type' => 'Consignee',
                 'activity' => 'Consignee logged in',
