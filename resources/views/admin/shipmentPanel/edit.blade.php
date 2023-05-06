@@ -45,6 +45,7 @@
 
                             <span class="input-group-text" style="background-color: #4EA646; font-weight: 600; color: white;">Process End</span>
                             <input type="date" @if($shipment->process_finished != null) value="{{$shipment->process_finished}}"  readonly @endif name="process_ended" placeholder="Process End" aria-label="Process End" class="form-control">
+                            <!-- Add prediction input -->
                         </div></br>
                         <div class="row">
                             <div class="form-group col-md-3">

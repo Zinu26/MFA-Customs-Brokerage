@@ -7,7 +7,7 @@
 
 <div class="box">
     <span class="borderLine"></span>
-    <form action="{{ route(session()->has('2fa:user:id') ? 'submit.2fa' : 'submit.login') }}" method="POST"
+    <form action="{{ route('submit.login.client') }}" method="POST"
         autocomplete="off">
         @csrf
         @if (session()->has('2fa:user:id'))
@@ -27,26 +27,25 @@
                 colors="primary:#b4b4b4,secondary:#4bb3fd" style="width:50px;height:50px">
             </lord-icon>
         </h3>
-        <h2>Sign in</h2>
-        <div class="inputBox @error('username') is-invalid @enderror">
-            <input type="text" name="username" id="username" required="required" value="{{ old('username') }}">
-            <span>Username</span>
+        <h2>Client Sign in</h2>
+        <div class="inputBox @error('email') is-invalid @enderror">
+            <input type="email" name="email" id="email" required="required" value="{{ old('email') }}">
+            <span>Email</span>
             <i></i>
-            @error('username')
+            @error('email')
                 <span class="error-feedback">{{ $message }}</span>
             @enderror
         </div>
-        <div class="inputBox @error('password') is-invalid @enderror">
-            <input type="password" name="password" id="password" required="required" value="{{ old('password') }}">
-            <span>Password</span>
+        <div class="inputBox @error('tin') is-invalid @enderror">
+            <input type="text" name="tin" id="tin" required="required" value="{{ old('tin') }}">
+            <span>Tin</span>
             <i></i>
-            @error('password')
+            @error('tin')
                 <span class="error-feedback">{{ $message }}</span>
             @enderror
         </div>
         <div class="links">
-            <a href="#">Forgot Password</a>
-            <a href="{{route('login.client')}}">Login as Client</a>
+            <a href="{{route('login')}}">Login as Company</a>
         </div>
         <input type="submit" name="login" value="Login">
     </form>
