@@ -2,7 +2,7 @@
     .notification {
         position: fixed;
         top: 20px;
-        right: 20px;
+        left: 120px; /* changed from "right" */
         padding: 10px;
         border-radius: 5px;
         font-size: 16px;
@@ -13,17 +13,20 @@
     }
 
     .notification.success {
-        background-color: #5cb85c; /* green */
+        background-color: #5cb85c;
+        /* green */
         color: #fff;
     }
 
     .notification.error {
-        background-color: #d9534f; /* red */
+        background-color: #d9534f;
+        /* red */
         color: #fff;
     }
 
     .notification.warning {
-        background-color: #f0ad4e; /* yellow */
+        background-color: #f0ad4e;
+        /* yellow */
         color: #fff;
     }
 
@@ -33,21 +36,21 @@
 </style>
 
 @if (session()->has('success'))
-<div class="notification success" id="notification">
-    {{ session()->get('success') }}
-</div>
+    <div class="notification success" id="notification">
+        {{ session()->get('success') }}
+    </div>
 @endif
 
 @if (session()->has('error'))
-<div class="notification error" id="notification">
-    {{ session()->get('error') }}
-</div>
+    <div class="notification error" id="notification">
+        {{ session()->get('error') }}
+    </div>
 @endif
 
 @if (session()->has('warning'))
-<div class="notification warning" id="notification">
-    {{ session()->get('warning') }}
-</div>
+    <div class="notification warning" id="notification">
+        {{ session()->get('warning') }}
+    </div>
 @endif
 
 <script>
