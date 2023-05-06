@@ -4,17 +4,22 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Consignee;
+use App\Models\User;
 use App\Models\Shipment;
 use App\Models\Dataset;
+use Illuminate\Support\Facades\DB;
 
 class ConsigneeController extends Controller
 {
-    function client_page(){
+    function client_page()
+    {
         $clients = Consignee::all();
+        $users = User::all();
         return view('admin.clientPanel.clients', compact('clients'));
     }
 
-    function archive_list(){
+    function archive_list()
+    {
         $clients = Consignee::all();
         return view('admin.clientPanel.archive_list', compact('clients'));
     }
@@ -22,21 +27,29 @@ class ConsigneeController extends Controller
     public function add(Request $request)
     {
         // Validate the input data
-        $request->validate([
+        $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'tin' => 'required|string|max:255',
             'contact' => 'required|string|max:255',
-            'email' => 'required|string|max:255|email',
+            'email' => 'required|string|unique:users,email|max:255',
             'address' => 'required|string|max:255',
+        ]);
+
+        // Create new user
+        $user = User::create([
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'password' => bcrypt($validatedData['tin']),
+            'type' => 2, // Assuming you want to create a consignee user
         ]);
 
         // Create a new Consignee instance with the validated data
         $consignee = new Consignee([
-            'name' => $request->name,
-            'tin' => $request->tin,
-            'contact' => $request->contact,
-            'email' => $request->email,
-            'address' => $request->address,
+            'user_id' => $user->id,
+            'tin' => $validatedData['tin'],
+            'contact' => $validatedData['contact'],
+            'address' => $validatedData['address'],
+            'status' => 0,
         ]);
 
         // Save the new Consignee instance to the database
@@ -45,6 +58,8 @@ class ConsigneeController extends Controller
         // Redirect to the index page with a success message
         return redirect()->route('client_list')->with('success', 'Consignee added successfully.');
     }
+
+
 
     public function update(Request $request, $id)
     {
@@ -78,16 +93,19 @@ class ConsigneeController extends Controller
         return redirect()->back()->with('success', 'Client data have been restored successfully.');
     }
 
-    function open_shipment($id){
+    function open_shipment($id)
+    {
         $consignee = Consignee::findOrFail($id);
-        $shipments = Shipment::where('consignee_name', $consignee->name)->get();
+        $shipments = Shipment::where('consignee_name', $consignee->user->name)->get();
+        $shipping_lines = DB::table('datasets')->pluck('shipping_line')->unique();
 
-        return view('admin.clientPanel.open_shipments', compact('consignee', 'shipments'));
+        return view('admin.clientPanel.open_shipments', compact('consignee', 'shipments','shipping_lines'));
     }
 
-    function close_shipment($id){
+    function close_shipment($id)
+    {
         $consignee = Consignee::findOrFail($id);
-        $shipments = Dataset::where('consignee_name', $consignee->name)->get();
+        $shipments = Dataset::where('consignee_name', $consignee->user->name)->get();
 
         return view('admin.clientPanel.close_shipments', compact('consignee', 'shipments'));
     }

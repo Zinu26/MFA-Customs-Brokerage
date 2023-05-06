@@ -13,7 +13,7 @@ class ConsigneeSeeder extends Seeder
      */
     public function run()
     {
-        $file = public_path('csv/consignees.sql');
+        $file = public_path('csv/consignees(2).sql');
         $sql = file_get_contents($file);
         DB::unprepared($sql);
     }

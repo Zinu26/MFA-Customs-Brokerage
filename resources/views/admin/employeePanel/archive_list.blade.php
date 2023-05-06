@@ -38,7 +38,7 @@
                     <td>{{ $user->employee->position }}</td>
                     <td>{{ $user->employee->birthdate }}</td>
                     <td>{{ $user->employee->contact_number }}</td>
-                    <td>{{ $user->employee->email }}</td>
+                    <td>{{ $user->email }}</td>
                     <td>{{ $user->username }}</td>
                     <td class="text-center">
                         @include('admin.employeePanel.view')

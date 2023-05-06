@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('position');
             $table->date('birthdate');
             $table->string('contact_number');
-            $table->string('email');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

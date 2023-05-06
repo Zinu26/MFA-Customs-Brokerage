@@ -33,10 +33,10 @@
             @if($client->status == true)
                 <tr>
                     <td>{{ $loop->iteration }}</td>
-                    <td>{{ $client->name }}</td>
+                    <td>{{ $client->user->name }}</td>
                     <td>{{ $client->tin }}</td>
                     <td>{{ $client->contact }}</td>
-                    <td>{{ $client->email }}</td>
+                    <td>{{ $client->user->email }}</td>
                     <td>{{ $client->address }}</td>
                     <td class="text-center col-1">
                         @include('admin.clientPanel.restore')

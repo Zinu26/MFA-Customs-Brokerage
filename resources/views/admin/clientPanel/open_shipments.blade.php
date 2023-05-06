@@ -5,9 +5,9 @@
 <title>MFA Customs Brokerage</title>
 <div class="table">
     <div class="table-header">
-      <p>{{$consignee->name}}</p>
+      <p>{{$consignee->user->name}}</p>
       <div>
-        @include('admin.clientPanel.create')
+        @include('admin.clientPanel.create_open')
         <a href="{{route('close_shipment', $consignee->id)}}">
             <button class="btn btn-danger"><i class="fa fa-folder-minus"></i> Close Shipments</button>
         </a>

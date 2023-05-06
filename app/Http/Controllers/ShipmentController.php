@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Shipment;
 use App\Models\Consignee;
+use App\Models\User;
 use App\Models\Dataset;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -15,10 +16,9 @@ class ShipmentController extends Controller
 {
     function index(){
         $shipments = Shipment::all();
-        $consignees = Consignee::all();
+        $users = User::where('type', 2)->get();
         $shipping_lines = DB::table('datasets')->pluck('shipping_line')->unique();
-
-        return view('admin.shipmentPanel.index', compact('shipments', 'consignees', 'shipping_lines'));
+        return view('admin.shipmentPanel.index', compact('shipments', 'users', 'shipping_lines'));
     }
 
     function close_shipment(){

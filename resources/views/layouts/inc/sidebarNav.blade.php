@@ -4,12 +4,12 @@
 <div class="sidebar">
     <div class="top">
         <div class="logo">
-            <img src="../images/sidenav_logo.png" alt="" class="logo">
+            <img src="/images/sidenav_logo.png" alt="" class="logo">
         </div>
         <i class="fa fa-bars" id="btn"></i>
     </div>
     <ul>
-        <li><img src="../images/logo_1.png" alt="" class="icon"></li>
+        <li><img src="/images/logo_1.png" alt="" class="icon"></li>
         <li><a href="{{route('admin.dashboard')}}"><i class="fas fa-dashboard"></i><span class="nav-item">Dashboard</a><span class="tooltip">Dashboard</span></li>
         @if(Auth::user()->type == 0)
             <li><a href="{{route('admin_list')}}"><i class="fas fa-user-tie"></i><span class="nav-item">Admin</a><span class="tooltip">Admin</span></li>

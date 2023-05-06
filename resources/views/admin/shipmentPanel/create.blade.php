@@ -15,8 +15,8 @@
                     <select name="consignee_name" class="form-control" id="exampleFormControlSelect1" required>
                         <option value="" disabled selected>Select consignee</option>
                         <?php
-                        foreach ($consignees as $consignee) {
-                            echo "<option value='{$consignee['name']}'>{$consignee['name']}</option>";
+                        foreach ($users as $user) {
+                            echo "<option value='{$user->name}'>{$user->name}</option>";
                         }
                         ?>
                     </select>
@@ -30,7 +30,7 @@
                     <input type="text" name="size" placeholder="Size" aria-label="Size" class="form-control" required>
 
                     <span class="input-group-text" style="background-color: #4EA646; font-weight: 600; color: white;">Weight</span>
-                    <input type="text" name="weight" placeholder="Weight" aria-label="Weight" class="form-control" required>
+                    <input type="number" name="weight" placeholder="Weight" aria-label="Weight" class="form-control" required>
                     </div></br>
                     <div class="input-group">
                     <span class="input-group-text" style="background-color: #4EA646; font-weight: 600; color: white;">BL Number</span>
