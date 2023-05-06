@@ -14,7 +14,7 @@
         <div class="contact form">
             <h3>Send a Message</h3>
             <form method="POST" action="">
-            @csrf
+                @csrf
                 <div class="formBox">
                     <div class="row50">
                         <div class="inputBox">
@@ -35,12 +35,12 @@
                     <div class="row100">
                         <div class="inputBox">
                             <span>Message</span>
-                            <textarea  name="message" placeholder="Write your message here..."></textarea>
+                            <textarea name="message" placeholder="Write your message here..."></textarea>
                         </div>
                     </div>
                     <div class="row100">
                         <div class="inputBox">
-                            <input type="submit" value="Send">
+                            <button type="submit"><i class="fa fa-paper-plane text-white" aria-hidden="true" style="line-height: 45px;"></i> Send</button>
                         </div>
                     </div>
                 </div>
@@ -65,7 +65,10 @@
             </div>
         </div>
         <div class="contact map">
-        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3861.0226367189885!2d120.97308531484012!3d14.597785989804198!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397ca0e6a3284fb%3A0x12764225cff73e4a!2sPadilla%20-%20De%20Los%20Reyes%20Bldg.!5e0!3m2!1sen!2sph!4v1679393234249!5m2!1sen!2sph" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3861.0226367189885!2d120.97308531484012!3d14.597785989804198!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397ca0e6a3284fb%3A0x12764225cff73e4a!2sPadilla%20-%20De%20Los%20Reyes%20Bldg.!5e0!3m2!1sen!2sph!4v1679393234249!5m2!1sen!2sph"
+                style="border:0;" allowfullscreen="" loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"></iframe>
         </div>
     </div>
 </section>

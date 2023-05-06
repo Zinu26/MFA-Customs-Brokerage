@@ -21,6 +21,11 @@ return [
         'scheme' => 'https',
     ],
 
+    'gpt3' => [
+        'api_key' => env('GPT3_API_KEY'),
+    ],
+
+
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),
     ],

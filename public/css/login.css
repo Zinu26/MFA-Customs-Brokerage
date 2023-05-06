@@ -1,95 +1,108 @@
-
-  *{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
-  }
-  body{
+}
+
+body {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-  }
-  .box {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 380px;
-  height: 470px;
-  background: #1c1c1c;
-  border-radius: 8px;
-  overflow: hidden;
-  }
+}
 
-  .box::before{
+.box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 380px;
+    height: 470px;
+    background: #1c1c1c;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.box::before {
     content: '';
     position: absolute;
     top: -50%;
     left: -50%;
     width: 380px;
     height: 420px;
-    background: linear-gradient(0deg, transparent, transparent, #45f3ff,#45f3ff,#45f3ff);
+    background: linear-gradient(0deg, transparent, transparent, #45f3ff, #45f3ff, #45f3ff);
     z-index: 1;
     transform-origin: bottom right;
     animation: animate 6s linear infinite;
-  }
-  .box::after{
+}
+
+.box::after {
     content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 380px;
-      height: 420px;
-      background: linear-gradient(0deg, transparent, transparent, #45f3ff,#45f3ff,#45f3ff);
-      z-index: 1;
-      transform-origin: bottom right;
-      animation: animate 6s linear infinite;
-      animation-delay: -3s;
-  }
-  .borderLine{
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 380px;
+    height: 420px;
+    background: linear-gradient(0deg, transparent, transparent, #45f3ff, #45f3ff, #45f3ff);
+    z-index: 1;
+    transform-origin: bottom right;
+    animation: animate 6s linear infinite;
+    animation-delay: -3s;
+}
+
+.borderLine {
     position: absolute;
     top: 0;
     inset: 0;
-  }
-  .borderLine::before{
+}
+
+.borderLine::before {
     content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 380px;
-      height: 420px;
-      background: linear-gradient(0deg, transparent, transparent, #ff2770,#ff2770,#ff2770);
-      z-index: 1;
-      transform-origin: bottom right;
-      animation: animate 6s linear infinite;
-      animation-delay: -1.5s;
-  }
-  .borderLine::after{
-    content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 380px;
-      height: 420px;
-      background: linear-gradient(0deg, transparent, transparent, #ff2770,#ff2770,#ff2770);
-      z-index: 1;
-      transform-origin: bottom right;
-      animation: animate 6s linear infinite;
-      animation-delay: -4.5s;
-  }
-  @keyframes animate{
-    0%{
-      transform: rotate(0deg);
-    }
-    100%{
-      transform: rotate(360deg);
-    }
-  }
-  .box form{
     position: absolute;
-    top:0;
+    top: -50%;
+    left: -50%;
+    width: 380px;
+    height: 420px;
+    background: linear-gradient(0deg, transparent, transparent, #ff2770, #ff2770, #ff2770);
+    z-index: 1;
+    transform-origin: bottom right;
+    animation: animate 6s linear infinite;
+    animation-delay: -1.5s;
+}
+
+.borderLine::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 380px;
+    height: 420px;
+    background: linear-gradient(0deg, transparent, transparent, #ff2770, #ff2770, #ff2770);
+    z-index: 1;
+    transform-origin: bottom right;
+    animation: animate 6s linear infinite;
+    animation-delay: -4.5s;
+}
+
+.inputBox.is-invalid input {
+    border-color: red;
+    background-color: #f9d6d5;
+}
+
+@keyframes animate {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.box form {
+    position: absolute;
+    top: 0;
     left: 0;
     inset: 4px;
     background: #222;
@@ -97,24 +110,27 @@
     border-radius: 8px;
     z-index: 2;
     display: flex;
-    flex-direction:column;
-  }
+    flex-direction: column;
+}
 
-  .box form h3{
+.box form h3 {
     text-align: center;
-  }
-  .box form h2{
+}
+
+.box form h2 {
     color: #fff;
     font-weight: 500;
     text-align: center;
     letter-spacing: 0.1em;
-  }
-  .box form .inputBox{
+}
+
+.box form .inputBox {
     position: relative;
     width: 300px;
     margin-top: 35px;
-  }
-  .box form .inputBox input{
+}
+
+.box form .inputBox input {
     position: relative;
     width: 100%;
     padding: 10px 10px 10px;
@@ -127,8 +143,9 @@
     letter-spacing: 0.05em;
     transition: 0.5s;
     z-index: 10;
-  }
-  .box form .inputBox span{
+}
+
+.box form .inputBox span {
     position: absolute;
     left: 0;
     padding: 20px 10px 10px;
@@ -137,14 +154,16 @@
     font-size: 1em;
     letter-spacing: 0.05em;
     transition: 0.5s;
-  }
-  .box form .inputBox input:valid ~ span,
-  .box form .inputBox input:focus ~ span{
+}
+
+.box form .inputBox input:valid~span,
+.box form .inputBox input:focus~span {
     color: #fff;
     font-size: 0.75em;
     transform: translateY(-34px);
-  }
-  .box form .inputBox i{
+}
+
+.box form .inputBox i {
     position: absolute;
     left: 0;
     bottom: 0;
@@ -155,26 +174,31 @@
     overflow: hidden;
     transition: 0.5s;
     pointer-events: none;
-  }
-  .box form .inputBox input:valid ~ i,
-  .box form .inputBox input:focus ~ i{
-  height: 44px;
-  }
-  .box form .links{
+}
+
+.box form .inputBox input:valid~i,
+.box form .inputBox input:focus~i {
+    height: 44px;
+}
+
+.box form .links {
     display: flex;
     justify-content: space-between;
-  }
-  .box form .links a{
+}
+
+.box form .links a {
     margin: 10px 0;
     font-size: 0.75em;
     color: #8f8f8f;
     text-decoration: none;
-  }
-  .box form .links a:hover,
-  .box form .links a:nth-child(2){
+}
+
+.box form .links a:hover,
+.box form .links a:nth-child(2) {
     color: #fff;
-  }
-  .box form input[type="submit"]{
+}
+
+.box form input[type="submit"] {
     border: none;
     outline: none;
     padding: 9px 25px;
@@ -185,20 +209,21 @@
     font-weight: 600;
     width: 100px;
     margin-top: 10px;
-  }
-  .box form input[type="submit"]:active{
-    opacity: 0.8;
-  }
+}
 
-  .error-message {
+.box form input[type="submit"]:active {
+    opacity: 0.8;
+}
+
+.error-message {
     display: none;
     background-color: #f44336;
     color: white;
     padding: 10px;
     margin: 10px 10px 10px;
     font-size: 10px;
-  }
+}
 
-  .error-message p {
+.error-message p {
     margin: 0;
-  }
+}
