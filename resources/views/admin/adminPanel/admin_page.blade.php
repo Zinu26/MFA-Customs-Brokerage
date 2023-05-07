@@ -70,6 +70,10 @@
               <input type="text" name="username" placeholder="Username" aria-label="Username" class="form-control" required>
             </div></br>
             <div class="input-group">
+              <span class="input-group-text" style="background-color: #4EA646; font-weight: 600; color: white;">Email</span>
+              <input type="text" name="email" placeholder="Email" aria-label="Email" class="form-control" required>
+            </div></br>
+            <div class="input-group">
               <span class="input-group-text" style="background-color: #4EA646; font-weight: 600; color: white;">Password</span>
               <input type="password" name="password" placeholder="Password" aria-label="Password" class="form-control" required>
             </div></br>

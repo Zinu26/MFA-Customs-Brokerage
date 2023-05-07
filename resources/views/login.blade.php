@@ -45,7 +45,7 @@
             @enderror
         </div>
         <div class="links">
-            <a href="#">Forgot Password</a>
+            {{-- <a href="#">Forgot Password</a> --}}
             <a href="{{route('login.client')}}">Login as Client</a>
         </div>
         <input type="submit" name="login" value="Login">

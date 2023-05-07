@@ -3,7 +3,9 @@
 
 <link rel="stylesheet" href="/css/contact.css">
 <title>MFA Customs Brokerage</title>
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/fontawesome.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
 <section class="contactUs">
     <div class="title">
@@ -38,10 +40,9 @@
                             <textarea name="message" placeholder="Write your message here..."></textarea>
                         </div>
                     </div>
-                    <div class="row100">
-                        <div class="inputBox">
-                            <button type="submit"><i class="fa fa-paper-plane text-white" aria-hidden="true" style="line-height: 45px;"></i> Send</button>
-                        </div>
+                    <div id="app">
+                        <div id="message">Send</div>
+                        <div id="send_btn"><i class="fas fa-plane"></i></div>
                     </div>
                 </div>
             </form>
@@ -72,3 +73,20 @@
         </div>
     </div>
 </section>
+
+
+<script>
+    $(function(){
+        $('#send_btn').on('click', function(){
+            setTimeout(function(){
+                $('#message').addClass('sending').text('Sending');
+                $('#send_btn').addClass('sending');
+            },0);
+
+            setTimeout(function(){
+                $('#message').addClass('sent').text('Sent');
+                $('#send_btn').addClass('sent');
+            },2600);
+        })
+    })
+</script>

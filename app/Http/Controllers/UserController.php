@@ -35,6 +35,7 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'username' => 'required|string|unique:users,username|max:255',
+            'email' => 'required|string|unique:users,email|max:255',
             'password' => 'required|string|min:8',
         ]);
 
@@ -42,6 +43,7 @@ class UserController extends Controller
         $user = new User;
         $user->name = $request->input('name');
         $user->username = $request->input('username');
+        $user->email = $request->input('email');
         $user->password = bcrypt($request->input('password'));
         $user->type = 0; // Assuming you want to create an admin user
         $user->save();
@@ -66,6 +68,7 @@ class UserController extends Controller
         $user = new User;
         $user->name = $request->input('name');
         $user->username = $request->input('username');
+        $user->email = $request->input('email');
         $user->password = bcrypt($request->input('password'));
         $user->type = 1; // Assuming you want to create an employee user
         $user->save();
@@ -75,7 +78,6 @@ class UserController extends Controller
         $employee->position = $request->input('position');
         $employee->birthdate = $request->input('birthdate');
         $employee->contact_number = $request->input('contact_number');
-        $employee->email = $request->input('email');
         $employee->save();
 
         // Redirect to success page

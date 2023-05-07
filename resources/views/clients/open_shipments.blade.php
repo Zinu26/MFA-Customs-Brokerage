@@ -1,14 +1,13 @@
 @include('layouts.inc.header')
-@include('layouts.inc.sidebarNav')
+@include('layouts.inc.client_sidenav')
 <link rel="stylesheet" href="/css/admin-style.css" />
 
 <title>MFA Customs Brokerage</title>
 <div class="table">
     <div class="table-header">
-      <p>{{$consignee->user->name}}</p>
+      <p>Shipments</p>
       <div>
-        @include('admin.clientPanel.create_open')
-        <a href="{{route('close_shipment', $consignee->id)}}">
+        <a href="{{route('consignee_close_shipment')}}">
             <button class="btn btn-danger"><i class="fa fa-folder-minus"></i> Close Shipments</button>
         </a>
       </div>
@@ -43,7 +42,6 @@
                     <td>{{ $shipment->delivery_status }}</td>
                     <td  class="text-center col-2">
                         @include('admin.clientPanel.view_open_shipments')
-                        @include('admin.clientPanel.edit_open_shipments')
                     </td>
                 </tr>
         @endforeach

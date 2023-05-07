@@ -31,7 +31,7 @@
               </div></br>
               <div class="input-group">
                 <span class="input-group-text" style="background-color: #4EA646; font-weight: 600; color: white;">Email</span>
-                <input type="email" value="{{$user->employee->email}}" name="email" placeholder="Email" aria-label="Email" class="form-control">
+                <input type="email" value="{{$user->email}}" name="email" placeholder="Email" aria-label="Email" class="form-control">
               </div></br>
             <div class="input-group">
               <span class="input-group-text" style="background-color: #4EA646; font-weight: 600; color: white;">Username</span>
