@@ -18,6 +18,7 @@ return new class extends Migration
             $table->date('process_started')->nullable()->default;
             $table->date('process_finished')->nullable()->default;
             $table->date('predicted_delivery_date')->nullable()->default;
+            $table->date('delivered_date')->nullable()->default;
             $table->string('port_of_origin')->nullable()->default;
             $table->string('destination_address')->nullable()->default;
             $table->string('size');

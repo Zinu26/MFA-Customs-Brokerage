@@ -5,11 +5,11 @@
 <nav>
     <div class="nav-bar">
         <i class="fa fa-bars sidebarOpen"></i>
-        <span class="logo"><a href="#"><img src="images/topnav_logo.png"></a></span>
+        <span class="logo"><a href="#"><img src="/images/topnav_logo.png"></a></span>
 
         <div class="menu">
             <div class="logo-toggle">
-                <span class="logo"><a href="#"><img src="images/topnav_logo.png"></a></span>
+                <span class="logo"><a href="#"><img src="/images/topnav_logo.png"></a></span>
                 <i class="fa fa-xmark sidebarClose"></i>
             </div>
             <ul class="nav-links">

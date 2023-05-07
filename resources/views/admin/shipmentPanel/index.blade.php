@@ -1,7 +1,6 @@
 @include('layouts.inc.header')
 @include('layouts.inc.sidebarNav')
 <link rel="stylesheet" href="/css/admin-style.css" />
-@include('layouts.inc.sidebarNav')
 
 <title>MFA Customs Brokerage</title>
 
