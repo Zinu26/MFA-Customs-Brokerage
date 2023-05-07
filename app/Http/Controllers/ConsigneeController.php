@@ -7,6 +7,7 @@ use App\Models\Consignee;
 use App\Models\User;
 use App\Models\Shipment;
 use App\Models\Dataset;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ConsigneeController extends Controller
@@ -99,7 +100,7 @@ class ConsigneeController extends Controller
         $shipments = Shipment::where('consignee_name', $consignee->user->name)->get();
         $shipping_lines = DB::table('datasets')->pluck('shipping_line')->unique();
 
-        return view('admin.clientPanel.open_shipments', compact('consignee', 'shipments','shipping_lines'));
+        return view('admin.clientPanel.open_shipments', compact('consignee', 'shipments', 'shipping_lines'));
     }
 
     function close_shipment($id)
@@ -108,5 +109,39 @@ class ConsigneeController extends Controller
         $shipments = Dataset::where('consignee_name', $consignee->user->name)->get();
 
         return view('admin.clientPanel.close_shipments', compact('consignee', 'shipments'));
+    }
+
+    function consignee_dashboard()
+    {
+        // this is for delivery status evaluation
+        $data = Dataset::select('delivery_status', DB::raw('count(*) as count'))
+            ->groupBy('delivery_status')->where('consignee_name', Auth::user()->name)
+            ->get();
+
+        $labels = [];
+        $values = [];
+
+        foreach ($data as $item) {
+            $labels[] = $item->delivery_status;
+            $values[] = $item->count;
+        }
+
+        $shipments = Shipment::orderBy('arrival', 'desc')->where('consignee_name', Auth::user()->name)
+            ->take(5)
+            ->get();
+
+        return view('clients.dashboard', compact('shipments', 'labels', 'values'));
+    }
+
+    function consignee_open_shipment(){
+        $shipments = Shipment::where('consignee_name', Auth::user()->name)->get();
+
+        return view('clients.open_shipments', compact('shipments'));
+    }
+
+    function consignee_close_shipment(){
+        $shipments = Dataset::where('consignee_name', Auth::user()->name)->get();
+
+        return view('clients.open_shipments', compact('shipments'));
     }
 }

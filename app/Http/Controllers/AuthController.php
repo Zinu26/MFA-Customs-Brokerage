@@ -90,7 +90,7 @@ class AuthController extends Controller
                 'activity' => 'Consignee logged in',
             ]);
 
-            return redirect()->route('client.index');
+            return redirect()->route('client.dashboard');
         }
     }
 

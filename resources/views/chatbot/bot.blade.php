@@ -11,7 +11,7 @@
 
 <div class="chatbot-wrapper">
     <button class="chatbot-toggle" id="chatbot-toggle">
-        <img src="images/chatbot.jpg" class="chatbot-img">
+        <img src="/images/chatbot.jpg" class="chatbot-img">
     </button>
     <div class="chatbot-window" id="chatbot-window">
         <div class="chatbot-header">
