@@ -67,7 +67,7 @@ Route::get('/client', function(){
 
 Route::post('/user/login', [AuthController::class, 'login'])->name('submit.login');
 Route::post('/client/login', [AuthController::class, 'login_client'])->name('submit.login.client');
-Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/user/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/logout', [AuthController::class, 'logout_client'])->name('logout_client');
 
 Route::get('2fa', [AuthController::class, 'show2faForm'])->name('2fa');
