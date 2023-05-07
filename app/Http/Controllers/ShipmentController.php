@@ -67,12 +67,15 @@ class ShipmentController extends Controller
         }
         // Add model feed
 
+
+        //Add prediction result
         $shipment->shipment_status = $request->input('shipment_status');
         $shipment->do_status = $request->input('do_status');
         $shipment->billing_status = $request->input('billing_status');
         $shipment->delivery_status = $request->input('delivery_status');
         $shipment->save();
 
+        //close shipments table
         if($shipment->process_started != null && $shipment->process_finished != null && $shipment->shipment_status == 'AG' && $shipment->billing_status == 'Done' && $shipment->delivery_status == 'Done' && $shipment->do_status == 'Done'){
             $shipment->status = '1';
             $shipment->save();
@@ -83,7 +86,6 @@ class ShipmentController extends Controller
             $dataset->arrival_date = $shipment->arrival;
             $dataset->process_started = $shipment->process_started;
             $dataset->process_finished = $shipment->process_finished;
-            //Add prediction result
             $dataset->shipment_size = $shipment->size;
             $dataset->shipment_details = $shipment->item_description;
             $dataset->shipping_line = $shipment->shipping_line;
