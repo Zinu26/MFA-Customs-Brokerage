@@ -22,10 +22,9 @@
             <th class="text-center">S.N.</th>
             <th class="text-center">Name</th>
             <th class="text-center">Position</th>
-            <th class="text-center">Birth date</th>
-            <th class="text-center">Contact Number</th>
             <th class="text-center">Email</th>
             <th class="text-center">Username</th>
+            <th class="text-center">Archived Date</th>
             <th class="text-center">Operation</th>
         </tr>
       </thead>
@@ -36,10 +35,9 @@
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $user->name }}</td>
                     <td>{{ $user->employee->position }}</td>
-                    <td>{{ $user->employee->birthdate }}</td>
-                    <td>{{ $user->employee->contact_number }}</td>
                     <td>{{ $user->email }}</td>
                     <td>{{ $user->username }}</td>
+                    <td>{{ date('Y-m-d h:i:s A', strtotime($user->updated_at)) }}</td>
                     <td class="text-center">
                         @include('admin.employeePanel.view')
                         @include('admin.employeePanel.restore')

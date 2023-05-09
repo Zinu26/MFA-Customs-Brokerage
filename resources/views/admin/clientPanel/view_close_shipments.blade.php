@@ -27,19 +27,23 @@
                         <input type="text" value="{{$shipment->weight}}" class="form-control" required>
                     </div></br>
                     <div class="input-group">
+                        <span class="input-group-text" style="background-color: #4EA646; font-weight: 600; color: white;">Entry Number</span>
+                        <input type="text" value="{{$shipment->entry_number}}" class="form-control" required>
+
                         <span class="input-group-text" style="background-color: #4EA646; font-weight: 600; color: white;">BL Number</span>
                         <input type="text" value="{{$shipment->bl_number}}" class="form-control" required>
-
+                    </div></br>
+                    <div class="input-group">
                         <span class="input-group-text" style="background-color: #4EA646; font-weight: 600; color: white;">Shipping Line</span>
                         <input type="text" value="{{$shipment->shipping_line}}" class="form-control" required>
                     </div></br>
                     <div class="input-group">
                         <span class="input-group-text" style="background-color: #4EA646; font-weight: 600; color: white;">Port of Origin</span>
-                        <input type="text" @if($shipment->origin != null) value="{{$shipment->origin}}"  @endif name="process_started" placeholder="Process Start" aria-label="Process Start" class="form-control">
+                        <input type="text" @if($shipment->port_of_origin != null) value="{{$shipment->port_of_origin}}"  @endif name="port_of_origin" placeholder="Port of Origin" aria-label="Port of Origin" class="form-control">
                     </div></br>
                     <div class="input-group">
                         <span class="input-group-text" style="background-color: #4EA646; font-weight: 600; color: white;">Destination</span>
-                        <input type="text" @if($shipment->destination != null) value="{{$shipment->destination}}"  @endif name="process_ended" placeholder="Process End" aria-label="Process End" class="form-control">
+                        <input type="text" @if($shipment->destination_address != null) value="{{$shipment->destination_address}}"  @endif name="destination_address" placeholder="Destination" aria-label="Destination" class="form-control">
                     </div></br>
                     <div class="input-group">
                         <span class="input-group-text" style="background-color: #4EA646; font-weight: 600; color: white;">Arrival Time</span>
@@ -54,14 +58,14 @@
                     </div></br>
                     <div class="input-group">
                         <span class="input-group-text" style="background-color: #4EA646; font-weight: 600; color: white;">Delivery Date</span>
-                        <input type="text" @if($shipment->delivered_date != null) value="{{$shipment->delivered_date}}"  @endif name="process_started" placeholder="Process Start" aria-label="Process Start" class="form-control">
+                        <input type="text" @if($shipment->delivered_date != null) value="{{$shipment->delivered_date}}"  @endif name="delivered_date" placeholder="Delivery Date" aria-label="Delivery Date" class="form-control">
                     </div></br>
                     <div class="input-group">
                         <span class="input-group-text" style="background-color: #4EA646; font-weight: 600; color: white;">Predicted Delivery Date</span>
-                        <input type="text" @if($shipment->predicted_delivery_date != null) value="{{$shipment->predicted_delivery_date}}"  @endif name="process_started" placeholder="Process Start" aria-label="Process Start" class="form-control">
+                        <input type="text" @if($shipment->predicted_delivery_dates != null) value="{{$shipment->predicted_delivery_dates}}"  @endif name="predicted_delivery_dates" placeholder="Predicted Delivery Date" aria-label="Predicted Delivery Date" class="form-control">
 
                         <span class="input-group-text" style="background-color: #4EA646; font-weight: 600; color: white;">Status</span>
-                        <input type="text" @if($shipment->delivery_status != null) value="{{$shipment->delivery_status}}"  @endif name="process_ended" placeholder="Process End" aria-label="Process End" class="form-control">
+                        <input type="text" @if($shipment->delivery_status != null) value="{{$shipment->delivery_status}}"  @endif name="delivery_status" placeholder="Status" aria-label="Status" class="form-control">
                     </div></br>
             </div>
             </fieldset>

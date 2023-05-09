@@ -142,6 +142,6 @@ class ConsigneeController extends Controller
     function consignee_close_shipment(){
         $shipments = Dataset::where('consignee_name', Auth::user()->name)->get();
 
-        return view('clients.open_shipments', compact('shipments'));
+        return view('clients.close_shipments', compact('shipments'));
     }
 }

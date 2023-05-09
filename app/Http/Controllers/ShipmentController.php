@@ -17,7 +17,7 @@ class ShipmentController extends Controller
 {
     function index(){
         $shipments = Shipment::all();
-        $users = User::where('type', 2)->get();
+        $users = User::where('type', 2)->with('consignee')->get();
         $shipping_lines = DB::table('datasets')->pluck('shipping_line')->unique();
         return view('admin.shipmentPanel.index', compact('shipments', 'users', 'shipping_lines'));
     }
@@ -36,12 +36,19 @@ class ShipmentController extends Controller
         $shipment->size = $request->input('size');
         $shipment->weight = $request->input('weight');
         $shipment->bl_number = $request->input('BL_number');
+        $shipment->entry_number = $request->input('entry_number');
         $shipment->shipping_line = $request->input('shipping_line');
         $shipment->arrival = $request->input('arrival_time');
+        $shipment->port_of_origin = $request->input('port_of_origin');
         $shipment->shipment_status = $request->input('shipment_status');
         $shipment->do_status = $request->input('do_status');
         $shipment->billing_status = $request->input('billing_status');
         $shipment->delivery_status = $request->input('delivery_status');
+
+        $user = User::where('name', $shipment->consignee_name)->first();
+        $consignee = Consignee::where('user_id', $user->id)->first();
+
+        $shipment->destination_address = $consignee->address;
         $shipment->save();
 
         // log the activity

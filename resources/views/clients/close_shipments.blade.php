@@ -1,13 +1,13 @@
 @include('layouts.inc.header')
-@include('layouts.inc.sidebarNav')
+@include('layouts.inc.client_sidenav')
 <link rel="stylesheet" href="/css/admin-style.css" />
 
 <title>MFA Customs Brokerage</title>
 <div class="table">
     <div class="table-header">
-        <p>{{ $consignee->user->name }}</p>
+        <p>Shipments | {{Auth::user()->name}}</p>
         <div>
-            <a href="{{ route('open_shipment', $consignee->id) }}">
+            <a href="{{route('consignee_open_shipment')}}">
                 <button class="btn btn-success"><i class="fa fa-folder-plus"></i> Open Shipments</button>
             </a>
         </div>
@@ -29,7 +29,7 @@
         </thead>
         <tbody>
             @foreach ($shipments as $shipment)
-                @if ($shipment->consignee_name == $consignee->user->name)
+                @if ($shipment->consignee_name == Auth::user()->name)
                     <tr class="text-center">
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $shipment->consignee_name }}</td>
@@ -38,7 +38,6 @@
                         <td>{{ $shipment->delivered_date }}</td>
                         <td>{{ $shipment->delivery_status }}</td>
                         <td class="text-center col-1">
-                            @include('admin.clientPanel.view_close_shipments')
                         </td>
                     </tr>
                 @endif

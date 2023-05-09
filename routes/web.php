@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ConsigneeController;
@@ -8,6 +10,7 @@ use App\Http\Controllers\ShipmentController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\ChatBotController;
+
 
 /*
 |--------------------------------------------------------------------------

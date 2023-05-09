@@ -20,9 +20,9 @@
         <tr>
             <th class="text-center">S.N.</th>
             <th class="text-center">Consignees</th>
-            <th class="text-center">Arrival</th>
+            <th class="text-center">Arrival Date</th>
             <th class="text-center">Predicted Delivery Date</th>
-            <th class="text-center">Delivery Status</th>
+            <th class="text-center">Actual Delivery Date</th>
             <th class="text-center">Option</th>
         </tr>
       </thead>
@@ -32,8 +32,8 @@
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $shipment->consignee_name }}</td>
                     <td>{{ $shipment->arrival_date }}</td>
-                    <td>{{ $shipment->predicted_delivery_date }}</td>
-                    <td>{{ $shipment->delivery_status }}</td>
+                    <td>{{ $shipment->predicted_delivery_dates }}</td>
+                    <td>{{ $shipment->delivered_date }}</td>
                     <td  class="text-center col-1">
                         @include('admin.clientPanel.view_close_shipments')
                     </td>
