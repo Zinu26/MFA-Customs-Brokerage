@@ -13,19 +13,21 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('activity_logs', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->morphs('loggable', 0);
-            $table->string('activity');
-            $table->json('changes')->nullable();
-            $table->timestamps();
+        if (!Schema::hasTable('activity_logs')) {
+            Schema::create('activity_logs', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('user_id');
+                $table->morphs('loggable', 0);
+                $table->string('activity');
+                $table->json('changes')->nullable();
+                $table->timestamps();
 
-            $table->foreign('user_id')
-                  ->references('id')
-                  ->on('users')
-                  ->onDelete('cascade');
-        });
+                $table->foreign('user_id')
+                    ->references('id')
+                    ->on('users')
+                    ->onDelete('cascade');
+            });
+        }
     }
 
     /**
@@ -35,6 +37,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('activity_log');
+        Schema::dropIfExists('activity_logs');
     }
 };

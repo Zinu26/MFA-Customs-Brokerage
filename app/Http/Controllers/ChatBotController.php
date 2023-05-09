@@ -9,6 +9,7 @@ use OpenAI\Laravel\Facades\OpenAI;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Shipment;
+use App\Models\FAQ;
 
 class ChatBotController extends Controller
 {
@@ -29,6 +30,11 @@ class ChatBotController extends Controller
 
     public function sendChat(Request $request)
     {
+        $selectedFaq = $request->input('input');
+        $faq = FAQ::where('question', $selectedFaq)->first();
+        $answer = $faq ? $faq->answer : "Sorry, the answer is not available.";
+        return response()->json(['answer' => $answer]);
+
         $input = $request->input;
         if (strpos(strtolower($input), 'shipments') !== false) {
             if (strpos(strtolower($input), 'details') !== false) {
@@ -129,4 +135,10 @@ class ChatBotController extends Controller
 
     //     return $response;
     // }
+
+    public function home()
+    {
+        $faqs = Faq::all();
+        return view('landing', compact('faqs'));
+    }
 }
