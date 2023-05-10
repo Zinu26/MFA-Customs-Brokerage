@@ -37,17 +37,17 @@
             </div></br>
             <div class="input-group">
               <span class="input-group-text" style="background-color: #4EA646; font-weight: 600; color: white;">Date Added</span>
-              <input value="{{$user->employee->created_at}}" name="birthdate" placeholder="Date Added" aria-label="Date Added" class="form-control">
+              <input value="{{date('Y-m-d h:i:s A', strtotime($user->employee->created_at))}}" placeholder="Date Added" aria-label="Date Added" class="form-control">
             </div></br>
             @if($user->isArchived == false)
                 <div class="input-group">
                 <span class="input-group-text" style="background-color: #4EA646; font-weight: 600; color: white;">Date Updated</span>
-                <input value="{{$user->employee->updated_at}}" name="birthdate" placeholder="Date Updated" aria-label="Date Updated" class="form-control">
+                <input value="{{date('Y-m-d h:i:s A', strtotime($user->employee->updated_at))}}" placeholder="Date Updated" aria-label="Date Updated" class="form-control">
                 </div></br>
             @elseif($user->isArchived == true)
                 <div class="input-group">
                 <span class="input-group-text" style="background-color: #4EA646; font-weight: 600; color: white;">Date Archived</span>
-                <input value="{{$user->employee->updated_at}}" name="birthdate" placeholder="Date Updated" aria-label="Date Updated" class="form-control">
+                <input value="{{date('Y-m-d h:i:s A', strtotime($user->employee->updated_at))}}" placeholder="Date Updated" aria-label="Date Updated" class="form-control">
                 </div></br>
             @endif
           </div>

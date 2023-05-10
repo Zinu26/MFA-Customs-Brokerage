@@ -28,7 +28,7 @@
             </section>
         </div>
 
-        @include ('chatbot.bot')
+        @include ('bot')
     </body>
 </html>
 

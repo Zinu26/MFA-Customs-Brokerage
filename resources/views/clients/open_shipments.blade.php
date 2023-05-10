@@ -2,10 +2,10 @@
 @include('layouts.inc.client_sidenav')
 <link rel="stylesheet" href="/css/admin-style.css" />
 
-<title>MFA Customs Brokerage</title>
-<div class="table">
+<title>MFA Customs Brokerage | {{Auth::user()->name}}</title>
+<div class="table"></div>
     <div class="table-header">
-      <p>Shipments</p>
+      <p>Shipments | {{Auth::user()->name}}</p>
       <div>
         <a href="{{route('consignee_close_shipment')}}">
             <button class="btn btn-danger"><i class="fa fa-folder-minus"></i> Close Shipments</button>

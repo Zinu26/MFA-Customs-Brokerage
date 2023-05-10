@@ -108,14 +108,12 @@ class UserController extends Controller
             'contact' => 'required',
             'email' => 'required|email',
             'username' => 'required',
-            'password' => 'required|min:8'
         ]);
 
         // Update the user table data
         $user = User::find($id);
         $user->name = $validatedData['name'];
-        $user->username = $validatedData['username'];
-        $user->password = bcrypt($validatedData['password']);
+        $user->email = $validatedData['email'];
         $user->save();
 
         // Update the employee table data
@@ -123,7 +121,6 @@ class UserController extends Controller
         $employee->position = $validatedData['position'];
         $employee->birthdate = $validatedData['birthdate'];
         $employee->contact_number = $validatedData['contact'];
-        $employee->email = $validatedData['email'];
         $employee->save();
 
         return redirect()->back()->with('success', 'Employee details have been updated successfully.');

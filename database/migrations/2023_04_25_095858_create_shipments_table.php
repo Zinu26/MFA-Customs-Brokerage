@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('item_description');
             $table->string('weight');
             $table->string('bl_number');
+            $table->string('entry_number');
             $table->string('shipping_line');
             $table->string('do_status');
             $table->string('shipment_status');

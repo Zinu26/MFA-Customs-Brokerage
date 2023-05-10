@@ -7,6 +7,7 @@
     "require": {
         "php": "^8.2",
         "consoletvs/charts": "*",
+        "google/cloud-dialogflow": "*",
         "guzzlehttp/guzzle": "^7.5",
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^2.14.1",

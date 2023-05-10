@@ -2,7 +2,7 @@
 @include('layouts.inc.client_sidenav')
 @include('layouts.inc.message')
 
-<title>MFA Customs Brokerage</title>
+<title>MFA Customs Brokerage | {{ Auth::user()->name }}</title>
 
 <section id="content">
     <main>
@@ -10,6 +10,8 @@
             <div class="left">
                 <h1>Dashboard</h1>
             </div>
+            {{-- toggle on/off --}}
+            <button><i class="fas fa-bell"></i></button>
         </div>
 
         <ul class="box-info">
@@ -32,8 +34,9 @@
         <div class="table-data">
             <div class="order">
                 <div class="head">
-                    <h3>Recent Shipments</h3>
-                    <button class="btn btn-sm btn-primary"><i class='fa fa-eye'></i> View</button>
+                    <h3>Recent Shipments | {{ Auth::user()->name }}</h3>
+                    <a href="{{ route('consignee_open_shipment') }}"><button class="btn btn-sm btn-primary"><i
+                                class='fa fa-eye'></i> View</button></a>
                     <i class='bx bx-filter'></i>
                 </div>
                 <table>
@@ -43,7 +46,6 @@
                             <th>Arrival Date</th>
                             <th>Delivery Date</th>
                             <th>Shipping Line</th>
-                            {{-- <th>Port of Origin</th> --}}
                         </tr>
                     </thead>
                     <tbody>

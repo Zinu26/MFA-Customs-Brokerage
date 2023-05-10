@@ -78,21 +78,27 @@
 
         <ul class="box-info">
             <li>
-                <i class='fa fa-users mb-2' style="font-size: 50px; color:cornflowerblue;"></i>
+                <a href="{{ route('client_list') }}">
+                    <i class='fa fa-users mb-2' style="font-size: 50px; color:cornflowerblue;"></i>
+                </a>
                 <span class="text">
                     <h3>{{ \App\Models\User::where('type', 2)->count() }}</h3>
                     <p>Consignees</p>
                 </span>
             </li>
             <li>
-                <i class='fa fa-truck mb-2' style="font-size: 50px; color:goldenrod;"></i>
+                <a href="{{ route('shipments') }}"><i class='fa fa-truck mb-2'
+                        style="font-size: 50px; color:goldenrod;"></i>
+                </a>
                 <span class="text">
                     <h3>{{ \App\Models\Shipment::all()->count() }}</h3>
                     <p>In Process Shipments</p>
                 </span>
             </li>
             <li>
-                <i class='fa fa-circle-check mb-2' style="font-size: 50px; color:springgreen;"></i>
+                <a href="{{ route('close_shipments') }}">
+                    <i class='fa fa-circle-check mb-2' style="font-size: 50px; color:springgreen;"></i>
+                </a>
                 <span class="text">
                     <h3>{{ \App\Models\Dataset::all()->count() }}</h3>
                     <p>Closed Shipments</p>

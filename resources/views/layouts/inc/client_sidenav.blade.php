@@ -15,7 +15,7 @@
                 class="tooltip">Dashboard</span></li>
         <li><a href="{{route('consignee_open_shipment')}}"><i class="fas fa-truck"></i><span class="nav-item">Shipments</span></a><span
                 class="tooltip">Shipments</span></li>
-        <li><a href=""><i class="fas fa-bell"></i><span class="nav-item">Notifications</span></a><span
+        <li><a href="{{route('notification')}}"><i class="fas fa-bell"></i><span class="nav-item">Notifications</span></a><span
                 class="tooltip">Notifications</span></li>
         <li><a href="{{ route('logout_client') }}" class="logout"><i class="fas fa-power-off"></i><span
                     class="nav-item">Logout</span></a></li>

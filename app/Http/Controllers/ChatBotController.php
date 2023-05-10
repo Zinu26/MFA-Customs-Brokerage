@@ -9,6 +9,7 @@ use OpenAI\Laravel\Facades\OpenAI;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Shipment;
+use App\Models\FAQ;
 
 class ChatBotController extends Controller
 {
@@ -27,8 +28,21 @@ class ChatBotController extends Controller
     //     return $response;
     // }
 
+    public function home()
+    {
+        $faqs = Faq::all();
+
+        return view('landing', compact('faqs'));
+    }
+
     public function sendChat(Request $request)
     {
+
+        // $selectedFaq = $request->input('input');
+        // $faq = FAQ::where('question', $selectedFaq)->first();
+        // $answer = $faq ? $faq->answer : "Sorry, the answer is not available.";
+        // return response()->json(['answer' => $answer]);
+
         $input = $request->input;
         if (strpos(strtolower($input), 'shipments') !== false) {
             if (strpos(strtolower($input), 'details') !== false) {
@@ -68,6 +82,29 @@ class ChatBotController extends Controller
         ];
         $response = $responses[array_rand($responses)];
         return $response;
+
+
+        $selectedFaq = $request->input('faq');
+        $faq = FAQ::where('question', $selectedFaq)->first();
+        $answer = '';
+        if ($faq) {
+            if ($faq->question == 'How much is your rate?') {
+                // choose one of the answers for this question randomly or based on some criteria
+                $answers = [
+                    'The determination of the rate is contingent upon specific shipment details, including but not limited to the number of items, sizes, and contents. Such rate is typically discussed and agreed upon in a meeting involving MFA and the consignee.',
+                    'Rate determination is subject to various shipment specifics such as contents, number, and size. A meeting with the consignee and MFA typically settles the rate.',
+                    'The rate is determined based on shipment details such as contents, number, and size. MFA and the consignee usually meet to discuss and agree on the rate.',
+                    'To determine the rate, shipment specifics such as number, size, and contents are considered. MFA and the consignee generally meet to decide on the rate.',
+                    'A meeting between MFA and the consignee usually determines the rate based on shipment details like contents, number, and size.'
+                ];
+                $answer = $answers[array_rand($answers)];
+            } else {
+                $answer = $faq->answer;
+            }
+        } else {
+            $answer = "Sorry, the answer is not available.";
+        }
+        return response()->json(['answer' => $answer]);
 
         // // Send the user's input to OpenAI for processing
         // $result = OpenAI::completions()->create([
@@ -129,4 +166,6 @@ class ChatBotController extends Controller
 
     //     return $response;
     // }
+
+
 }

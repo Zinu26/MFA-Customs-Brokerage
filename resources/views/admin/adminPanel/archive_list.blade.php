@@ -32,7 +32,7 @@
                 <tr class="text-center">
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $user->name }}</td>
-                    <td>{{ $user->updated_at }}</td>
+                    <td>{{ date('Y-m-d h:i:s A', strtotime($user->updated_at)) }}</td>
                     <td>{{ $user->username }}</td>
                     <td class="text-center">
                         @include('admin.adminPanel.restore')

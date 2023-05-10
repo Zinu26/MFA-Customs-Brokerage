@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ConsigneeController;
@@ -8,6 +10,7 @@ use App\Http\Controllers\ShipmentController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\ChatBotController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -24,11 +27,9 @@ use App\Http\Controllers\ChatBotController;
 //     return view('landing');
 // });
 
-Route::get('/', function () {
-    return view('landing');
-});
+Route::get('/', [ChatbotController::class, 'home'])->name('landing');
 
-Route::post('send', [ChatBotController::class, 'sendChat']);
+Route::post('send', [ChatBotController::class, 'sendChat'])->name('sendChat');
 
 Route::prefix('admin')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index']);
@@ -105,3 +106,8 @@ Route::controller(ShipmentController::class)->group(function () {
     Route::post('/admin/update_shipments/{id}', 'edit')->name('edit_shipment');
     Route::get('/admin/close_shipments', 'close_shipment')->name('close_shipments');
 });
+
+
+Route::get('/client/notification', function(){
+    return view('clients.notification');
+})->name('notification');
