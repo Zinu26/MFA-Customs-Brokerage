@@ -65,15 +65,28 @@
                                 name="process_ended" placeholder="Process End" aria-label="Process End"
                                 class="form-control">
                         </div></br>
+                        {{-- Delivered Date --}}
+                        <div class="input-group">
+                            <span class="input-group-text"
+                                style="background-color: #4EA646; font-weight: 600; color: white;">Delivered Date</span>
+                            <input type="date" name="delivered_date"
+                                @if ($shipment->delivered_date != null) value="{{ $shipment->delivered_date }}" @endif
+                                class="form-control">
+                        </div></br>
+
                         <div class="input-group">
                             <span class="input-group-text"
                                 style="background-color: #4EA646; font-weight: 600; color: white;">Port of origin</span>
                             {{-- <input type="date" @if ($shipment->port_of_origin != null) value="{{$shipment->port_of_origin}}"  readonly @endif name="port_of_origin" placeholder="Port of origin" aria-label="Port of origin" class="form-control"> --}}
                             <select class="form-control" id="port_of_origin{{ $shipment->id }}" name="port_of_origin">
                                 <option value="" disabled selected>---Select---</option>
-                                <option value="MANILA NORTH PORT, PHILIPPINES" {{ $shipment->port_of_origin == 'MANILA NORTH PORT, PHILIPPINES' ? 'selected' : '' }}>MANILA NORTH PORT, PHILIPPINES
+                                <option value="MANILA NORTH PORT, PHILIPPINES"
+                                    {{ $shipment->port_of_origin == 'MANILA NORTH PORT, PHILIPPINES' ? 'selected' : '' }}>
+                                    MANILA NORTH PORT, PHILIPPINES
                                 </option>
-                                <option value="MANILA SOUTH PORT, PHILIPPINES" {{ $shipment->port_of_origin == 'MANILA SOUTH PORT, PHILIPPINES' ? 'selected' : '' }}>MANILA SOUTH PORT, PHILIPPINES
+                                <option value="MANILA SOUTH PORT, PHILIPPINES"
+                                    {{ $shipment->port_of_origin == 'MANILA SOUTH PORT, PHILIPPINES' ? 'selected' : '' }}>
+                                    MANILA SOUTH PORT, PHILIPPINES
                                 </option>
                             </select>
                         </div></br>
@@ -81,7 +94,8 @@
                             <span class="input-group-text"
                                 style="background-color: #4EA646; font-weight: 600; color: white;">Destination
                                 Address</span>
-                            <input type="text" readonly name="destination_address" value="{{$shipment->destination_address}}" placeholder="Destination Address"
+                            <input type="text" readonly name="destination_address"
+                                value="{{ $shipment->destination_address }}" placeholder="Destination Address"
                                 aria-label="Destination Address" class="form-control">
                         </div></br>
                         <div class="row">
@@ -126,8 +140,11 @@
                             </div>
                             <div class="form-group col-md-3">
                                 <label for="deliveryStatus{{ $shipment->id }}">Delivery Status</label>
-                                <input type="text"  name="delivery_status" @if($shipment->process_started != null) value="On Going" @endif @if($shipment->delivered_date != null) value="Done" @endif value="{{$shipment->delivery_status}}" placeholder="Delivery Status"
-                                aria-label="Delivery Status" class="form-control" readonly>
+                                <input type="text" name="delivery_status"
+                                    @if ($shipment->process_started != null) value="On Going" @endif
+                                    @if ($shipment->delivered_date != null) value="Done" @endif
+                                    value="{{ $shipment->delivery_status }}" placeholder="Delivery Status"
+                                    aria-label="Delivery Status" class="form-control" readonly>
                             </div>
                         </div>
                     </div>

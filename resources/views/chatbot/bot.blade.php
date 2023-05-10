@@ -154,7 +154,7 @@
             success: function(data) {
                 $('#content-box').append(`<div class="d-flex mb-2">
             <div class="mr-2" style="width: 65px; height: 55px;">
-                <img src="images/bot-avatar.jpg" width="100%"
+                <img src="/images/bot-avatar.jpg" width="100%"
                     height="100%" style="border-radius: 50px;">
             </div>
             <div class="text-white px-3 py-2"

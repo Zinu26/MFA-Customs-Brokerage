@@ -32,14 +32,14 @@
         </div>
         <div class="container-fluid w-100 px-3 py-2 d-flex" style="background: #29924c; height: 62px;">
             <div class="mr-2 pl-2" style="background: #ffffff1c; width: calc(100% - 45px); border-radius: 5px;">
-                <select id="input" name="faq" class="text-black"
-                    style="background: none; width:100%; height: 100%; border: 0; outline: none;">
-                    <option value="" class="text-center" disabled selected>--------SELECT FAQ--------</option>
+                <select id="input" name="faq" class="text-black" style="background: none; width:100%; height: 100%; border: 0; outline: none;">
+                    <option value="" class="text-center" disabled selected>--------SELECT QUESTION--------</option>
                     @foreach ($faqs as $faq)
                         <option value="{{ $faq->answer }}">{{ $faq->question }}</option>
                     @endforeach
                 </select>
             </div>
+
             <div id="button-submit" class="text-center"
                 style="background: #146b31; height: 100%; width: 50px; border-radius: 5px; cursor: pointer;">
                 <i class="fa fa-paper-plane text-white" aria-hidden="true" style="line-height: 45px;"></i>
@@ -78,7 +78,7 @@
 
         $.ajax({
             type: 'post',
-            url: '{{ url('send') }}',
+            url: '{{ route('sendChat') }}',
             data: {
                 'input': $value
             },
@@ -99,12 +99,6 @@
     const chatbotWindow = document.getElementById("chatbot-window");
     const chatbotCloseBtn = document.getElementById("chatbot-close-btn");
 
-    function addMessageToChatbotBody(messageElement) {
-        chatbotBody.appendChild(messageElement);
-        chatbotBody.style.height = `${chatbotBody.scrollHeight}px`;
-        chatbotBody.scrollTop = chatbotBody.scrollHeight;
-    }
-
     // Event listener for chatbot toggle button
     chatbotToggle.addEventListener("click", () => {
         if (chatbotWindow.style.display === "none") {
@@ -120,20 +114,3 @@
         chatbotWindow.style.display = "none";
     });
 </script>
-
-
-{{-- For Testing purposes
-    // Mock backend response
-    function mockBackendResponse(userInput) {
-    const response = "You said: " + userInput;
-    return Promise.resolve({ body: { response } });
-    }
-
-    // Function to send user input to mock backend and get chatbot response
-    function sendUserInputToBackend(userInput) {
-    mockBackendResponse(userInput).then((response) => {
-        const chatbotResponse = response.body.response;
-        const chatbotMessageElement = createChatbotMessageElement(chatbotResponse);
-        addMessageToChatbotBody(chatbotMessageElement);
-    });
-    } --}}

@@ -29,7 +29,7 @@ use App\Http\Controllers\ChatBotController;
 
 Route::get('/', [ChatbotController::class, 'home'])->name('landing');
 
-Route::post('send', [ChatBotController::class, 'sendChat']);
+Route::post('send', [ChatBotController::class, 'sendChat'])->name('sendChat');
 
 Route::prefix('admin')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index']);
@@ -106,3 +106,8 @@ Route::controller(ShipmentController::class)->group(function () {
     Route::post('/admin/update_shipments/{id}', 'edit')->name('edit_shipment');
     Route::get('/admin/close_shipments', 'close_shipment')->name('close_shipments');
 });
+
+
+Route::get('/client/notification', function(){
+    return view('clients.notification');
+})->name('notification');

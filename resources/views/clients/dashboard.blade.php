@@ -10,6 +10,8 @@
             <div class="left">
                 <h1>Dashboard</h1>
             </div>
+            {{-- toggle on/off --}}
+            <button><i class="fas fa-bell"></i></button>
         </div>
 
         <ul class="box-info">
