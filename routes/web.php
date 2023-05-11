@@ -109,6 +109,8 @@ Route::controller(ShipmentController::class)->group(function () {
     Route::post('/admin/shipments', 'add')->name('add_shipment');
     Route::post('/admin/update_shipments/{id}', 'edit')->name('edit_shipment');
     Route::get('/admin/close_shipments', 'close_shipment')->name('close_shipments');
+    Route::post('/upload-files', 'uploadFiles')->name('upload_files');
+    Route::get('/files/{id}', 'download')->name('download_file');
 });
 
 

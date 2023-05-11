@@ -7,6 +7,7 @@ use App\Models\Shipment;
 use App\Models\Consignee;
 use App\Models\User;
 use App\Models\Dataset;
+use App\Models\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -21,7 +22,8 @@ class ShipmentController extends Controller
         $shipments = Shipment::all();
         $users = User::where('type', 2)->with('consignee')->get();
         $shipping_lines = DB::table('datasets')->pluck('shipping_line')->unique();
-        return view('admin.shipmentPanel.index', compact('shipments', 'users', 'shipping_lines'));
+        $files = File::all();
+        return view('admin.shipmentPanel.index', compact('shipments', 'users', 'shipping_lines', 'files'));
     }
 
     function close_shipment()
@@ -162,9 +164,41 @@ class ShipmentController extends Controller
                 'bl_number' => $shipment->bl_number,
                 'entry_number' => $shipment->entry_number,
                 'arrival' => Carbon::parse($shipment->arrival)->format('F d, Y'),
+                'do_status' => $shipment->do_status,
+                'billing_status' => $shipment->billing_status,
+                'shipment_status' => $shipment->shipment_status,
             ]);
         } else {
-            return response()->json(['message' => 'No Data Found!']);
+            return response()->json(['message' => 'Sorry, your tracking attempt was unsuccessful! Please check your tracking number and try again']);
         }
+    }
+
+    public function uploadFiles(Request $request)
+    {
+        $shipment_id = $request->input('id');
+        $files = $request->file('files');
+
+        foreach ($files as $file) {
+                $filename = $file->getClientOriginalName();
+                $size = $file->getSize();
+                $location = $file->store('public/files');
+
+                $fileData = new File();
+                $fileData->shipment_id = $shipment_id;
+                $fileData->name = $filename;
+                $fileData->size = $size;
+                $fileData->location = $location;
+                $fileData->save();
+        }
+
+        return redirect()->back()->with('success', 'Files uploaded successfully.');
+    }
+
+    public function download($id)
+    {
+        $file = File::findOrFail($id);
+        $path = Storage::url($file->location);
+
+        return response()->download(public_path($path), $file->name);
     }
 }
