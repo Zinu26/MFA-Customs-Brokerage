@@ -1,6 +1,6 @@
 @include('layouts.inc.header')
 @include('layouts.inc.topbarNav')
-
+<link rel="stylesheet" href="/css/style.css" />
 <link rel="stylesheet" href="/css/service.css">
 <title>MFA Customs Brokerage</title>
 
@@ -14,5 +14,3 @@
 Throughout the years, MFA has been known for its good reputation from its clients from different industries. In 2012, the company managed to expand its business through venturing into trucking services. It now has five head truck trailers operating.</p>
     </div>
 </div>
-
-@include('chatbot.bot')

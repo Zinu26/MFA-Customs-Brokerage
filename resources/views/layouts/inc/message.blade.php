@@ -2,7 +2,8 @@
     .notification {
         position: fixed;
         top: 20px;
-        left: 120px; /* changed from "right" */
+        left: 120px;
+        /* changed from "right" */
         padding: 10px;
         border-radius: 5px;
         font-size: 16px;
@@ -37,19 +38,19 @@
 
 @if (session()->has('success'))
     <div class="notification success" id="notification">
-        {{ session()->get('success') }}
+        <i class="fa-sharp fa-solid fa-circle-check"></i> {{ session()->get('success') }}
     </div>
 @endif
 
 @if (session()->has('error'))
     <div class="notification error" id="notification">
-        {{ session()->get('error') }}
+        <i class="fa-sharp fa-solid fa-circle-exclamation"></i> {{ session()->get('error') }}
     </div>
 @endif
 
 @if (session()->has('warning'))
     <div class="notification warning" id="notification">
-        {{ session()->get('warning') }}
+        <i class="fa-sharp fa-solid fa-triangle-exclamation"></i> {{ session()->get('warning') }}
     </div>
 @endif
 

@@ -1,138 +1,164 @@
 @import url('https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap');
-    *{
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Poppins', sans-serif;
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+:root {
+    --body-color: #E4E9f7;
+    --nav-color: #12171e;
+    --text-color: #fff;
+    --search-text: #010718;
+}
+
+body {
+    height: 100vh;
+    background-color: var(--body-color);
+}
+
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 70px;
+    width: 100%;
+    background-color: var(--nav-color);
+    z-index: 100;
+}
+
+nav .nav-bar {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    background-color: var(--nav-color);
+    margin: 0 auto;
+    padding: 0 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+nav .nav-bar .sidebarOpen {
+    color: var(--text-color);
+    font-size: 25px;
+    padding: 5px;
+    cursor: pointer;
+    display: none;
+}
+
+.menu .logo-toggle {
+    display: none;
+}
+
+.nav-bar .nav-links {
+    display: flex;
+    align-items: center;
+}
+
+.nav-bar .nav-links li {
+    margin: 0 5px;
+    list-style: none;
+}
+
+.nav-links li a {
+    position: relative;
+    font-size: 17px;
+    font-weight: 400;
+    color: var(--text-color);
+    text-decoration: none;
+    padding: 20px;
+}
+
+.nav-links li a::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(50%);
+    height: 6px;
+    width: 6px;
+    border-radius: 50%;
+    background-color: var(--text-color);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.nav-links li:hover a::before {
+    opacity: 1;
+}
+
+/* New styles for the search bar */
+.nav-links form {
+    display: flex;
+    align-items: center;
+}
+
+.nav-links input[type="text"] {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--search-text);
+    color: var(--text-color);
+    font-size: 16px;
+    margin-right: 5px;
+}
+
+.nav-links button[type="submit"] {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--nav-color);
+    color: var(--text-color);
+    font-size: 16px;
+    cursor: pointer;
+}
+
+@media (max-width: 790px) {
+
+    nav .nav-bar .sidebarOpen {
+        display: block;
     }
 
-    :root{
-        --body-color: #E4E9f7;
-        --nav-color: #12171e;
-        --text-color: #fff;
-        --search-text: #010718;
-    }
-
-    body{
-        height: 100vh;
-        background-color: var(--body-color);
-    }
-
-    nav{
+    .menu {
         position: fixed;
-        top: 0;
-        left: 0;
-        height: 70px;
+        height: 100%;
         width: 100%;
+        left: -100%;
+        top: 0;
+        padding: 20px;
         background-color: var(--nav-color);
         z-index: 100;
+        transition: all 0.4s ease;
     }
 
-    nav .nav-bar{
-        position: relative;
-        height: 100%;
-        max-width: 1000px;
+    nav.active .menu {
+        left: -0%;
+    }
+
+    .menu .logo-toggle {
+        display: block;
         width: 100%;
-        background-color: var(--nav-color);
-        margin: 0 auto;
-        padding: 0 30px;
         display: flex;
         align-items: center;
         justify-content: space-between;
     }
 
-    nav .nav-bar .sidebarOpen{
+    .logo-toggle .sidebarClose {
         color: var(--text-color);
-        font-size: 25px;
-        padding: 5px;
+        font-size: 24px;
         cursor: pointer;
-        display: none;
     }
 
-    .menu .logo-toggle{
-        display: none;
+    .nav-bar .nav-links {
+        flex-direction: column;
+        padding-top: 30px;
     }
 
-    .nav-bar .nav-links{
-        display: flex;
-        align-items: center;
+    .nav-links li a {
+        display: block;
+        margin-top: 20px;
     }
-
-    .nav-bar .nav-links li{
-        margin: 0 5px;
-        list-style: none;
-    }
-
-    .nav-links li a{
-        position: relative;
-        font-size: 17px;
-        font-weight: 400;
-        color: var(--text-color);
-        text-decoration: none;
-        padding: 20px;
-    }
-
-    .nav-links li a::before{
-        content: '';
-        position: absolute;
-        left: 50%;
-        bottom: 0;
-        transform: translateX(50%);
-        height: 6px;
-        width: 6px;
-        border-radius: 50%;
-        background-color: var(--text-color);
-        opacity: 0;
-        transition: all 0.3s ease;
-    }
-
-    .nav-links li:hover a::before{
-        opacity: 1;
-    }
-
-    @media (max-width: 790px){
-
-        nav .nav-bar .sidebarOpen{
-            display: block;
-        }
-
-        .menu{
-            position: fixed;
-            height: 100%;
-            width: 100%;
-            left: -100%;
-            top: 0;
-            padding: 20px;
-            background-color: var(--nav-color);
-            z-index: 100;
-            transition: all 0.4s ease;
-        }
-
-        nav.active .menu{
-            left: -0%;
-        }
-
-        .menu .logo-toggle{
-            display: block;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .logo-toggle .sidebarClose{
-            color: var(--text-color);
-            font-size: 24px;
-            cursor: pointer;
-        }
-
-        .nav-bar .nav-links{
-            flex-direction: column;
-            padding-top: 30px;
-        }
-
-        .nav-links li a{
-            display: block;
-            margin-top: 20px;
-        }
-    }
+}

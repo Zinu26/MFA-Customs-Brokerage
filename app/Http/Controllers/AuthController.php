@@ -35,13 +35,25 @@ class AuthController extends Controller
             $loginSuccessful = true;
             session()->flash('success', 'You have successfully logged in.');
 
-            // Create a new activity log record for this user
-            ActivityLog::create([
-                'user_id' => Auth::id(),
-                'loggable_id' => Auth::id(),
-                'loggable_type' => 'User',
-                'activity' => 'User logged in',
-            ]);
+            if (Auth::user()->type == '0') {
+                // Create a new activity log record for this user
+                ActivityLog::create([
+                    'user_id' => Auth::id(),
+                    'loggable_id' => Auth::id(),
+                    'loggable_type' => 'Admin',
+                    'activity' => 'Admin logged in',
+                ]);
+            }
+            else if (Auth::user()->type == '1') {
+                // Create a new activity log record for this user
+                ActivityLog::create([
+                    'user_id' => Auth::id(),
+                    'loggable_id' => Auth::id(),
+                    'loggable_type' => 'Employee',
+                    'activity' => 'Employee logged in',
+                ]);
+            }
+
 
             return redirect()->route('admin.dashboard');
         }
@@ -66,30 +78,34 @@ class AuthController extends Controller
         $tin = $request->input('tin');
 
         // Check if the email and tin exist in the consignees table
-        $consignee = Consignee::where('email', $email)
-            ->where('tin', $tin)
+        $user = User::where('email', $email)
+            ->first();
+        $consignee = Consignee::where('tin', $tin)
             ->first();
 
-        if (!$consignee) {
+        if (!$consignee && !$user) {
             session()->flash('failed', 'The provided credentials do not match our records.');
             return back()->withErrors(['login' => 'The provided credentials do not match our records.'])->withInput();
         }
 
         // The email and tin are correct, log the user in
-        if ($consignee) {
+        if ($consignee && $user) {
+            Auth::login($user); // log in the user
+
             session()->flash('success', 'You have successfully logged in.');
 
             // Create a new activity log record for this user
             ActivityLog::create([
-                'user_id' => $consignee->id,
+                'user_id' => Auth::user()->id, // get the authenticated user
                 'loggable_id' => $consignee->id,
                 'loggable_type' => 'Consignee',
                 'activity' => 'Consignee logged in',
             ]);
 
-            return redirect()->route('client.index');
+            return redirect()->route('client.dashboard');
         }
     }
+
 
 
     public function logout()
@@ -100,22 +116,42 @@ class AuthController extends Controller
         // Log out the user
         Auth::logout();
 
-        // Create a new activity log record for the user
-        ActivityLog::create([
-            'user_id' => $user->id,
-            'loggable_id' => $user->id,
-            'loggable_type' => 'User',
-            'activity' => 'User logged out',
-        ]);
+        if (Auth::user()->type == '0') {
+            // Create a new activity log record for this user
+            ActivityLog::create([
+                'user_id' => Auth::id(),
+                'loggable_id' => Auth::id(),
+                'loggable_type' => 'Admin',
+                'activity' => 'Admin logged out',
+            ]);
+        }
+        else if (Auth::user()->type == '1') {
+            // Create a new activity log record for this user
+            ActivityLog::create([
+                'user_id' => Auth::id(),
+                'loggable_id' => Auth::id(),
+                'loggable_type' => 'Employee',
+                'activity' => 'Employee logged out',
+            ]);
+        }
 
         return redirect()->route('login');
     }
 
     public function logout_client()
     {
+        $user = Auth::user();
+        $consignee = $user->consignee;
+
+        ActivityLog::create([
+            'user_id' => $user->id,
+            'loggable_id' => $consignee->id,
+            'loggable_type' => 'Consignee',
+            'activity' => 'Consignee logged out',
+        ]);
+
         Auth::logout();
-        session()->flash('success', 'You have successfully logged out.');
-        return redirect()->route('login.client');
+        return redirect()->route('login');;
     }
 
 

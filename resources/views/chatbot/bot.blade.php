@@ -6,12 +6,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"
         integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
 <div class="chatbot-wrapper">
     <button class="chatbot-toggle" id="chatbot-toggle">
-        <img src="images/chatbot.jpg" class="chatbot-img">
+        <img src="/images/chatbot.jpg" class="chatbot-img">
     </button>
     <div class="chatbot-window" id="chatbot-window">
         <div class="chatbot-header">
@@ -155,7 +154,7 @@
             success: function(data) {
                 $('#content-box').append(`<div class="d-flex mb-2">
             <div class="mr-2" style="width: 65px; height: 55px;">
-                <img src="images/bot-avatar.jpg" width="100%"
+                <img src="/images/bot-avatar.jpg" width="100%"
                     height="100%" style="border-radius: 50px;">
             </div>
             <div class="text-white px-3 py-2"

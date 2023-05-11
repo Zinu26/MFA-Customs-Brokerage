@@ -11,6 +11,12 @@ class Consignee extends Model
 
     protected $table = 'consignees';
 
-    protected $fillable = ['name', 'tin', 'contact', 'email', 'address'];
+    protected $fillable = ['user_id','name', 'tin', 'contact', 'address'];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
 
 }
