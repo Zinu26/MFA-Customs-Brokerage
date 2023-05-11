@@ -162,6 +162,9 @@ class ShipmentController extends Controller
                 'bl_number' => $shipment->bl_number,
                 'entry_number' => $shipment->entry_number,
                 'arrival' => Carbon::parse($shipment->arrival)->format('F d, Y'),
+                'do_status' => $shipment->do_status,
+                'billing_status' => $shipment->billing_status,
+                'shipment_status' => $shipment->shipment_status,
             ]);
         } else {
             return response()->json(['message' => 'No Data Found!']);
