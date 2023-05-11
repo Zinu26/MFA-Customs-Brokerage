@@ -12,7 +12,7 @@
             <form action="{{ route('edit_admin', $user->id) }}" method="POST">
                 @csrf
                 <div class="modal-body">
-                    <input type="hidden" name="id" value="<{{ $user->id }}" />
+                    <input type="hidden" name="id" value="{{ $user->id }}" />
                     <input type="hidden" name="type" value="{{ $user->type }}" />
                     <div class="input-group">
                         <span class="input-group-text"
@@ -29,7 +29,7 @@
                     <div class="input-group">
                         <span class="input-group-text"
                             style="background-color: #4EA646; font-weight: 600; color: white;">Email</span>
-                        <input type="text" name="email" placeholder="{{ $user->email }}" aria-label="Email"
+                        <input type="text" name="email" value="{{ $user->email }}" aria-label="Email"
                             class="form-control" required>
                     </div></br>
                 </div>

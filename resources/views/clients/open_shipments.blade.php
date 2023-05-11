@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="/css/admin-style.css" />
 
 <title>MFA Customs Brokerage | {{Auth::user()->name}}</title>
-<div class="table"></div>
+<div class="table">
     <div class="table-header">
       <p>Shipments | {{Auth::user()->name}}</p>
       <div>

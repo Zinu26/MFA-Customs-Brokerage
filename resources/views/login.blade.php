@@ -48,7 +48,7 @@
             {{-- <a href="#">Forgot Password</a> --}}
             <a href="{{route('login.client')}}">Login as Client</a>
         </div>
-        <input type="submit" name="login" value="Login">
+        <input type="submit" name="login" value="Login"> 
     </form>
 </div>
 

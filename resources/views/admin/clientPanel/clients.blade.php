@@ -5,53 +5,54 @@
 
 <div class="table">
     <div class="table-header">
-      <p>Consignees</p>
-      <div>
-        <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#exampleModal"><i
-            class="fa fa-user-plus"></i> Add Consignee</button>
-        <a href="{{route('consignee_archive_list')}}">
-            <button class="btn btn-danger"><i class="fa fa-folder-minus"></i> Archive</button>
-        </a>
-      </div>
+        <p>Consignees</p>
+        <div>
+            <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#exampleModal"><i
+                    class="fa fa-user-plus"></i> Add Consignee</button>
+            <a href="{{ route('consignee_archive_list') }}">
+                <button class="btn btn-danger"><i class="fa fa-folder-minus"></i> Archive</button>
+            </a>
+        </div>
     </div>
-  </div>
+</div>
 
-  @include('layouts.inc.message')
+@include('layouts.inc.message')
 
-  <div id="content">
+<div id="content">
     <table id="datatableid" class="table table-bordered table-dark">
-      <thead>
-        <tr>
-          <th class="text-center">S.N.</th>
-          <th class="text-center">Name of Consignee</th>
-          <th class="text-center">TIN Number</th>
-          <th class="text-center">Email</th>
-          <th class="text-center">Address</th>
-          <th class="text-center">Operation</th>
-        </tr>
-      </thead>
-      <tbody>
-        @foreach($clients as $client)
-            @if($client->status == false)
-                <tr class="text-center">
-                    <td>{{ $loop->iteration }}</td>
-                    <td><a href="{{route('open_shipment', $client->id)}}" style="text-decoration: none; color:#fff;">{{ $client->user->name }}</a></td>
-                    <td>{{ $client->tin }}</td>
-                    <td>{{ $client->user->email }}</td>
-                    <td>{{ $client->address }}</td>
-                    <td  class="text-center col-2">
-                        @include('admin.clientPanel.view')
-                        @include('admin.clientPanel.edit')
-                        @include('admin.clientPanel.archive')
-                    </td>
-                </tr>
-            @endif
-        @endforeach
-      </tbody>
+        <thead>
+            <tr>
+                <th class="text-center">S.N.</th>
+                <th class="text-center">Name of Consignee</th>
+                <th class="text-center">TIN Number</th>
+                <th class="text-center">Email</th>
+                <th class="text-center">Address</th>
+                <th class="text-center">Operation</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($clients as $client)
+                @if ($client->status == false)
+                    <tr class="text-center">
+                        <td>{{ $loop->iteration }}</td>
+                        <td><a href="{{ route('open_shipment', $client->id) }}"
+                                style="text-decoration: none; color:#fff;">{{ $client->user->name }}</a></td>
+                        <td>{{ $client->tin }}</td>
+                        <td>{{ $client->user->email }}</td>
+                        <td>{{ $client->address }}</td>
+                        <td class="text-center col-2">
+                            @include('admin.clientPanel.view')
+                            @include('admin.clientPanel.edit')
+                            @include('admin.clientPanel.archive')
+                        </td>
+                    </tr>
+                @endif
+            @endforeach
+        </tbody>
     </table>
-  </div>
+</div>
 
-  <!--Add modal-->
+<!--Add modal-->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
@@ -64,27 +65,42 @@
                     <div class="input-group">
                         <span class="input-group-text"
                             style="background-color: #4EA646; font-weight: 600; color: white;">Name of Consignee</span>
-                            <input type="text" name="name" id="name" class="form-control" placeholder="Name" required>
+                        <input type="text" name="name" id="name" class="form-control" placeholder="Name"
+                            required>
                     </div></br>
                     <div class="input-group">
                         <span class="input-group-text"
                             style="background-color: #4EA646; font-weight: 600; color: white;">TIN Number</span>
-                            <input type="text" name="tin" id="tin" class="form-control" placeholder="TIN Number" required>
+                        <input type="text" name="tin" id="tin"
+                            class="form-control @error('tin') is-invalid @enderror" placeholder="TIN Number" required>
+                        @error('tin')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
                     </div></br>
                     <div class="input-group">
                         <span class="input-group-text"
                             style="background-color: #4EA646; font-weight: 600; color: white;">Contact Number</span>
-                            <input type="text" name="contact" id="contact" class="form-control" placeholder="Contact Number" required>
+                        <input type="text" name="contact" id="contact" class="form-control"
+                            placeholder="Contact Number" required>
                     </div></br>
                     <div class="input-group">
                         <span class="input-group-text"
                             style="background-color: #4EA646; font-weight: 600; color: white;">Email</span>
-                            <input type="email" name="email" id="email" class="form-control" placeholder="Email" required>
+                        <input type="text" name="email" placeholder="Email" aria-label="Email"
+                            class="form-control @error('email') is-invalid @enderror" required>
+                        @error('email')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
                     </div></br>
                     <div class="input-group">
                         <span class="input-group-text"
                             style="background-color: #4EA646; font-weight: 600; color: white;">Address</span>
-                            <input type="text" name="address" id="address" class="form-control" placeholder="Address" required>
+                        <input type="text" name="address" id="address" class="form-control" placeholder="Address"
+                            required>
                     </div></br>
                 </div>
                 <div class="modal-footer">
@@ -106,10 +122,9 @@
 </script>
 
 
-  <!--Search bar-->
-  <script>
-    $(document).ready( function () {
+<!--Search bar-->
+<script>
+    $(document).ready(function() {
         $('#datatableid').DataTable();
-    } );
-  </script>
-
+    });
+</script>

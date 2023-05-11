@@ -35,13 +35,25 @@ class AuthController extends Controller
             $loginSuccessful = true;
             session()->flash('success', 'You have successfully logged in.');
 
-            // Create a new activity log record for this user
-            ActivityLog::create([
-                'user_id' => Auth::id(),
-                'loggable_id' => Auth::id(),
-                'loggable_type' => 'User',
-                'activity' => 'User logged in',
-            ]);
+            if (Auth::user()->type == '0') {
+                // Create a new activity log record for this user
+                ActivityLog::create([
+                    'user_id' => Auth::id(),
+                    'loggable_id' => Auth::id(),
+                    'loggable_type' => 'Admin',
+                    'activity' => 'Admin logged in',
+                ]);
+            }
+            else if (Auth::user()->type == '1') {
+                // Create a new activity log record for this user
+                ActivityLog::create([
+                    'user_id' => Auth::id(),
+                    'loggable_id' => Auth::id(),
+                    'loggable_type' => 'Employee',
+                    'activity' => 'Employee logged in',
+                ]);
+            }
+
 
             return redirect()->route('admin.dashboard');
         }
@@ -104,13 +116,24 @@ class AuthController extends Controller
         // Log out the user
         Auth::logout();
 
-        // Create a new activity log record for the user
-        ActivityLog::create([
-            'user_id' => $user->id,
-            'loggable_id' => $user->id,
-            'loggable_type' => 'User',
-            'activity' => 'User logged out',
-        ]);
+        if (Auth::user()->type == '0') {
+            // Create a new activity log record for this user
+            ActivityLog::create([
+                'user_id' => Auth::id(),
+                'loggable_id' => Auth::id(),
+                'loggable_type' => 'Admin',
+                'activity' => 'Admin logged out',
+            ]);
+        }
+        else if (Auth::user()->type == '1') {
+            // Create a new activity log record for this user
+            ActivityLog::create([
+                'user_id' => Auth::id(),
+                'loggable_id' => Auth::id(),
+                'loggable_type' => 'Employee',
+                'activity' => 'Employee logged out',
+            ]);
+        }
 
         return redirect()->route('login');
     }

@@ -55,7 +55,7 @@ class ShipmentController extends Controller
         $log = new ActivityLog;
         $log->user_id = Auth::id();
         $log->loggable()->associate($shipment);
-        $log->activity = 'shipment_added';
+        $log->activity = 'Shipment Added';
         $log->changes = $shipment->toJson();
         $log->save();
 
