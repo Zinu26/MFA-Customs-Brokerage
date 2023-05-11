@@ -32,8 +32,10 @@
         </div>
         <div class="container-fluid w-100 px-3 py-2 d-flex" style="background: #29924c; height: 62px;">
             <div class="mr-2 pl-2" style="background: #ffffff1c; width: calc(100% - 45px); border-radius: 5px;">
-                <select id="input" name="faq" class="text-black" style="background: none; width:100%; height: 100%; border: 0; outline: none;">
-                    <option value="" class="text-center" disabled selected>--------SELECT QUESTION--------</option>
+                <select id="input" name="faq" class="text-black"
+                    style="background: none; width:100%; height: 100%; border: 0; outline: none;">
+                    <option value="" class="text-center" disabled selected>--------SELECT QUESTION--------
+                    </option>
                     @foreach ($faqs as $faq)
                         <option value="{{ $faq->answer }}">{{ $faq->question }}</option>
                     @endforeach
@@ -53,28 +55,36 @@
 <script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E="
     crossorigin="anonymous"></script>
 <script>
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    })
     $('#button-submit').on('click', function() {
         $value = $('#input').val();
         $('#faq-box').append(`<div class="mb-2">
-            <div class="float-right px-3 py-2" style="width: 270px; background: #5dd184; border-radius: 10px; float: right; font-size: 85%;"> ${$('#input option:selected').text()}</div>
-            <div style="clear: both;"></div>
-        </div>
+        <div class="float-right px-3 py-2" style="width: 270px; background: #5dd184; border-radius: 10px; float: right; font-size: 85%;"> ${$('#input option:selected').text()}</div>
+        <div style="clear: both;"></div>
+    </div>
 
-                    <div class="d-flex mb-2">
-                <div class="mr-2" style="width: 65px; height: 55px;">
-                    <img src="images/bot-avatar.jpg" width="100%"
-                        height="100%" style="border-radius: 50px;">
-                </div>
-                <div class="text-white px-3 py-2"
-                    style="width: 270px; background: #29924c; border-radius: 10px; font-size: 85%;">
-                    ` + $value + `
-                </div>
-                </div>`);
+                <div class="d-flex mb-2">
+            <div class="mr-2" style="width: 65px; height: 55px;">
+                <img src="images/bot-avatar.jpg" width="100%"
+                    height="100%" style="border-radius: 50px;">
+            </div>
+            <div class="text-white px-3 py-2"
+                style="width: 270px; background: #29924c; border-radius: 10px; font-size: 85%;">
+            </div>
+            </div>`);
+
+        let index = 0;
+        let messageBox = $('#faq-box .text-white:last');
+        let message = $value;
+
+        function appendLetter() {
+            if (index < message.length) {
+                messageBox.append(message.charAt(index));
+                index++;
+                setTimeout(appendLetter, 100); // delay between letters in milliseconds
+            }
+        }
+
+        setTimeout(appendLetter, 1000); // delay before starting in milliseconds
 
         $.ajax({
             type: 'post',

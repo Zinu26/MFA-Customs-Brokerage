@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('shipments', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
             $table->string('consignee_name');
             $table->date('arrival');
             $table->date('process_started')->nullable()->default;
@@ -35,7 +36,7 @@ return new class extends Migration
 
             $table->timestamps();
 
-            // $table->foreign('consignee_name')->references('name')->on('users')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('consignees')->onDelete('cascade');
         });
     }
 

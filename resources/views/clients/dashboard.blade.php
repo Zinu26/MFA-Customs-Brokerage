@@ -16,10 +16,17 @@
 
         <ul class="box-info">
             <li>
+                <i class='fa fa-clock mb-2' style="font-size: 50px; color:cornflowerblue;"></i>
+                <span class="text">
+                    <h3>{{ Auth::user()->shipments()->whereNotNull('process_started')->whereNull('process_finished')->count() }}</h3>
+                    <p>In Process Shipments</p>
+                </span>
+            </li>
+            <li>
                 <i class='fa fa-truck mb-2' style="font-size: 50px; color:goldenrod;"></i>
                 <span class="text">
-                    <h3>{{ Auth::user()->shipments()->count() }}</h3>
-                    <p>In Process Shipments</p>
+                    <h3>{{ Auth::user()->shipments()->whereNotNull('predicted_delivery_date')->count() }}</h3>
+                    <p>To Deliver Shipments</p>
                 </span>
             </li>
             <li>

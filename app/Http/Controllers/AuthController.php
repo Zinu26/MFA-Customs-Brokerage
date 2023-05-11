@@ -113,10 +113,9 @@ class AuthController extends Controller
         // Get the currently authenticated user
         $user = Auth::user();
 
-        // Log out the user
-        Auth::logout();
 
-        if (Auth::user()->type == '0') {
+
+        if ($user->type == 0) {
             // Create a new activity log record for this user
             ActivityLog::create([
                 'user_id' => Auth::id(),
@@ -125,7 +124,7 @@ class AuthController extends Controller
                 'activity' => 'Admin logged out',
             ]);
         }
-        else if (Auth::user()->type == '1') {
+        else if ($user->type == 1) {
             // Create a new activity log record for this user
             ActivityLog::create([
                 'user_id' => Auth::id(),
@@ -134,6 +133,9 @@ class AuthController extends Controller
                 'activity' => 'Employee logged out',
             ]);
         }
+
+        // Log out the user
+        Auth::logout();
 
         return redirect()->route('login');
     }

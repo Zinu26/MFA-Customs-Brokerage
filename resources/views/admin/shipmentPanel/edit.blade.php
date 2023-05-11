@@ -146,7 +146,7 @@
                                     value="{{ $shipment->delivery_status }}" placeholder="Delivery Status"
                                     aria-label="Delivery Status" class="form-control" readonly>
                             </div>
-                        </div>
+                        </div><br>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
