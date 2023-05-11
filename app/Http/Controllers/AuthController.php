@@ -21,21 +21,9 @@ class AuthController extends Controller
             'password.required' => 'Please enter your password.',
         ]);
 
-        $credentials = $request->only('username', 'password');
-
-        // Check if the user has 2FA enabled
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-            if ($user->google2fa_secret) {
-                // 2FA is enabled, show the 2FA code form
-                session()->put('2fa:user:id', $user->id);
-                return redirect()->route('2fa');
-            }
-            // 2FA is not enabled, continue with the login process
-            $loginSuccessful = true;
-            session()->flash('success', 'You have successfully logged in.');
-
-            if (Auth::user()->type == '0') {
+        if (Auth::attempt(['username' => $request->input('username'), 'password' => $request->input('password')])) {
+            // User authenticated, check their role and redirect to appropriate dashboard
+            if (Auth::user()->type == 'admin') {
                 // Create a new activity log record for this user
                 ActivityLog::create([
                     'user_id' => Auth::id(),
@@ -43,8 +31,8 @@ class AuthController extends Controller
                     'loggable_type' => 'Admin',
                     'activity' => 'Admin logged in',
                 ]);
-            }
-            else if (Auth::user()->type == '1') {
+                return redirect()->route('admin.dashboard');
+            } else if (Auth::user()->type == 'employee') {
                 // Create a new activity log record for this user
                 ActivityLog::create([
                     'user_id' => Auth::id(),
@@ -52,16 +40,15 @@ class AuthController extends Controller
                     'loggable_type' => 'Employee',
                     'activity' => 'Employee logged in',
                 ]);
+                return redirect()->route('employee.dashboard');
             }
-
-
-            return redirect()->route('admin.dashboard');
         }
-
-        return back()
+        // Authentication failed
+        return redirect()->route('landing')
             ->withErrors(['login' => 'The provided credentials do not match our records.'])
             ->withInput()
             ->with('error', 'The provided credentials do not match our records.');
+
     }
 
     public function login_client(Request $request)

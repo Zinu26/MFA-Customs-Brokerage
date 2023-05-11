@@ -125,7 +125,7 @@ Route::middleware(['auth', 'user-type:admin'])->group(function () {
 //EMPLOYEE PANEL
 Route::middleware(['auth', 'user-type:employee'])->group(function () {
     Route::get('/employee/dashboard', [DashboardController::class, 'dashboard'])
-        ->name('admin.dashboard')->middleware('verified');
+        ->name('employee.dashboard')->middleware('verified');
 
     Route::controller(ConsigneeController::class)->group(function () {
         Route::get('/employee/client_list', 'client_page')->name('client_list');
