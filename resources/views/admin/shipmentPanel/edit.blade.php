@@ -147,9 +147,6 @@
                                     aria-label="Delivery Status" class="form-control" readonly>
                             </div>
                         </div><br>
-                        <div class="mb-3">
-                            <input class="form-control" type="file" id="formFileMultiple" style="font-weight: 500; padding: 0; font-size: 20px;" multiple>
-                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

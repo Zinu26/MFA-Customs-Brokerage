@@ -54,6 +54,8 @@
                         <td>
                             @include('admin.shipmentPanel.view')
                             @include('admin.shipmentPanel.edit')
+                            @include('admin.shipmentPanel.upload')
+                            @include('admin.shipmentPanel.files')
                         </td>
                     </tr>
                 @endif
