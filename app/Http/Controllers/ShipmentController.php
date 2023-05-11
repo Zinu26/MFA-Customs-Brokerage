@@ -12,23 +12,27 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\ActivityLog;
 use DateTime;
+use Carbon\Carbon;
 
 class ShipmentController extends Controller
 {
-    function index(){
+    function index()
+    {
         $shipments = Shipment::all();
         $users = User::where('type', 2)->with('consignee')->get();
         $shipping_lines = DB::table('datasets')->pluck('shipping_line')->unique();
         return view('admin.shipmentPanel.index', compact('shipments', 'users', 'shipping_lines'));
     }
 
-    function close_shipment(){
+    function close_shipment()
+    {
         $shipments = Dataset::all();
         $consignees = Consignee::all();
         return view('admin.shipmentPanel.close_shipments', compact('shipments', 'consignees'));
     }
 
-    function add(Request $request){
+    function add(Request $request)
+    {
         $shipment = new Shipment;
 
         $shipment->consignee_name = $request->input('consignee_name');
@@ -62,20 +66,21 @@ class ShipmentController extends Controller
         return redirect()->back()->with('success', 'Shipment data added successfully.');
     }
 
-    function edit(Request $request, $id){
+    function edit(Request $request, $id)
+    {
         $shipment = Shipment::findOrFail($id);
 
 
-        if($shipment->process_started == null){
+        if ($shipment->process_started == null) {
             $shipment->process_started = $request->input('process_started');
         }
-        if($shipment->process_finished == null){
-            if($request->input('process_ended') != null){
+        if ($shipment->process_finished == null) {
+            if ($request->input('process_ended') != null) {
                 $shipment->process_finished = $request->input('process_ended');
             }
         }
 
-        if($shipment->process_started != null && $shipment->process_finished != null){
+        if ($shipment->process_started != null && $shipment->process_finished != null) {
             $url = 'https://shipmentapi.onrender.com/predict/';
             $data = array(
                 'arrival' => $shipment->arrival,
@@ -97,14 +102,13 @@ class ShipmentController extends Controller
 
             $response = curl_exec($ch);
 
-            if(curl_errno($ch)) {
-                print_r('Error'.curl_error($ch));
+            if (curl_errno($ch)) {
+                print_r('Error' . curl_error($ch));
                 //palagay nalang dito ng error message
-            }
-            else {
+            } else {
                 curl_close($ch);
                 $response = json_decode($response);
-                $response = DateTime::createFromFormat("Y-m-d",$response)->format("Y-m-d");
+                $response = DateTime::createFromFormat("Y-m-d", $response)->format("Y-m-d");
                 $shipment->predicted_delivery_date = $response;
             }
         }
@@ -114,7 +118,7 @@ class ShipmentController extends Controller
         $shipment->delivery_status = $request->input('delivery_status');
         $shipment->save();
 
-        if($shipment->process_started != null && $shipment->process_finished != null && $shipment->shipment_status == 'AG' && $shipment->billing_status == 'Done' && $shipment->delivery_status == 'Done' && $shipment->do_status == 'Done'){
+        if ($shipment->process_started != null && $shipment->process_finished != null && $shipment->shipment_status == 'AG' && $shipment->billing_status == 'Done' && $shipment->delivery_status == 'Done' && $shipment->do_status == 'Done') {
             $shipment->status = '1';
             $shipment->save();
             $dataset = new Dataset;
@@ -146,5 +150,21 @@ class ShipmentController extends Controller
         ActivityLog::create($logData);
 
         return redirect()->back()->with('success', 'Shipment data have been updated successfully.');
+    }
+
+    public function search(Request $request)
+    {
+        $bl_number = $request->input('bl_number');
+        $shipment = Shipment::where('bl_number', $bl_number)->first();
+
+        if ($shipment) {
+            return response()->json([
+                'bl_number' => $shipment->bl_number,
+                'entry_number' => $shipment->entry_number,
+                'arrival' => Carbon::parse($shipment->arrival)->format('F d, Y'),
+            ]);
+        } else {
+            return response()->json(['message' => 'No Data Found!']);
+        }
     }
 }

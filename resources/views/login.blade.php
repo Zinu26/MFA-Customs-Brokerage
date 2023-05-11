@@ -1,7 +1,7 @@
 @include('layouts.inc.header')
 @include('layouts.inc.topbarNav')
 @include('layouts.inc.message')
-
+<link rel="stylesheet" href="/css/style.css" />
 <link rel="stylesheet" href="/css/login.css">
 <title>MFA Customs Brokerage</title>
 
@@ -48,7 +48,7 @@
             {{-- <a href="#">Forgot Password</a> --}}
             <a href="{{route('login.client')}}">Login as Client</a>
         </div>
-        <input type="submit" name="login" value="Login"> 
+        <input type="submit" name="login" value="Login">
     </form>
 </div>
 

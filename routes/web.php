@@ -41,6 +41,9 @@ Route::get('/activity-logs/download', [ActivityLogController::class, 'download']
 
 // Route::post('/chatbot', [ChatBotController::class, 'handleRequest']);
 
+Route::get('/Track-Now', function(){
+    return view('track');
+})->name('track');
 
 Route::get('/about', function () {
     return view('about-us');
@@ -62,6 +65,7 @@ Route::get('/client/login', function () {
     return view('client_login');
 })->name('login.client');
 
+Route::get('/search', [ShipmentController::class, 'search'])->name('search');
 
 Route::post('/user/login', [AuthController::class, 'login'])->name('submit.login');
 Route::post('/client/login', [AuthController::class, 'login_client'])->name('submit.login.client');

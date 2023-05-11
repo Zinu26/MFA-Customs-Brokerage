@@ -1,6 +1,6 @@
 @include('layouts.inc.header')
 @include('layouts.inc.topbarNav')
-
+<link rel="stylesheet" href="/css/style.css" />
 <link rel="stylesheet" href="/css/contact.css">
 <title>MFA Customs Brokerage</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css">

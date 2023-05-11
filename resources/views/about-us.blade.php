@@ -1,5 +1,6 @@
 @include('layouts.inc.header')
 @include('layouts.inc.topbarNav')
+<link rel="stylesheet" href="/css/style.css" />
 
 <link rel="stylesheet" href="/css/about.css">
 <title>MFA Customs Brokerage</title>
