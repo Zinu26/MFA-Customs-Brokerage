@@ -16,7 +16,6 @@ return new class extends Migration
         //     $table->string('name');
         //     $table->string('username')->unique()->nullable();
         //     $table->string('email')->unique();
-        //     0 =Admin; 1 =Employee; 2 =Consignee;
         //     $table->tinyInteger('type')->default(0);
         //     $table->integer('isArchived')->default(0);
         //     $table->timestamp('email_verified_at')->nullable();

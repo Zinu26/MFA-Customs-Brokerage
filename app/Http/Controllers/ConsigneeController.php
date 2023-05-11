@@ -170,7 +170,7 @@ class ConsigneeController extends Controller
         $client->status = true;
         $client->save();
 
-        if (Auth::user()->type == 'admin') {
+        if (Auth::user()->type == "0") {
             // Log activity
             $changes = $client->getChanges();
             $activity = 'Consignee ' . $client->id . ' were archived';
@@ -185,7 +185,7 @@ class ConsigneeController extends Controller
             ActivityLog::create($logData);
 
             return redirect()->back()->with('success', 'Consignee data archived successfully.');
-        } else if (Auth::user()->type == 'employee') {
+        } else if ($client->type == "1") {
 
             // Log activity
             $changes = $client->getChanges();
@@ -211,7 +211,7 @@ class ConsigneeController extends Controller
         $client->status = false;
         $client->save();
 
-        if (Auth::user()->type == 'admin') {
+        if (Auth::user()->type == "0") {
             // Log activity
             $changes = $client->getChanges();
             $activity = 'Consignee ' . $client->id . ' were restored';
@@ -226,7 +226,7 @@ class ConsigneeController extends Controller
             ActivityLog::create($logData);
 
             return redirect()->back()->with('success', 'Consignee data restored successfully.');
-        } else if (Auth::user()->type == 'employee') {
+        } else if ($client->type == "1") {
 
             // Log activity
             $changes = $client->getChanges();
