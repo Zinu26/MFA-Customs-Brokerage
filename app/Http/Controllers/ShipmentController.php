@@ -169,7 +169,7 @@ class ShipmentController extends Controller
                 'shipment_status' => $shipment->shipment_status,
             ]);
         } else {
-            return response()->json(['message' => 'No Data Found!']);
+            return response()->json(['message' => 'Sorry, your tracking attempt was unsuccessful! Please check your tracking number and try again']);
         }
     }
 
