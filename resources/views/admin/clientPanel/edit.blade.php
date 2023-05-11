@@ -12,6 +12,7 @@
         @method('PUT')
         <div class="modal-body">
             <input type="hidden" name="id" value="{{$client->id}}"/>
+            <input type="hidden" name="user_id" value="{{$client->user_id}}"/>
             <div class="input-group">
                 <span class="input-group-text" style="background-color: #4EA646; font-weight: 600; color: white;">Name of Consignee</span>
                 <input type="text" value="{{$client->user->name}}" name="name" placeholder="Name" aria-label="Name" class="form-control" required>

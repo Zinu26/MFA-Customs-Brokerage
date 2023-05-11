@@ -1,7 +1,7 @@
 @include('layouts.inc.header')
 @include('layouts.inc.topbarNav')
 @include('layouts.inc.message')
-
+<link rel="stylesheet" href="/css/style.css" />
 <link rel="stylesheet" href="/css/login.css">
 <title>MFA Customs Brokerage</title>
 

@@ -11,7 +11,7 @@
                 <h1>Dashboard</h1>
             </div>
             {{-- toggle on/off --}}
-            <button><i class="fas fa-bell"></i></button>
+            @include('clients.notification')
         </div>
 
         <ul class="box-info">
@@ -33,34 +33,69 @@
 
         <div class="table-data">
             <div class="order">
+                {{-- RECENT SHIPMENTS --}}
                 <div class="head">
-                    <h3>Recent Shipments | {{ Auth::user()->name }}</h3>
-                    <a href="{{ route('consignee_open_shipment') }}"><button class="btn btn-sm btn-primary"><i
-                                class='fa fa-eye'></i> View</button></a>
+                    <h3>To Deliver Shipments</h3>
                     <i class='bx bx-filter'></i>
                 </div>
-                <table>
+                <table class="table table-dark">
                     <thead>
                         <tr>
-                            <th>Consignee</th>
-                            <th>Arrival Date</th>
-                            <th>Delivery Date</th>
-                            <th>Shipping Line</th>
+                            <th>BL Number</th>
+                            <th class="text-center">Arrival Date</th>
+                            <th class="text-center">Delivery Date</th>
+                            <th class="text-center">Shipping Line</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="table-light" style="color: black;">
                         @foreach ($shipments as $shipment)
                             @if ($shipment->consignee_name == Auth::user()->name)
-                                <tr>
-                                    <td>
-                                        <strong>
-                                            <p>{{ $shipment->consignee_name }}</p>
-                                        </strong>
-                                    </td>
-                                    <td>{{ $shipment->arrival }}</td>
-                                    <td>{{ $shipment->predicted_delivery_date }}</td>
-                                    <td>{{ $shipment->shipping_line }}</td>
-                                </tr>
+                                @if ($shipment->predicted_delivery_date != null)
+                                    <tr>
+                                        <td>
+                                            <strong>
+                                                {{ $shipment->bl_number }}
+                                            </strong>
+                                        </td>
+                                        <td class="text-center">{{ $shipment->arrival }}</td>
+                                        <td class="text-center">{{ $shipment->predicted_delivery_date }}</td>
+                                        <td class="text-center">{{ $shipment->shipping_line }}</td>
+                                    </tr>
+                                @endif
+                            @endif
+                        @endforeach
+                    </tbody>
+                </table>
+
+                {{-- TO DELIVER --}}
+                <div class="head">
+                    <h3>In Process Shipments</h3>
+                    <i class='bx bx-filter'></i>
+                </div>
+                <table class="table table-dark">
+                    <thead>
+                        <tr>
+                            <th>BL Number</th>
+                            <th class="text-center">Arrival Date</th>
+                            <th class="text-center">Process Started</th>
+                            <th class="text-center">Shipping Line</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-light" style="color: black;">
+                        @foreach ($shipments as $shipment)
+                            @if ($shipment->consignee_name == Auth::user()->name)
+                                @if ($shipment->process_started != null && $shipment->process_finished == null)
+                                    <tr>
+                                        <td>
+                                            <strong>
+                                                <p>{{ $shipment->bl_number }}</p>
+                                            </strong>
+                                        </td>
+                                        <td class="text-center">{{ $shipment->arrival }}</td>
+                                        <td class="text-center">{{ $shipment->process_started }}</td>
+                                        <td class="text-center">{{ $shipment->shipping_line }}</td>
+                                    </tr>
+                                @endif
                             @endif
                         @endforeach
                     </tbody>
@@ -76,6 +111,7 @@
 </section>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{{-- Graph --}}
 <script>
     var labels = {!! json_encode($labels) !!};
     var values = {!! json_encode($values) !!};

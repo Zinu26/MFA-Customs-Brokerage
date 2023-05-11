@@ -9,6 +9,7 @@ use App\Models\Shipment;
 use App\Models\Dataset;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Models\ActivityLog;
 
 class ConsigneeController extends Controller
 {
@@ -30,10 +31,13 @@ class ConsigneeController extends Controller
         // Validate the input data
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'tin' => 'required|string|max:255',
+            'tin' => 'required|string|unique:consignees|max:255',
             'contact' => 'required|string|max:255',
             'email' => 'required|string|unique:users,email|max:255',
             'address' => 'required|string|max:255',
+        ], [
+            'tin.unique' => 'The TIN number has already been taken.',
+            'email.unique' => 'Email has already been taken.',
         ]);
 
         // Create new user
@@ -53,6 +57,33 @@ class ConsigneeController extends Controller
             'status' => 0,
         ]);
 
+        // Create activity log
+        $changes = [
+            'user' => $user->toJson(),
+            'employee' => $consignee->toJson(),
+        ];
+
+        if (Auth::user()->type == '0') {
+            // Create activity log
+            ActivityLog::create([
+                'user_id' => Auth::id(),
+                'loggable_id' => $user->id,
+                'loggable_type' => 'Admin',
+                'activity' => 'Consignee Added',
+                'changes' => json_encode($changes),
+            ]);
+        } else if (Auth::user()->type == '1') {
+            // Create activity log
+            ActivityLog::create([
+                'user_id' => Auth::id(),
+                'loggable_id' => $user->id,
+                'loggable_type' => 'Employee',
+                'activity' => 'Consignee Added',
+                'changes' => json_encode($changes),
+            ]);
+        }
+
+
         // Save the new Consignee instance to the database
         $consignee->save();
 
@@ -65,12 +96,70 @@ class ConsigneeController extends Controller
     public function update(Request $request, $id)
     {
         $client = Consignee::findOrFail($id);
-        $client->name = $request->input('name');
-        $client->tin = $request->input('tin');
-        $client->contact = $request->input('contact');
-        $client->email = $request->input('email');
-        $client->address = $request->input('address');
+        $user = User::where('id', $client->user_id)->first();
+
+        // Validate the input data
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'tin' => 'required|string|max:255',
+            'contact' => 'required|string|max:255',
+            'email' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+        ]);
+
+        if ($client->tin != $validatedData['tin'] && Consignee::where('tin', $validatedData['tin'])->exists()) {
+            return redirect()->back()->with('error', 'Tin has already been taken.');
+        }
+        $client->tin = $validatedData['tin'];
+        $client->contact = $validatedData['contact'];
+        $client->address = $validatedData['address'];
         $client->save();
+
+        $user->name = $validatedData['name'];
+        if ($user->email != $validatedData['email'] && User::where('email', $validatedData['email'])->exists()) {
+            return redirect()->back()->with('error', 'Email has already been taken.');
+        }
+        $user->email = $validatedData['email'];
+        $user->password = bcrypt($validatedData['tin']);
+        $user->save();
+
+        $changes_user = $user->getChanges();
+        $changes_client = $client->getChanges();
+        $changes = [
+            json_encode($changes_user),
+            json_encode($changes_client),
+        ];
+        if (empty($changes_user) && empty($changes_client)) {
+            return redirect()->back()->with('warning', 'No changes were made to the Consignee details.');
+        }
+        // Log activity
+        else {
+            if (Auth::user()->type == '0') {
+                $activity = 'Consignee ' . $user->id . ' details were updated';
+                $logData = [
+                    'user_id' => Auth::id(),
+                    'activity' => $activity,
+                    'changes' => json_encode($changes),
+                ];
+                $logData['loggable_type'] = 'Admin';
+                $logData['loggable_id'] = Auth::id();
+
+                ActivityLog::create($logData);
+            } else if (Auth::user()->type == '1') {
+                $activity = 'Consignee ' . $user->id . ' details were updated';
+                $logData = [
+                    'user_id' => Auth::id(),
+                    'activity' => $activity,
+                    'changes' => json_encode($changes),
+                ];
+                $logData['loggable_type'] = 'Employee';
+                $logData['loggable_id'] = Auth::id();
+
+                ActivityLog::create($logData);
+            }
+        }
+
+
         return redirect()->back()->with('success', 'Client details updated successfully');
     }
 
@@ -81,7 +170,38 @@ class ConsigneeController extends Controller
         $client->status = true;
         $client->save();
 
-        return redirect()->back()->with('warning', 'Client data haven been archived successfully.');
+        if (Auth::user()->type == "0") {
+            // Log activity
+            $changes = $client->getChanges();
+            $activity = 'Consignee ' . $client->id . ' were archived';
+            $logData = [
+                'user_id' => Auth::id(),
+                'activity' => $activity,
+                'changes' => json_encode($changes),
+            ];
+            $logData['loggable_type'] = 'Admin';
+            $logData['loggable_id'] = Auth::id();
+
+            ActivityLog::create($logData);
+
+            return redirect()->back()->with('success', 'Consignee data archived successfully.');
+        } else if ($client->type == "1") {
+
+            // Log activity
+            $changes = $client->getChanges();
+            $activity = 'Consignee ' . $client->id . ' were archived';
+            $logData = [
+                'user_id' => Auth::id(),
+                'activity' => $activity,
+                'changes' => json_encode($changes),
+            ];
+            $logData['loggable_type'] = 'Employee';
+            $logData['loggable_id'] = Auth::id();
+
+            ActivityLog::create($logData);
+
+            return redirect()->back()->with('success', 'Consignee data archived successfully.');
+        }
     }
 
     function restore_client($id)
@@ -91,7 +211,38 @@ class ConsigneeController extends Controller
         $client->status = false;
         $client->save();
 
-        return redirect()->back()->with('success', 'Client data have been restored successfully.');
+        if (Auth::user()->type == "0") {
+            // Log activity
+            $changes = $client->getChanges();
+            $activity = 'Consignee ' . $client->id . ' were restored';
+            $logData = [
+                'user_id' => Auth::id(),
+                'activity' => $activity,
+                'changes' => json_encode($changes),
+            ];
+            $logData['loggable_type'] = 'Admin';
+            $logData['loggable_id'] = Auth::id();
+
+            ActivityLog::create($logData);
+
+            return redirect()->back()->with('success', 'Consignee data restored successfully.');
+        } else if ($client->type == "1") {
+
+            // Log activity
+            $changes = $client->getChanges();
+            $activity = 'Consignee ' . $client->id . ' were restored';
+            $logData = [
+                'user_id' => Auth::id(),
+                'activity' => $activity,
+                'changes' => json_encode($changes),
+            ];
+            $logData['loggable_type'] = 'Employee';
+            $logData['loggable_id'] = Auth::id();
+
+            ActivityLog::create($logData);
+
+            return redirect()->back()->with('success', 'Consignee data restored successfully.');
+        }
     }
 
     function open_shipment($id)
@@ -133,13 +284,15 @@ class ConsigneeController extends Controller
         return view('clients.dashboard', compact('shipments', 'labels', 'values'));
     }
 
-    function consignee_open_shipment(){
+    function consignee_open_shipment()
+    {
         $shipments = Shipment::where('consignee_name', Auth::user()->name)->get();
 
         return view('clients.open_shipments', compact('shipments'));
     }
 
-    function consignee_close_shipment(){
+    function consignee_close_shipment()
+    {
         $shipments = Dataset::where('consignee_name', Auth::user()->name)->get();
 
         return view('clients.close_shipments', compact('shipments'));
