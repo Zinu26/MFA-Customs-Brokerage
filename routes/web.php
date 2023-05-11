@@ -115,3 +115,7 @@ Route::controller(ShipmentController::class)->group(function () {
 Route::get('/client/notification', function(){
     return view('clients.notification');
 })->name('notification');
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
