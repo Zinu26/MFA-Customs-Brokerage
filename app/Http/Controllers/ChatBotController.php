@@ -118,55 +118,96 @@ class ChatBotController extends Controller
                 $shipment = Shipment::where('bl_number', $bl_number)->where('consignee_name', $user->name)->first();
                 if ($shipment) {
                     // If the user is asking about a shipment, prompt for details
-                    $conversation[] = [
-                        'input' => $input,
-                        'shipment' => $shipment,
-                    ];
-                    $response = 'What details do you want to know about the shipment? You can ask about its status or DO status.';
+                    $conversation[] = $input;
+                    session(['shipment' => $shipment]);
+                    $response = 'What details do you want to know about the shipment? You can ask about its shipment status, DO status, Billing status, arrival date, delivery date, entry number, shipping line or item description.';
                 } else {
                     // The BL number was not found in the database
                     $response = 'Sorry, I couldn\'t find any shipments with BL number ' . $bl_number . ' under ' . $user->name . '. Please try again.';
                 }
             } elseif ($last_message && $last_message !== 'stop') {
                 // If the user is inquiring about shipment details, provide a response based on their input
-                $last_conversation = end($conversation);
-                $shipment = $last_conversation['shipment'];
-                switch ($input) {
-                    case 'shipment status':
-                        $response = 'The current status of this shipment is ' . $shipment->status . '.';
-                        break;
-                    case 'do status':
-                        $response = 'The DO status of this shipment is ' . $shipment->do_status . '.';
-                        break;
-                    case 'reset':
-                        $conversation = [];
-                        $response = 'Okay, let\'s start over. What BL number are you inquiring about?';
-                        break;
-                    case 'stop':
-                        $response = 'Okay, have a great day!';
-                        break;
-                    default:
-                        $response = 'Sorry, I didn\'t understand that. You can ask about the shipment\'s status or DO status. You can also say "reset" to start over or "stop" to end this conversation.';
+                $shipment = session('shipment');
+                if ($shipment) {
+                    $conversation[] = $input;
+                    switch ($input) {
+                        case 'shipment status':
+                            $response = 'The current status of this shipment is ' . $shipment->shipment_status . '.';
+                            break;
+                        case 'shipment':
+                            $response = 'The current status of this shipment is ' . $shipment->shipment_status . '.';
+                            break;
+                        case 'do status':
+                            $response = 'The DO status of this shipment is ' . $shipment->do_status . '.';
+                            break;
+                        case 'do':
+                            $response = 'The DO status of this shipment is ' . $shipment->do_status . '.';
+                            break;
+                        case 'billing':
+                            $response = 'The Billing status of this shipment is ' . $shipment->billing_status . '.';
+                            break;
+                        case 'billing status':
+                            $response = 'The Billing status of this shipment is ' . $shipment->billing_status . '.';
+                            break;
+                        case 'arrival date':
+                            $response = 'The Arrival date of this shipment is ' . $shipment->arrival . '.';
+                            break;
+                        case 'arrival':
+                            $response = 'The Arrival date of this shipment is ' . $shipment->arrival . '.';
+                            break;
+                        case 'delivery date':
+                            if ($shipment->predicted_delivery_date !== null) {
+                                $response = 'The Delivery date of this shipment is ' . $shipment->predicted_delivery_date . '.';
+                            } else {
+                                $response = 'The shipment is currently being processed. We will let you know when it will be delivered.';
+                            }
+                            break;
+                        case 'delivery':
+                            if ($shipment->predicted_delivery_date !== null) {
+                                $response = 'The Delivery date of this shipment is ' . $shipment->predicted_delivery_date . '.';
+                            } else {
+                                $response = 'The shipment is currently being processed. We will let you know when it will be delivered.';
+                            }
+                            break;
+                        case 'entry number':
+                            $response = 'The Entry number of this shipment is ' . $shipment->entry_number . '.';
+                            break;
+                        case 'entry':
+                            $response = 'The Entry numberof this shipment is ' . $shipment->entry_number . '.';
+                            break;
+                        case 'shipping line':
+                            $response = 'This shipment is under ' . $shipment->shipping_line . '.';
+                            break;
+                        case 'shipping':
+                            $response = 'This shipment is under ' . $shipment->shipping_line . '.';
+                            break;
+                        case 'description':
+                            $response =  'Size: ' . $shipment->size . 'Item: ' . $shipment->item_description . ' Weight: ' . $shipment->weight . '.';
+                            break;
+                        case 'details':
+                            $response =  'Size: ' . $shipment->size . 'Item: ' . $shipment->item_description . ' Weight: ' . $shipment->weight . '.';
+                            break;
+                        case 'item':
+                            $response =  'Size: ' . $shipment->size . 'Item: ' . $shipment->item_description . ' Weight: ' . $shipment->weight . '.';
+                            break;
+                        default:
+                            $response = 'Sorry, I didn\'t understand that. You can ask about the shipment\'s status or DO status.';
+                            break;
+                    }
+                    $response .= ' Would you like to know more about this shipment? You can also say "reset" to start over or "stop" to end this conversation.';
+                } else {
+                    // The user needs to provide a valid BL number before requesting shipment details
+                    $response = 'Sorry, I don\'t have any shipments to provide details about. Please provide a BL number.';
                 }
-                $conversation[] = [
-                    'input' => $input,
-                    'response' => $response,
-                    'shipment' => $shipment,
-                ];
             } else {
                 // If the user has not provided a valid input, ask them to try again
                 $response = 'Sorry, I didn\'t understand that. What BL number are you inquiring about?';
-                $conversation[] = [
-                    'input' => $input,
-                    'response' => $response,
-                ];
             }
         }
+        $conversation[] = $input;
         session(['conversation' => $conversation]);
         return $response;
     }
-
-
 
     public function guest_send(Request $request)
     {
