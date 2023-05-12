@@ -14,7 +14,7 @@
     </button>
     <div class="chatbot-window" id="chatbot-window">
         <div class="chatbot-header">
-            <h3 class="chatbot-title">MFA Customs Brokerage</h3>
+            <h3 class="chatbot-title">MFA FAQs' Chatbot</h3>
             <button class="chatbot-close" id="chatbot-close-btn">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="18px"
                     height="18px">
@@ -30,7 +30,7 @@
         </div>
         <div class="container-fluid w-100 px-3 py-2 d-flex" style="background: #29924c; position: absolute; bottom: 0;">
             <div class="mr-2 pl-2" style="background: #ffffff1c; width: calc(100% - 45px); border-radius: 5px;">
-                <input id="input" class="text-black" type="text" name="input"
+                <input id="input" class="text-black" placeholder="Ask something about MFA..." type="text" name="input"
                     style="background: none; width:100%; height: 100%; border: 0; outline: none;">
             </div>
             <div id="button-submit" class="text-center"

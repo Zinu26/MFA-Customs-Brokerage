@@ -2,15 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use GuzzleHttp\Client;
-use OpenAI\Laravel\Facades\OpenAI;
-use Illuminate\Support\Facades\DB;
-use App\Models\User;
 use App\Models\Shipment;
 use App\Models\FAQ;
-use Spatie\Tags\Tag;
 
 class ChatBotController extends Controller
 {
@@ -36,91 +32,141 @@ class ChatBotController extends Controller
         return view('landing', compact('faqs'));
     }
 
+    // public function sendChat(Request $request)
+    // {
+    //     $user = Auth::user();
+    //     $input = $request->input;
+
+    //     // Find BL Numbers in the database
+    //     // Find BL Numbers in the database
+    //     if (preg_match('/^\d+$/', $input, $matches)) {
+    //         $bl_number = $matches[0];
+    //         $shipment = Shipment::where('bl_number', $bl_number)->where('consignee_name', $user->name)->first();
+    //         if ($shipment) {
+    //             // Prompt the user for more details about the shipment
+    //             $response = 'What details would you like to know about shipment ' . $bl_number . '?';
+    //             $options = [
+    //                 'Shipment Status',
+    //                 'DO Status',
+    //             ];
+    //             $response .= ' [Options: ' . implode(', ', $options) . ']';
+
+    //             // Keep prompting the user for input until they enter "stop" or "reset"
+    //             $stop_words = ['stop', 'reset'];
+    //             $input = strtolower(trim($input));
+    //             while (!in_array($input, $stop_words)) {
+    //                 // Generate a response based on the user's input
+    //                 switch ($input) {
+    //                     case 'shipment status':
+    //                         $response = 'The shipment status for shipment ' . $bl_number . ' is ' . $shipment->status;
+    //                         break;
+    //                     case 'do status':
+    //                         $response = 'The DO status for shipment ' . $bl_number . ' is ' . $shipment->do_status;
+    //                         break;
+    //                     default:
+    //                         $response = 'I\'m sorry, I didn\'t understand your input. Please choose one of the available options for shipment ' . $bl_number . '. [Options: ' . implode(', ', $options) . ']';
+    //                         break;
+    //                 }
+    //                 // Prompt the user for more input
+    //                 $input = strtolower(trim(fgets(STDIN)));
+    //             }
+    //             return $response;
+    //         } else {
+    //             // The BL number was not found in the database
+    //             $responses = [
+    //                 'Sorry, I couldn\'t find any shipments with BL number ' . $bl_number . ' Under ' . $user->name . ' Shipment list. Please try again.',
+    //                 'Unfortunately, there are no shipments matching BL number ' . $bl_number . ' in ' . $user->name . ' Shipment list. Please check your input and try again.',
+    //                 'I\'m sorry, I couldn\'t locate any shipments with BL number ' . $bl_number . ' under ' . $user->name . '. Please revise your search and try again.',
+    //                 'Regrettably, there are no shipments associated with BL number ' . $bl_number . ' in ' . $user->name . ' Shipment list. Please verify your details and try again.',
+    //                 'Apologies, but I couldn\'t find any shipments that match BL number ' . $bl_number . ' for ' . $user->name . '. Please double-check your information and try again.',
+    //                 'I regret to inform you that there are no shipments with BL number ' . $bl_number . ' linked to ' . $user->name . ' Shipment list. Please re-enter your query and try again.',
+    //             ];
+    //             $response = $responses[array_rand($responses)];
+    //             return $response;
+    //         }
+    //     }
+
+    //     // If the input is not related to shipments or company details, prompt a randomly-selected generic response
+    //     $responses = [
+    //         'I apologize, but I can only answer questions related to MFA company and shipments details. Please try asking a different question.',
+    //         'I am not sure I understand your question. Could you please rephrase it in terms of MFA company and shipments details?',
+    //         'Unfortunately, I cannot assist you with that. Please ask me a question related to MFA company and shipments details.',
+    //         'I am sorry, but I am only able to answer questions related to MFA company and shipments details. Can I help you with anything else?',
+    //         'I am designed to answer questions related to MFA shipments and company details. Please try asking me about those topics.',
+    //         'That does not seem to be related to MFA company and shipments details. Do you have a question on those topics?'
+    //     ];
+    //     $response = $responses[array_rand($responses)];
+    //     return $response;
+    // }
+
     public function sendChat(Request $request)
     {
+        $user = Auth::user();
+        $input = strtolower(trim($request->input));
 
-        // $selectedFaq = $request->input('input');
-        // $faq = FAQ::where('question', $selectedFaq)->first();
-        // $answer = $faq ? $faq->answer : "Sorry, the answer is not available.";
-        // return response()->json(['answer' => $answer]);
+        $conversation = session('conversation', []);
+        $last_message = end($conversation);
 
-        $input = $request->input;
-        if (strpos(strtolower($input), 'shipments') !== false) {
-            if (strpos(strtolower($input), 'details') !== false) {
-                $response = 'What details do you need to know about the shipment? Please provide the BL number.';
-                return $response;
-            }
-        }
-
-        // If the input contains the BL number, look it up in the database
-        if (preg_match('/^\d+$/', $input, $matches)) {
-            $bl_number = $matches[0];
-            $shipment = Shipment::where('bl_number', $bl_number)->first();
-            if ($shipment) {
-                if (strpos(strtolower($input), 'delivery status') !== false) {
-                    $response = "The delivery status for BL number $bl_number is " . $shipment->delivery_status . '.';
-                    return $response;
-                } else {
-                    // Prompt the user for what they want to know about the shipment
-                    $response = 'What details do you need to know about the shipment?';
-                    return $response;
-                }
-            } else {
-                // The BL number was not found in the database
-                $response = "Sorry, I couldn't find any shipments with BL number $bl_number. Please try again.";
-                return $response;
-            }
-        }
-
-        // If the input is not related to shipments or company details, prompt a randomly-selected generic response
-        $responses = [
-            'I apologize, but I can only answer questions related to MFA company and shipments details. Please try asking a different question.',
-            'I am not sure I understand your question. Could you please rephrase it in terms of MFA company and shipments details?',
-            'Unfortunately, I cannot assist you with that. Please ask me a question related to MFA company and shipments details.',
-            'I am sorry, but I am only able to answer questions related to MFA company and shipments details. Can I help you with anything else?',
-            'I am designed to answer questions related to MFA shipments and company details. Please try asking me about those topics.',
-            'That does not seem to be related to MFA company and shipments details. Do you have a question on those topics?'
-        ];
-        $response = $responses[array_rand($responses)];
-        return $response;
-
-
-        $selectedFaq = $request->input('faq');
-        $faq = FAQ::where('question', $selectedFaq)->first();
-        $answer = '';
-        if ($faq) {
-            if ($faq->question == 'How much is your rate?') {
-                // choose one of the answers for this question randomly or based on some criteria
-                $answers = [
-                    'The determination of the rate is contingent upon specific shipment details, including but not limited to the number of items, sizes, and contents. Such rate is typically discussed and agreed upon in a meeting involving MFA and the consignee.',
-                    'Rate determination is subject to various shipment specifics such as contents, number, and size. A meeting with the consignee and MFA typically settles the rate.',
-                    'The rate is determined based on shipment details such as contents, number, and size. MFA and the consignee usually meet to discuss and agree on the rate.',
-                    'To determine the rate, shipment specifics such as number, size, and contents are considered. MFA and the consignee generally meet to decide on the rate.',
-                    'A meeting between MFA and the consignee usually determines the rate based on shipment details like contents, number, and size.'
-                ];
-                $answer = $answers[array_rand($answers)];
-            } else {
-                $answer = $faq->answer;
-            }
+        // Start a new conversation if this is the first message or the previous message was a "stop" command
+        if (empty($conversation) || $last_message === 'stop') {
+            $conversation = [];
+            $response = 'Hi, ' . $user->name . '! What BL number are you inquiring about?';
         } else {
-            $answer = "Sorry, the answer is not available.";
+            // Find BL Numbers in the database
+            if (preg_match('/^\d+$/', $input, $matches)) {
+                $bl_number = $matches[0];
+                $shipment = Shipment::where('bl_number', $bl_number)->where('consignee_name', $user->name)->first();
+                if ($shipment) {
+                    // If the user is asking about a shipment, prompt for details
+                    $conversation[] = [
+                        'input' => $input,
+                        'shipment' => $shipment,
+                    ];
+                    $response = 'What details do you want to know about the shipment? You can ask about its status or DO status.';
+                } else {
+                    // The BL number was not found in the database
+                    $response = 'Sorry, I couldn\'t find any shipments with BL number ' . $bl_number . ' under ' . $user->name . '. Please try again.';
+                }
+            } elseif ($last_message && $last_message !== 'stop') {
+                // If the user is inquiring about shipment details, provide a response based on their input
+                $last_conversation = end($conversation);
+                $shipment = $last_conversation['shipment'];
+                switch ($input) {
+                    case 'shipment status':
+                        $response = 'The current status of this shipment is ' . $shipment->status . '.';
+                        break;
+                    case 'do status':
+                        $response = 'The DO status of this shipment is ' . $shipment->do_status . '.';
+                        break;
+                    case 'reset':
+                        $conversation = [];
+                        $response = 'Okay, let\'s start over. What BL number are you inquiring about?';
+                        break;
+                    case 'stop':
+                        $response = 'Okay, have a great day!';
+                        break;
+                    default:
+                        $response = 'Sorry, I didn\'t understand that. You can ask about the shipment\'s status or DO status. You can also say "reset" to start over or "stop" to end this conversation.';
+                }
+                $conversation[] = [
+                    'input' => $input,
+                    'response' => $response,
+                    'shipment' => $shipment,
+                ];
+            } else {
+                // If the user has not provided a valid input, ask them to try again
+                $response = 'Sorry, I didn\'t understand that. What BL number are you inquiring about?';
+                $conversation[] = [
+                    'input' => $input,
+                    'response' => $response,
+                ];
+            }
         }
-        return response()->json(['answer' => $answer]);
-
-        // // Send the user's input to OpenAI for processing
-        // $result = OpenAI::completions()->create([
-        //     'max_tokens' => 100,
-        //     'model' => 'text-davinci-003',
-        //     'prompt' => $input
-        // ]);
-
-        // $response = array_reduce(
-        //     $result->toArray()['choices'],
-        //     fn(string $result, array $choice) => $result . $choice['text'], ""
-        // );
-
-        // return $response;
+        session(['conversation' => $conversation]);
+        return $response;
     }
+
+
 
     public function guest_send(Request $request)
     {
@@ -138,7 +184,7 @@ class ChatBotController extends Controller
             'contact' => ['contact', 'reach', 'call'],
             'client' => ['client', 'customer', 'importer'],
             'limitations' => ['limitations', 'restrictions', 'issues'],
-            'lcl' => ['lcl', 'less-than-container-load', 'loose cargo'],
+            'lcl' => ['lcl', 'less-than-container-load', 'loose-cargo'],
             'contract' => ['contract', 'agreement', 'term'],
             'trucking' => ['trucking', 'shipping', 'delivery'],
             'safety' => ['safety', 'security', 'protection'],
@@ -150,7 +196,6 @@ class ChatBotController extends Controller
             'discounts' => ['discounts', 'promotions', 'offers'],
             'weight' => ['weight', 'mass', 'load'],
             'sizes' => ['sizes', 'dimensions', 'measurements'],
-            'limitations' => ['limitations', 'restrictions', 'boundaries'],
         ];
 
         // Check the input sentence or trim the sentence word by word
@@ -233,10 +278,11 @@ class ChatBotController extends Controller
                     case 'lcl':
                         $responses = [
                             'Yes, we handle LCL shipments for our clients.',
-                            'LCL refers to shipping cargo that doesn\'t fill a container, and we can help with this.',
-                            'We combine LCL shipments with others to fill the container, making shipping more efficient.',
-                            'Handling LCL shipments requires expertise and special handling, which we can provide.',
-                            'Our team is experienced in managing LCL shipments, from start to finish.'
+                            'Our company, MFA Customs Brokerage, can handle your LCL shipments.',
+                            'Need to ship cargo that doesn\'t fill a whole container? MFA Customs Brokerage has got you covered with our LCL services.',
+                            'When it comes to LCL shipments, you can trust MFA Customs Brokerage to get the job done right.',
+                            'At MFA Customs Brokerage, we specialize in handling LCL shipments for our clients.',
+                            'Don\'t let your less-than-container load shipment stress you out. Let MFA Customs Brokerage take care of it for you.',
                         ];
                         break;
                     case 'contract':
@@ -258,32 +304,91 @@ class ChatBotController extends Controller
                         ];
                         break;
                     case 'safety':
-                    $responses = [
-                        'MFA Customs Brokerage ensures the safety and security of cargo during transportation through our contractual obligation with our business partner, Sonya Trucking Services.',
-                        'We take safety seriously and work to minimize the risk of damage or loss of cargo.',
-                        'Our team follows strict safety protocols to ensure the safety and security of your cargo.',
-                        'We have a team of experts that specialize in cargo security and safety.',
-                        'We have invested in advanced technology and equipment to ensure the safety and security of your cargo.'
-                    ];
-                    break;
-                case 'shipment':
-                    $responses = [
-                        'MFA Customs Brokerage provides delivery and trucking services for your shipment needs.',
-                        'Our team handles cargo of all types and sizes, from small packages to large-scale shipments.',
-                        'We work with our clients to ensure smooth and efficient customs clearance.',
-                        'We offer a wide range of logistics solutions to meet your shipment needs.',
-                        'Our team provides personalized and reliable service to ensure your shipment arrives on time and in good condition.'
-                    ];
-                    break;
-                case 'delay':
-                    $responses = [
-                        'MFA Customs Brokerage responds to shipment delays by first determining the cause of the delay.',
-                        'We work with our clients to find solutions to minimize the impact of delays on their business.',
-                        'We have a team of experts that specialize in managing shipment delays.',
-                        'We provide regular updates to our clients on the status of their delayed shipments.',
-                        'Our team works around the clock to ensure your shipment arrives as quickly as possible.'
-                    ];
-                    break;
+                        $responses = [
+                            'MFA Customs Brokerage ensures the safety and security of cargo during transportation through our contractual obligation with our business partner, Sonya Trucking Services.',
+                            'We take safety seriously and work to minimize the risk of damage or loss of cargo.',
+                            'Our team follows strict safety protocols to ensure the safety and security of your cargo.',
+                            'We have a team of experts that specialize in cargo security and safety.',
+                            'We have invested in advanced technology and equipment to ensure the safety and security of your cargo.'
+                        ];
+                        break;
+                    case 'shipment':
+                        $responses = [
+                            'MFA Customs Brokerage provides delivery and trucking services for your shipment needs.',
+                            'Our team handles cargo of all types and sizes, from small packages to large-scale shipments.',
+                            'We work with our clients to ensure smooth and efficient customs clearance.',
+                            'We offer a wide range of logistics solutions to meet your shipment needs.',
+                            'Our team provides personalized and reliable service to ensure your shipment arrives on time and in good condition.'
+                        ];
+                        break;
+                    case 'delay':
+                        $responses = [
+                            'MFA Customs Brokerage responds to shipment delays by first determining the cause of the delay.',
+                            'We work with our clients to find solutions to minimize the impact of delays on their business.',
+                            'We have a team of experts that specialize in managing shipment delays.',
+                            'We provide regular updates to our clients on the status of their delayed shipments.',
+                            'Our team works around the clock to ensure your shipment arrives as quickly as possible.'
+                        ];
+                        break;
+                    case 'damage':
+                        $responses = [
+                            'After identifying the source of the problem, MFA will assign accountability for any resulting damages.',
+                            'MFA will pinpoint the root cause of the issue and then allocate responsibility for any harm caused.',
+                            'Determining the origin of the issue is just the first step for MFA; it also assigns liability for any resulting harm.',
+                            'Once the cause of the problem has been identified, MFA moves to establish culpability for any damage incurred.',
+                            'MFA not only investigates the cause of the issue, but also determines liability for any harm caused as a result.',
+                        ];
+                        break;
+                    case 'storage':
+                        $responses = [
+                            'We don\'t offer storage or warehousing services for client shipments, it\'s up to the client to arrange for their own.',
+                            'Our policy dictates that clients are responsible for their own storage and warehousing needs for their shipments.',
+                            'We don\'t have the capability to provide storage or warehousing for client shipments, that falls on the client to organize.',
+                            'Our company does not handle storage or warehousing for client shipments, it\'s the client\'s responsibility to arrange for that.',
+                            'It\'s the client\'s responsibility to secure their own storage and warehousing for their shipments, we don\'t offer that service.',
+                        ];
+                        break;
+                    case 'tracking':
+                        $responses = [
+                            'Customers of MFA Customs Brokerage can stay up-to-date with the status of their shipments through the company\'s online platform. The platform provides real-time updates on BOC processing and estimated delivery times.',
+                            'With MFA Customs Brokerage\'s website, customers can easily track their shipments and receive updates on their processing status and expected delivery date.',
+                            'MFA Customs Brokerage\'s online tracking system allows customers to monitor their shipments in real-time and receive automatic notifications on any changes in the processing or delivery schedule.',
+                            'By logging in to MFA Customs Brokerage\'s website, customers gain access to a comprehensive tracking tool that provides detailed information on their shipments\' BOC processing status and delivery date.',
+                            'MFA Customs Brokerage\'s website enables customers to keep track of their shipments with ease, providing regular updates on BOC processing and estimated delivery times.',
+                        ];
+                        break;
+                    case 'discounts':
+                        $responses = [
+                            'MFA Customs Brokerage provides various discounts and promotions based on the shipment type.',
+                            'Shipment discounts and promotions are available through MFA Customs Brokerage.',
+                            'Depending on your shipment, MFA Customs Brokerage can offer discounts and promotions.',
+                            'At MFA Customs Brokerage, promotions and discounts are tailored to your specific shipment.',
+                            'Save money on your shipment with MFA Customs Brokerage\'s discounts and promotions.',
+                        ];
+                        break;
+                    case 'weight':
+                        $responses = [
+                            'Available sizes include bulk, LCL, 1x20, and 1x40, with no weight restrictions.',
+                            'Bulk, LCL, 1x20, and 1x40 sizes are available for shipping any weight.',
+                            'Whether shipping bulk or just a few items, we\'ve got you covered with LCL, 1x20, and 1x40 options too.',
+                            'Shipping any weight is a breeze with bulk, LCL, 1x20, and 1x40 container sizes.',
+                            'Get your items where they need to go with bulk, LCL, 1x20, and 1x40 shipping options, no matter the weight.',
+                            'Need to ship a heavy load? Our bulk, LCL, 1x20, and 1x40 options can handle any weight.',
+                            'From small to large shipments, choose from bulk, LCL, 1x20, and 1x40 container sizes for all weights.',
+                        ];
+                        break;
+                    case 'sizes':
+                        $responses = [
+                            'For any weight and any size shipment, we offer bulk, LCL, 1x20, and 1x40 shipping options.',
+                            'When it comes to shipping, we have the versatility you need with bulk, LCL, 1x20, and 1x40 options for any weight.',
+                            'Choose from bulk, LCL, 1x20, and 1x40 container sizes to ship any weight, large or small.',
+                            'Our bulk, LCL, 1x20, and 1x40 options make shipping any weight a cinch.',
+                            'Whether you need to ship a little or a lot, we have the container sizes you need - bulk, LCL, 1x20, and 1x40 - for any weight.',
+                            'Don\'t worry about weight restrictions when you choose our bulk, LCL, 1x20, and 1x40 shipping options.',
+                            'Shipping large or small loads is no problem with our bulk, LCL, 1x20, and 1x40 container sizes, accommodating any weight.',
+                            'When you need to ship any weight, look no further than our bulk, LCL, 1x20, and 1x40 container options.',
+                        ];
+                        break;
                 }
                 $response = $responses[array_rand($responses)];
                 return $response;
@@ -301,52 +406,4 @@ class ChatBotController extends Controller
         $response = $responses[array_rand($responses)];
         return $response;
     }
-
-
-    // public function sendChat(Request $request)
-    // {
-    //     $input = $request->input;
-    //     $response = '';
-
-    //     // Use OpenAI's GPT-3 to understand the user's intent and extract relevant information
-    //     $result = OpenAI::davinci()->search($input, ['shipments', 'delivery status']);
-    //     $intent = $result->getIntent();
-    //     $entities = $result->getEntities();
-
-    //     // Handle user queries based on the extracted intent and entities
-    //     if ($intent == 'shipments') {
-    //         if (empty($entities)) {
-    //             // User wants to see a list of shipments
-    //             $shipments = Shipment::all();
-    //             $shipmentList = '';
-    //             foreach ($shipments as $shipment) {
-    //                 $shipmentList .= $shipment->bl_number . ', ';
-    //             }
-    //             $response = 'Here is the list of shipments: ' . $shipmentList;
-    //         } else {
-    //             // User wants to know about a specific shipment
-    //             $blNumber = $entities['bl_number'][0];
-    //             $shipment = Shipment::where('bl_number', $blNumber)->first();
-    //             if ($shipment) {
-    //                 if (isset($entities['delivery_status'])) {
-    //                     // User wants to know the delivery status of the shipment
-    //                     $response = "The delivery status of shipment $blNumber is " . $shipment->delivery_status;
-    //                 } else {
-    //                     // User wants to know other details about the shipment
-    //                     $response = "Here are the details of shipment $blNumber: " . $shipment->details;
-    //                 }
-    //             } else {
-    //                 // BL number not found
-    //                 $response = "Sorry, I couldn't find any shipments with BL number $blNumber. Please try again.";
-    //             }
-    //         }
-    //     } else {
-    //         // Default response if the user's intent cannot be determined
-    //         $response = "I'm sorry, I'm not sure what you're asking. Can you please be more specific?";
-    //     }
-
-    //     return $response;
-    // }
-
-
 }

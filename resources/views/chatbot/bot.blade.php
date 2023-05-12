@@ -14,7 +14,7 @@
     </button>
     <div class="chatbot-window" id="chatbot-window">
         <div class="chatbot-header">
-            <h3 class="chatbot-title">MFA Customs Brokerage</h3>
+            <h3 class="chatbot-title">MFA Chatbot</h3>
             <button class="chatbot-close" id="chatbot-close-btn">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="18px"
                     height="18px">
@@ -134,6 +134,20 @@
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     })
+
+    function promptForInput() {
+        $('#content-box').append(`<div class="d-flex mb-2">
+            <div class="mr-2" style="width: 65px; height: 55px;">
+                <img src="/images/bot-avatar.jpg" width="100%" height="100%" style="border-radius: 50px;">
+            </div>
+            <div class="text-white px-3 py-2" style="width: 270px; background: #29924c; border-radius: 10px; font-size: 85%;">
+                Hi, what can I do for you? Just provide a BL Number if you need fast track of your shipment
+            </div>
+        </div>`);
+    }
+
+    // call the function to prompt the user for input when the page loads
+    promptForInput();
 
     function sendMessage() {
         // Check if input field is empty
