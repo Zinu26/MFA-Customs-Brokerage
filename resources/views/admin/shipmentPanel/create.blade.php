@@ -9,16 +9,19 @@
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="exampleModalLabel">Add Shipment</h1>
             </div>
-            <form action="{{ route('add_shipment') }}" method="POST">
+            <form
+                action="@if (Auth::user()->type == 'admin') {{ route('add_shipment') }}@elseif(Auth::user()->type == 'employee'){{ route('add_shipment.employee') }} @endif"
+                method="POST">
                 @csrf
                 <div class="modal-body">
                     <div class="input-group">
                         <span class="input-group-text"
                             style="background-color: #4EA646; font-weight: 600; color: white;">Consignee</span>
-                        <select name="consignee_name" class="form-control" id="exampleFormControlSelect1" onchange="getConsigneeAddress()" required>
+                        <select name="consignee_name" class="form-control" id="exampleFormControlSelect1"
+                            onchange="getConsigneeAddress()" required>
                             <option value="" disabled selected>Select consignee</option>
                             @foreach ($users as $user)
-                                <option value='{{$user->name}}'>{{$user->name}}</option>
+                                <option value='{{ $user->name }}'>{{ $user->name }}</option>
                             @endforeach
                         </select>
                     </div></br>

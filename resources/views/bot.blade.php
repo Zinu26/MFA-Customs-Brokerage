@@ -80,7 +80,7 @@
             if (index < message.length) {
                 messageBox.append(message.charAt(index));
                 index++;
-                setTimeout(appendLetter, 100); // delay between letters in milliseconds
+                setTimeout(appendLetter, 50); // delay between letters in milliseconds
             }
         }
 

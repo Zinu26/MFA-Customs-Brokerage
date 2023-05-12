@@ -21,21 +21,9 @@ class AuthController extends Controller
             'password.required' => 'Please enter your password.',
         ]);
 
-        $credentials = $request->only('username', 'password');
-
-        // Check if the user has 2FA enabled
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-            if ($user->google2fa_secret) {
-                // 2FA is enabled, show the 2FA code form
-                session()->put('2fa:user:id', $user->id);
-                return redirect()->route('2fa');
-            }
-            // 2FA is not enabled, continue with the login process
-            $loginSuccessful = true;
-            session()->flash('success', 'You have successfully logged in.');
-
-            if (Auth::user()->type == '0') {
+        if (Auth::attempt(['username' => $request->input('username'), 'password' => $request->input('password')])) {
+            // User authenticated, check their role and redirect to appropriate dashboard
+            if (Auth::user()->type == 'admin') {
                 // Create a new activity log record for this user
                 ActivityLog::create([
                     'user_id' => Auth::id(),
@@ -43,8 +31,8 @@ class AuthController extends Controller
                     'loggable_type' => 'Admin',
                     'activity' => 'Admin logged in',
                 ]);
-            }
-            else if (Auth::user()->type == '1') {
+                return redirect()->route('admin.dashboard');
+            } else if (Auth::user()->type == 'employee') {
                 // Create a new activity log record for this user
                 ActivityLog::create([
                     'user_id' => Auth::id(),
@@ -52,16 +40,15 @@ class AuthController extends Controller
                     'loggable_type' => 'Employee',
                     'activity' => 'Employee logged in',
                 ]);
+                return redirect()->route('employee.dashboard');
             }
-
-
-            return redirect()->route('admin.dashboard');
         }
-
-        return back()
+        // Authentication failed
+        return redirect()->route('login')
             ->withErrors(['login' => 'The provided credentials do not match our records.'])
             ->withInput()
             ->with('error', 'The provided credentials do not match our records.');
+
     }
 
     public function login_client(Request $request)
@@ -113,9 +100,7 @@ class AuthController extends Controller
         // Get the currently authenticated user
         $user = Auth::user();
 
-
-
-        if ($user->type == 0) {
+        if ($user->type == 'admin') {
             // Create a new activity log record for this user
             ActivityLog::create([
                 'user_id' => Auth::id(),
@@ -124,7 +109,7 @@ class AuthController extends Controller
                 'activity' => 'Admin logged out',
             ]);
         }
-        else if ($user->type == 1) {
+        else if ($user->type == 'employee') {
             // Create a new activity log record for this user
             ActivityLog::create([
                 'user_id' => Auth::id(),
@@ -154,50 +139,5 @@ class AuthController extends Controller
 
         Auth::logout();
         return redirect()->route('login');;
-    }
-
-
-
-    public function show2faForm()
-    {
-        return view('auth.2fa');
-    }
-
-    public function process2faForm(Request $request)
-    {
-        $request->validate([
-            'one_time_password' => 'required',
-        ]);
-        $userId = session()->get('2fa:user:id');
-        $user = User::findOrFail($userId);
-
-        // Check if the provided 2FA code is valid
-        $google2fa = app('pragmarx.google2fa');
-        $valid = $google2fa->verifyKey($user->google2fa_secret, $request->one_time_password);
-
-        if ($valid) {
-            // 2FA code is valid, continue with the login process
-            session()->forget('2fa:user:id');
-            Auth::login($user);
-
-            session()->flash('success', 'You have successfully logged in.');
-
-            // Create a new activity log record for this user
-            ActivityLog::create([
-                'user_id' => Auth::id(),
-                'loggable_id' => Auth::id(),
-                'loggable_type' => 'User',
-                'activity' => 'User logged in',
-            ]);
-
-            return redirect()->route('admin.dashboard');
-        }
-
-        // 2FA code is not valid, show an error message
-        session()->flash('failed', 'The provided 2FA code is invalid.');
-
-        return back()
-            ->withErrors(['one_time_password' => 'The provided 2FA code is invalid.'])
-            ->withInput();
     }
 }

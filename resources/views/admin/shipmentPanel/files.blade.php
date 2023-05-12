@@ -20,7 +20,10 @@
                         @if ($file->shipment_id == $shipment->id)
                             <tr>
                                 <td>{{ $file->name }}</td>
-                                <td><a href="{{ route('download_file', $file->id) }}"><button class="btn btn-secondary"><i class="fa fa-download"></i> Download</button></a></td>
+                                <td><a
+                                        href="@if (Auth::user()->type == 'admin') {{ route('download_file', $file->id) }}@elseif(Auth::user()->type == 'employee'){{ route('download_file.employee', $file->id) }} @endif"><button
+                                            class="btn btn-secondary"><i class="fa fa-download"></i>
+                                            Download</button></a></td>
                             </tr>
                         @endif
                     @endforeach
