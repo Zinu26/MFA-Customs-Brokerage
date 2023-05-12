@@ -32,7 +32,7 @@
         </section>
     </div>
 
-    @include ('bot')
+    @include ('chatbot.chatbot')
 </body>
 
 </html>

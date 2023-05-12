@@ -43,6 +43,10 @@ Route::get('/', [ChatbotController::class, 'home'])->name('landing');
 
 Route::post('send', [ChatBotController::class, 'sendChat'])->name('sendChat');
 
+
+Route::post('/guest/send', [ChatBotController::class, 'guest_send'])->name('guest_send');
+
+
 Route::get('/Track-Now', function () {
     return view('track');
 })->name('track');
@@ -77,10 +81,6 @@ Route::post('/client/login', [AuthController::class, 'login_client'])->name('sub
 //LOG OUT
 Route::get('/user/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/logout', [AuthController::class, 'logout_client'])->name('logout_client');
-
-//2FA
-Route::get('2fa', [AuthController::class, 'show2faForm'])->name('2fa');
-Route::post('2fa', [AuthController::class, 'process2faForm'])->name('2fa.process');
 
 
 //ADMIN PANEL

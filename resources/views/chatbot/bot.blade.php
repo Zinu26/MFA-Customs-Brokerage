@@ -25,11 +25,10 @@
         </div>
         <div class="chatbot-body" id="chatbot-body">
             <div></div>
-            <div id="content-box" class="container-fluid p-2" style="height: calc(100vh - 130px); overflow-y: scroll;">
-
+            <div id="content-box" class="container-fluid p-2" style="overflow-y: hidden; margin-bottom: 100px;">
             </div>
         </div>
-        <div class="container-fluid w-100 px-3 py-2 d-flex" style="background: #29924c; height: 62px;">
+        <div class="container-fluid w-100 px-3 py-2 d-flex" style="background: #29924c; position: absolute; bottom: 0;">
             <div class="mr-2 pl-2" style="background: #ffffff1c; width: calc(100% - 45px); border-radius: 5px;">
                 <input id="input" class="text-black" type="text" name="input"
                     style="background: none; width:100%; height: 100%; border: 0; outline: none;">
@@ -41,6 +40,7 @@
         </div>
     </div>
 </div>
+
 
 <!-- Add this script tag before the closing body tag -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/guzzle.js/5.3.0/guzzle.min.js"></script>
@@ -128,44 +128,107 @@
     });
 </script>
 
-<script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E="
-    crossorigin="anonymous"></script>
 <script>
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     })
-    $('#button-submit').on('click', function() {
+
+    function sendMessage() {
+        // Check if input field is empty
+        if ($('#input').val() === '') {
+            $('#button-submit').prop('disabled', true);
+            $('#button-submit').css('cursor', 'not-allowed');
+            return;
+        }
+
+        // Disable input field and submit button
+        $('#input').prop('disabled', true);
+        $('#button-submit').prop('disabled', true);
+        $('#input').css('cursor', 'not-allowed');
+
         $value = $('#input').val();
         $('#content-box').append(`<div class="mb-2">
-            <div class="float-right px-3 py-2" style="width: 270px; background: #5dd184; border-radius: 10px; float: right; font-size: 85%;">
-                ` + $value + `
-            </div>
-            <div style="clear: both;"></div>
-        </div>`);
+                            <div class="float-right px-3 py-2" style="width: 270px; background: #5dd184; border-radius: 10px; float: right; font-size: 85%;">
+                                ` + $value + `
+                            </div>
+                            <div style="clear: both;"></div>
+                        </div>`);
 
         $.ajax({
             type: 'post',
-            url: '{{ url('send') }}',
+            url: '{{ route('sendChat') }}',
             data: {
                 'input': $value
             },
             success: function(data) {
                 $('#content-box').append(`<div class="d-flex mb-2">
-            <div class="mr-2" style="width: 65px; height: 55px;">
-                <img src="/images/bot-avatar.jpg" width="100%"
-                    height="100%" style="border-radius: 50px;">
-            </div>
-            <div class="text-white px-3 py-2"
-                style="width: 270px; background: #29924c; border-radius: 10px; font-size: 85%;">
-                ` + data + `
-            </div>
-        </div>`)
+                                    <div class="mr-2" style="width: 65px; height: 55px;">
+                                        <img src="/images/bot-avatar.jpg" width="100%" height="100%" style="border-radius: 50px;">
+                                    </div>
+                                    <div class="text-white px-3 py-2" style="width: 270px; background: #29924c; border-radius: 10px; font-size: 85%;">
+                                    </div>
+                                </div>`);
+
+                let index = 0;
+                let messageBox = $('#content-box .text-white:last');
+                let message = data;
+
+                function appendLetter() {
+                    if (index < message.length) {
+                        messageBox.append(message.charAt(index));
+                        index++;
+                        setTimeout(appendLetter, 50); // delay between letters in milliseconds
+                    } else {
+                        // Enable input field and submit button
+                        $('#input').prop('disabled', false);
+                        $('#button-submit').prop('disabled', false);
+                        $('#input').css('cursor', 'text');
+
+                        // Scroll down content box if it's scrollable
+                        let contentBox = $('#content-box')[0];
+                        if (contentBox.scrollHeight > contentBox.clientHeight) {
+                            contentBox.scrollTop = contentBox.scrollHeight - contentBox
+                                .clientHeight;
+                        }
+                    }
+                }
+
+                setTimeout(appendLetter, 1000); // delay before starting in milliseconds
+
                 $value = $('#input').val('');
             }
         })
+    }
+
+    $('#button-submit').on('click', function() {
+        sendMessage();
     })
+
+    $('#input').on('keypress', function(e) {
+        if (e.which === 13) { // enter key pressed
+            sendMessage();
+        }
+    })
+</script>
+
+
+<script>
+    var contentBox = document.getElementById("content-box");
+    var maxContentHeight = parseInt(contentBox.style.height);
+
+    function toggleContentScroll() {
+        if (contentBox.scrollHeight > maxContentHeight) {
+            contentBox.style.overflowY = "scroll";
+        } else {
+            contentBox.style.overflowY = "hidden";
+        }
+    }
+
+    // Call toggleContentScroll when the window is resized or when the content is changed dynamically
+    window.addEventListener("resize", toggleContentScroll);
+    contentBox.addEventListener("DOMNodeInserted", toggleContentScroll);
 </script>
 
 
@@ -185,4 +248,3 @@
         addMessageToChatbotBody(chatbotMessageElement);
     });
     } --}}
-
