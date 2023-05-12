@@ -9,7 +9,8 @@
         <div>
             <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#exampleModal"><i
                     class="fa fa-user-plus"></i> Add Consignee</button>
-            <a href="{{ route('consignee_archive_list') }}">
+            <a
+                href="@if (Auth::user()->type == 'admin') {{ route('consignee_archive_list') }} @elseif(Auth::user()->type == 'employee'){{ route('consignee_archive_list.employee') }} @endif">
                 <button class="btn btn-danger"><i class="fa fa-folder-minus"></i> Archive</button>
             </a>
         </div>
@@ -35,7 +36,7 @@
                 @if ($client->status == false)
                     <tr class="text-center">
                         <td>{{ $loop->iteration }}</td>
-                        <td><a href="{{ route('open_shipment', $client->id) }}"
+                        <td><a href="@if (Auth::user()->type == 'admin') {{ route('open_shipment', $client->id) }} @elseif(Auth::user()->type == 'employee') {{ route('open_shipment.employee', $client->id) }} @endif"
                                 style="text-decoration: none; color:#fff;">{{ $client->user->name }}</a></td>
                         <td>{{ $client->tin }}</td>
                         <td>{{ $client->user->email }}</td>
@@ -59,7 +60,7 @@
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="exampleModalLabel">Add Consignee</h1>
             </div>
-            <form action="{{ route('add_client') }}" method="POST">
+            <form action="@if(Auth::user()->type == 'admin'){{ route('add_client') }}@elseif(Auth::user()->type == 'employee'){{ route('add_client.employee') }} @endif" method="POST">
                 @csrf
                 <div class="modal-body">
                     <div class="input-group">

@@ -8,7 +8,9 @@
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="exampleModalLabel">Upload Files</h1>
             </div>
-            <form action="{{route('upload_files')}}" method="POST" enctype="multipart/form-data">
+            <form
+                action="@if (Auth::user()->type == 'admin') {{ route('upload_files') }}@elseif(Auth::user()->type == 'employee'){{ route('upload_files.employee') }} @endif"
+                method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
                     <input type="hidden" name="id" value="{{ $shipment->id }}" />

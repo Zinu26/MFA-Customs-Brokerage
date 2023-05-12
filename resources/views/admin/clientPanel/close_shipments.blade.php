@@ -7,7 +7,8 @@
     <div class="table-header">
         <p>{{ $consignee->user->name }}</p>
         <div>
-            <a href="{{ route('open_shipment', $consignee->id) }}">
+            <a
+                href="@if (Auth::user()->type == 'admin') {{ route('open_shipment', $consignee->id) }} @elseif (Auth::user()->type == 'employee'){{ route('open_shipment.employee', $consignee->id) }} @endif">
                 <button class="btn btn-success"><i class="fa fa-folder-plus"></i> Open Shipments</button>
             </a>
         </div>

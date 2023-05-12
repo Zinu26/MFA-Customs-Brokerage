@@ -7,10 +7,13 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ConsigneeController;
 use App\Http\Controllers\ShipmentController;
+use App\Http\Controllers\AdminConsigneeController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\ChatBotController;
+use Illuminate\Auth\Events\Verified;
 
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +35,8 @@ use App\Http\Controllers\ChatBotController;
 // Route::get('/users/{user}/activity-logs', [ActivityLogController::class, 'index']);
 
 // Route::post('/chatbot', [ChatBotController::class, 'handleRequest']);
+
+Auth::routes(['verify' => true]);
 
 //UNKNOWN USERS
 Route::get('/', [ChatbotController::class, 'home'])->name('landing');
@@ -128,23 +133,23 @@ Route::middleware(['auth', 'user-type:employee'])->group(function () {
         ->name('employee.dashboard')->middleware('verified');
 
     Route::controller(ConsigneeController::class)->group(function () {
-        Route::get('/employee/client_list', 'client_page')->name('client_list');
-        Route::post('employee/add_client', 'add')->name('add_client');
-        Route::put('/employee/clients/{id}', 'update')->name('update_client');
-        Route::get('/employee/archive_consignee', 'archive_list')->name('consignee_archive_list');
-        Route::post('/employee/archive_consignee/{id}', 'archive_client')->name('archive_client');
-        Route::post('/employee/restore_consignee/{id}', 'restore_client')->name('restore_client');
-        Route::get('/employee/consignee/{id}/open_shipment', 'open_shipment')->name('open_shipment');
-        Route::get('/employee/consignee/{id}/closed_shipment', 'close_shipment')->name('close_shipment');
+        Route::get('/employee/client_list', 'client_page')->name('client_list.employee');
+        Route::post('employee/add_client', 'add')->name('add_client.employee');
+        Route::put('/employee/clients/{id}', 'update')->name('update_client.employee');
+        Route::get('/employee/archive_consignee', 'archive_list')->name('consignee_archive_list.employee');
+        Route::post('/employee/archive_consignee/{id}', 'archive_client')->name('archive_client.employee');
+        Route::post('/employee/restore_consignee/{id}', 'restore_client')->name('restore_client.employee');
+        Route::get('/employee/consignee/{id}/open_shipment', 'open_shipment')->name('open_shipment.employee');
+        Route::get('/employee/consignee/{id}/closed_shipment', 'close_shipment')->name('close_shipment.employee');
     });
 
     Route::controller(ShipmentController::class)->group(function () {
-        Route::get('/employee/shipments', 'index')->name('shipments');
-        Route::post('/employee/shipments', 'add')->name('add_shipment');
-        Route::post('/employee/update_shipments/{id}', 'edit')->name('edit_shipment');
-        Route::get('/employee/close_shipments', 'close_shipment')->name('close_shipments');
-        Route::post('/employee/upload-files', 'uploadFiles')->name('upload_files');
-        Route::get('/employee/files/{id}', 'download')->name('download_file');
+        Route::get('/employee/shipments', 'index')->name('shipments.employee');
+        Route::post('/employee/shipments', 'add')->name('add_shipment.employee');
+        Route::post('/employee/update_shipments/{id}', 'edit')->name('edit_shipment.employee');
+        Route::get('/employee/close_shipments', 'close_shipment')->name('close_shipments.employee');
+        Route::post('/employee/upload-files', 'uploadFiles')->name('upload_files.employee');
+        Route::get('/employee/files/{id}', 'download')->name('download_file.employee');
     });
 });
 
