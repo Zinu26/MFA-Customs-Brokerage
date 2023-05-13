@@ -7,8 +7,10 @@
     <div class="table-header">
         <p>Consignees</p>
         <div>
+            @if(Auth::user()->type == 'admin')
             <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#exampleModal"><i
                     class="fa fa-user-plus"></i> Add Consignee</button>
+            @endif
             <a
                 href="@if (Auth::user()->type == 'admin') {{ route('consignee_archive_list') }} @elseif(Auth::user()->type == 'employee'){{ route('consignee_archive_list.employee') }} @endif">
                 <button class="btn btn-danger"><i class="fa fa-folder-minus"></i> Archive</button>
@@ -41,10 +43,16 @@
                         <td>{{ $client->tin }}</td>
                         <td>{{ $client->user->email }}</td>
                         <td>{{ $client->address }}</td>
+                        @if(Auth::user()->type == 'admin')
                         <td class="text-center col-2">
+                        @elseif(Auth::user()->type == 'employee')
+                        <td class="text-center col-1">
+                        @endif
                             @include('admin.clientPanel.view')
-                            @include('admin.clientPanel.edit')
-                            @include('admin.clientPanel.archive')
+                            @if(Auth::user()->type == 'admin')
+                                @include('admin.clientPanel.edit')
+                                @include('admin.clientPanel.archive')
+                            @endif
                         </td>
                     </tr>
                 @endif

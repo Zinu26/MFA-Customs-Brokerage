@@ -7,9 +7,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ConsigneeController;
 use App\Http\Controllers\ShipmentController;
-use App\Http\Controllers\AdminConsigneeController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\ChatBotController;
 use Illuminate\Auth\Events\Verified;
 
@@ -71,6 +71,7 @@ Route::get('/client/login', function () {
 
 Route::get('/search', [ShipmentController::class, 'search'])->name('search');
 
+Route::post('/shipments/details', [NotificationController::class, 'getShipmentDetails'])->name('getShipmentDetails');
 
 //LOGIN
 Route::post('/user/login', [AuthController::class, 'login'])->name('submit.login');
