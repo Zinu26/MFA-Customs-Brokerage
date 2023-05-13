@@ -53,49 +53,7 @@
     const chatbotToggle = document.getElementById("chatbot-toggle");
     const chatbotWindow = document.getElementById("chatbot-window");
     const chatbotCloseBtn = document.getElementById("chatbot-close-btn");
-    const chatbotInput = document.getElementById("chatbot-input");
-    const chatbotBody = document.getElementById("chatbot-body");
 
-    // Function to create user message element
-    function createUserMessageElement(message) {
-        const userMessageContainer = document.createElement("div");
-        userMessageContainer.classList.add("user-message-container");
-        const userMessage = document.createElement("div");
-        userMessage.classList.add("user-message");
-        userMessage.textContent = message;
-        userMessageContainer.appendChild(userMessage);
-        return userMessageContainer;
-    }
-
-    // Function to create chatbot message element
-    function createChatbotMessageElement(message) {
-        const chatbotMessageContainer = document.createElement("div");
-        chatbotMessageContainer.classList.add("chatbot-message-container");
-        const chatbotMessage = document.createElement("div");
-        chatbotMessage.classList.add("chatbot-message");
-        chatbotMessage.textContent = message;
-        chatbotMessageContainer.appendChild(chatbotMessage);
-        return chatbotMessageContainer;
-    }
-
-    // Function to add message to chatbot body
-    function addMessageToChatbotBody(messageElement) {
-        chatbotBody.appendChild(messageElement);
-        chatbotBody.scrollTop = chatbotBody.scrollHeight;
-    }
-
-    // Function to send user input to backend and get chatbot response
-    function sendUserInputToBackend(userInput) {
-        const formData = new FormData();
-        formData.append("message", userInput);
-        guzzle.post("/chatbot", {
-            body: formData
-        }).then((response) => {
-            const chatbotResponse = response.body.response;
-            const chatbotMessageElement = createChatbotMessageElement(chatbotResponse);
-            addMessageToChatbotBody(chatbotMessageElement);
-        });
-    }
 
     // Event listener for chatbot toggle button
     chatbotToggle.addEventListener("click", () => {
@@ -110,21 +68,6 @@
     // Event listener for chatbot close button
     chatbotCloseBtn.addEventListener("click", () => {
         chatbotWindow.style.display = "none";
-    });
-
-    // Event listener for chatbot input
-    chatbotInput.addEventListener("keydown", (event) => {
-        if (event.key === "Enter") {
-            const userInput = chatbotInput.value.trim();
-            if (userInput) {
-                const userMessageElement = createUserMessageElement(userInput);
-                addMessageToChatbotBody(userMessageElement);
-                chatbotInput.value = "";
-
-                // Send user input to backend and get chatbot response
-                sendUserInputToBackend(userInput);
-            }
-        }
     });
 </script>
 

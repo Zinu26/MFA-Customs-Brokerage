@@ -42,8 +42,6 @@ Auth::routes(['verify' => true]);
 Route::get('/', [ChatbotController::class, 'home'])->name('landing');
 
 Route::post('send', [ChatBotController::class, 'sendChat'])->name('sendChat');
-
-
 Route::post('/guest/send', [ChatBotController::class, 'guest_send'])->name('guest_send');
 
 
