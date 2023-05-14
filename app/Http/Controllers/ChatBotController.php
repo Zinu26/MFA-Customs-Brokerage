@@ -6,115 +6,177 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Shipment;
-use App\Models\FAQ;
 
 class ChatBotController extends Controller
 {
-    // public function sendChat(Request $request){
-    //     $result = OpenAI::completions()->create([
-    //         'max_tokens' => 100,
-    //         'model' => 'text-davinci-003',
-    //         'prompt' => $request->input
-    //     ]);
-
-    //     $response = array_reduce(
-    //         $result->toArray()['choices'],
-    //         fn(string $result, array $choice) => $result . $choice['text'], ""
-    //     );
-
-    //     return $response;
-    // }
-
     public function home()
     {
-        $faqs = Faq::all();
-
-        return view('landing', compact('faqs'));
+        return view('landing');
     }
 
+    // Basic words
     // public function sendChat(Request $request)
     // {
     //     $user = Auth::user();
-    //     $input = $request->input;
+    //     $input = strtolower(trim($request->input));
 
-    //     // Find BL Numbers in the database
-    //     // Find BL Numbers in the database
-    //     if (preg_match('/^\d+$/', $input, $matches)) {
-    //         $bl_number = $matches[0];
-    //         $shipment = Shipment::where('bl_number', $bl_number)->where('consignee_name', $user->name)->first();
-    //         if ($shipment) {
-    //             // Prompt the user for more details about the shipment
-    //             $response = 'What details would you like to know about shipment ' . $bl_number . '?';
-    //             $options = [
-    //                 'Shipment Status',
-    //                 'DO Status',
-    //             ];
-    //             $response .= ' [Options: ' . implode(', ', $options) . ']';
+    //     $conversation = session('conversation', []);
+    //     $last_message = end($conversation);
 
-    //             // Keep prompting the user for input until they enter "stop" or "reset"
-    //             $stop_words = ['stop', 'reset'];
-    //             $input = strtolower(trim($input));
-    //             while (!in_array($input, $stop_words)) {
-    //                 // Generate a response based on the user's input
+    //     // Start a new conversation if this is the first message or the previous message was a "stop" command
+    //     if (empty($conversation) || $last_message === 'stop') {
+    //         $conversation = [];
+    //         $response = 'Hi, ' . $user->name . '! What BL number are you inquiring about?';
+    //     } else {
+    //         // Find BL Numbers in the database
+    //         if (preg_match('/^\d+$/', $input, $matches)) {
+    //             $bl_number = $matches[0];
+    //             $shipment = Shipment::where('bl_number', $bl_number)->where('consignee_name', $user->name)->first();
+    //             if ($shipment) {
+    //                 // If the user is asking about a shipment, prompt for details
+    //                 $conversation[] = $input;
+    //                 session(['shipment' => $shipment]);
+    //                 $response = 'What details do you want to know about the shipment? You can ask about its shipment status, DO status, Billing status, arrival date, delivery date, entry number, shipping line or item description.';
+    //             } else {
+    //                 // The BL number was not found in the database
+    //                 $response = 'Sorry, I couldn\'t find any shipments with BL number ' . $bl_number . ' under ' . $user->name . '. Please try again.';
+    //             }
+    //         } elseif ($last_message && $last_message !== 'stop') {
+    //             // If the user is inquiring about shipment details, provide a response based on their input
+    //             $shipment = session('shipment');
+    //             if ($shipment) {
+    //                 $conversation[] = $input;
     //                 switch ($input) {
+    //                     case 'reset':
+    //                         $conversation = [];
+    //                         $response = 'Okay, let\'s start over. What BL number are you inquiring about?';
+    //                         break;
+    //                     case 'stop':
+    //                         $response = 'Okay, have a great day!';
+    //                         break;
     //                     case 'shipment status':
-    //                         $response = 'The shipment status for shipment ' . $bl_number . ' is ' . $shipment->status;
+    //                         $response = 'The current status of this shipment is ' . $shipment->shipment_status . '.';
+    //                         $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+    //                         break;
+    //                     case 'shipment':
+    //                         $response = 'The current status of this shipment is ' . $shipment->shipment_status . '.';
+    //                         $response .= ' Would you like to know more about this shipment? You can also say "reset" to start over or "stop" to end this conversation.';
     //                         break;
     //                     case 'do status':
-    //                         $response = 'The DO status for shipment ' . $bl_number . ' is ' . $shipment->do_status;
+    //                         $response = 'The DO status of this shipment is ' . $shipment->do_status . '.';
+    //                         $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+    //                         break;
+    //                     case 'do':
+    //                         $response = 'The DO status of this shipment is ' . $shipment->do_status . '.';
+    //                         $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+    //                         break;
+    //                     case 'billing':
+    //                         $response = 'The Billing status of this shipment is ' . $shipment->billing_status . '.';
+    //                         $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+    //                         break;
+    //                     case 'billing status':
+    //                         $response = 'The Billing status of this shipment is ' . $shipment->billing_status . '.';
+    //                         $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+    //                         break;
+    //                     case 'arrival date':
+    //                         $response = 'The Arrival date of this shipment is ' . $shipment->arrival . '.';
+    //                         $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+    //                         break;
+    //                     case 'arrival':
+    //                         $response = 'The Arrival date of this shipment is ' . $shipment->arrival . '.';
+    //                         $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+    //                         break;
+    //                     case 'delivery date':
+    //                         if ($shipment->predicted_delivery_date !== null) {
+    //                             $response = 'The Delivery date of this shipment is ' . $shipment->predicted_delivery_date . '.';
+    //                             $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+    //                         } else {
+    //                             $response = 'The shipment is currently being processed. We will let you know when it will be delivered.';
+    //                             $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+    //                         }
+    //                         break;
+    //                     case 'delivery':
+    //                         if ($shipment->predicted_delivery_date !== null) {
+    //                             $response = 'The Delivery date of this shipment is ' . $shipment->predicted_delivery_date . '.';
+    //                             $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+    //                         } else {
+    //                             $response = 'The shipment is currently being processed. We will let you know when it will be delivered.';
+    //                             $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+    //                         }
+    //                         break;
+    //                     case 'entry number':
+    //                         $response = 'The Entry number of this shipment is ' . $shipment->entry_number . '.';
+    //                         $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+    //                         break;
+    //                     case 'entry':
+    //                         $response = 'The Entry number of this shipment is ' . $shipment->entry_number . '.';
+    //                         $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+    //                         break;
+    //                     case 'shipping line':
+    //                         $response = 'This shipment is under ' . $shipment->shipping_line . '.';
+    //                         $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+    //                         break;
+    //                     case 'shipping':
+    //                         $response = 'This shipment is under ' . $shipment->shipping_line . '.';
+    //                         $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+    //                         break;
+    //                     case 'description':
+    //                         $response =  'Size: ' . $shipment->size . 'Item: ' . $shipment->item_description . ' Weight: ' . $shipment->weight . '.';
+    //                         $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+    //                         break;
+    //                     case 'details':
+    //                         $response =  'Size: ' . $shipment->size . 'Item: ' . $shipment->item_description . ' Weight: ' . $shipment->weight . '.';
+    //                         $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+    //                         break;
+    //                     case 'item':
+    //                         $response =  'Size: ' . $shipment->size . 'Item: ' . $shipment->item_description . ' Weight: ' . $shipment->weight . '.';
+    //                         $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
     //                         break;
     //                     default:
-    //                         $response = 'I\'m sorry, I didn\'t understand your input. Please choose one of the available options for shipment ' . $bl_number . '. [Options: ' . implode(', ', $options) . ']';
+    //                         $response = 'Sorry, I didn\'t understand that. You can ask about the shipment\'s status or DO status.';
     //                         break;
     //                 }
-    //                 // Prompt the user for more input
-    //                 $input = strtolower(trim(fgets(STDIN)));
+    //             } else {
+    //                 // The user needs to provide a valid BL number before requesting shipment details
+    //                 $response = 'Sorry, I don\'t have any shipments to provide details about. Please provide a BL number.';
     //             }
-    //             return $response;
     //         } else {
-    //             // The BL number was not found in the database
-    //             $responses = [
-    //                 'Sorry, I couldn\'t find any shipments with BL number ' . $bl_number . ' Under ' . $user->name . ' Shipment list. Please try again.',
-    //                 'Unfortunately, there are no shipments matching BL number ' . $bl_number . ' in ' . $user->name . ' Shipment list. Please check your input and try again.',
-    //                 'I\'m sorry, I couldn\'t locate any shipments with BL number ' . $bl_number . ' under ' . $user->name . '. Please revise your search and try again.',
-    //                 'Regrettably, there are no shipments associated with BL number ' . $bl_number . ' in ' . $user->name . ' Shipment list. Please verify your details and try again.',
-    //                 'Apologies, but I couldn\'t find any shipments that match BL number ' . $bl_number . ' for ' . $user->name . '. Please double-check your information and try again.',
-    //                 'I regret to inform you that there are no shipments with BL number ' . $bl_number . ' linked to ' . $user->name . ' Shipment list. Please re-enter your query and try again.',
-    //             ];
-    //             $response = $responses[array_rand($responses)];
-    //             return $response;
+    //             // If the user has not provided a valid input, ask them to try again
+    //             $response = 'Sorry, I didn\'t understand that. What BL number are you inquiring about?';
     //         }
     //     }
-
-    //     // If the input is not related to shipments or company details, prompt a randomly-selected generic response
-    //     $responses = [
-    //         'I apologize, but I can only answer questions related to MFA company and shipments details. Please try asking a different question.',
-    //         'I am not sure I understand your question. Could you please rephrase it in terms of MFA company and shipments details?',
-    //         'Unfortunately, I cannot assist you with that. Please ask me a question related to MFA company and shipments details.',
-    //         'I am sorry, but I am only able to answer questions related to MFA company and shipments details. Can I help you with anything else?',
-    //         'I am designed to answer questions related to MFA shipments and company details. Please try asking me about those topics.',
-    //         'That does not seem to be related to MFA company and shipments details. Do you have a question on those topics?'
-    //     ];
-    //     $response = $responses[array_rand($responses)];
+    //     $conversation[] = $input;
+    //     session(['conversation' => $conversation]);
     //     return $response;
     // }
 
+    // Sentence
     public function sendChat(Request $request)
     {
         $user = Auth::user();
-        $input = strtolower(trim($request->input));
+        $input = preg_replace('/[^a-zA-Z0-9\s]/', '', strtolower($request->input));
 
         $conversation = session('conversation', []);
         $last_message = end($conversation);
+
+        $keywords = ['reset', 'stop', 'shipment', 'do', 'billing', 'arrival', 'delivery', 'entry', 'shipping', 'details', 'shipment status', 'do status', 'billing status', 'arrival date', 'delivery date', 'entry number', 'shipping line', 'item description'];
 
         // Start a new conversation if this is the first message or the previous message was a "stop" command
         if (empty($conversation) || $last_message === 'stop') {
             $conversation = [];
             $response = 'Hi, ' . $user->name . '! What BL number are you inquiring about?';
         } else {
-            // Find BL Numbers in the database
-            if (preg_match('/^\d+$/', $input, $matches)) {
-                $bl_number = $matches[0];
+            // Check if input matches BL number
+            $words = preg_split('/\s+/', $input);
+            $bl_number = null;
+            foreach ($words as $word) {
+                if (preg_match('/^\d+$/', $word)) {
+                    $bl_number = $word;
+                    break;
+                }
+            }
+
+            if ($bl_number) {
                 $shipment = Shipment::where('bl_number', $bl_number)->where('consignee_name', $user->name)->first();
                 if ($shipment) {
                     // If the user is asking about a shipment, prompt for details
@@ -130,71 +192,101 @@ class ChatBotController extends Controller
                 $shipment = session('shipment');
                 if ($shipment) {
                     $conversation[] = $input;
-                    switch ($input) {
-                        case 'shipment status':
-                            $response = 'The current status of this shipment is ' . $shipment->shipment_status . '.';
-                            break;
-                        case 'shipment':
-                            $response = 'The current status of this shipment is ' . $shipment->shipment_status . '.';
-                            break;
-                        case 'do status':
-                            $response = 'The DO status of this shipment is ' . $shipment->do_status . '.';
-                            break;
-                        case 'do':
-                            $response = 'The DO status of this shipment is ' . $shipment->do_status . '.';
-                            break;
-                        case 'billing':
-                            $response = 'The Billing status of this shipment is ' . $shipment->billing_status . '.';
-                            break;
-                        case 'billing status':
-                            $response = 'The Billing status of this shipment is ' . $shipment->billing_status . '.';
-                            break;
-                        case 'arrival date':
-                            $response = 'The Arrival date of this shipment is ' . $shipment->arrival . '.';
-                            break;
-                        case 'arrival':
-                            $response = 'The Arrival date of this shipment is ' . $shipment->arrival . '.';
-                            break;
-                        case 'delivery date':
-                            if ($shipment->predicted_delivery_date !== null) {
-                                $response = 'The Delivery date of this shipment is ' . $shipment->predicted_delivery_date . '.';
-                            } else {
-                                $response = 'The shipment is currently being processed. We will let you know when it will be delivered.';
+
+                    foreach ($keywords as $keyword) {
+                        if (strpos($input, $keyword) !== false) {
+                            switch ($keyword) {
+                                case 'reset':
+                                    $conversation = [];
+                                    $response = 'Okay, let\'s start over. What BL number are you inquiring about?';
+                                    break;
+                                case 'stop':
+                                    $response = 'Okay, have a great day!';
+                                    break;
+                                case 'shipment status':
+                                    $response = 'The current status of this shipment is ' . $shipment->shipment_status . '.';
+                                    $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+                                    break;
+                                case 'shipment':
+                                    $response = 'The current status of this shipment is ' . $shipment->shipment_status . '.';
+                                    $response .= ' Would you like to know more about this shipment? You can also say "reset" to start over or "stop" to end this conversation.';
+                                    break;
+                                case 'do status':
+                                    $response = 'The DO status of this shipment is ' . $shipment->do_status . '.';
+                                    $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+                                    break;
+                                case 'do':
+                                    $response = 'The DO status of this shipment is ' . $shipment->do_status . '.';
+                                    $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+                                    break;
+                                case 'billing':
+                                    $response = 'The Billing status of this shipment is ' . $shipment->billing_status . '.';
+                                    $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+                                    break;
+                                case 'billing status':
+                                    $response = 'The Billing status of this shipment is ' . $shipment->billing_status . '.';
+                                    $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+                                    break;
+                                case 'arrival date':
+                                    $response = 'The Arrival date of this shipment is ' . $shipment->arrival . '.';
+                                    $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+                                    break;
+                                case 'arrival':
+                                    $response = 'The Arrival date of this shipment is ' . $shipment->arrival . '.';
+                                    $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+                                    break;
+                                case 'delivery date':
+                                    if ($shipment->predicted_delivery_date !== null) {
+                                        $response = 'The Delivery date of this shipment is ' . $shipment->predicted_delivery_date . '.';
+                                        $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+                                    } else {
+                                        $response = 'The shipment is currently being processed. We will let you know when it will be delivered.';
+                                        $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+                                    }
+                                    break;
+                                case 'delivery':
+                                    if ($shipment->predicted_delivery_date !== null) {
+                                        $response = 'The Delivery date of this shipment is ' . $shipment->predicted_delivery_date . '.';
+                                        $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+                                    } else {
+                                        $response = 'The shipment is currently being processed. We will let you know when it will be delivered.';
+                                        $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+                                    }
+                                    break;
+                                case 'entry number':
+                                    $response = 'The Entry number of this shipment is ' . $shipment->entry_number . '.';
+                                    $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+                                    break;
+                                case 'entry':
+                                    $response = 'The Entry number of this shipment is ' . $shipment->entry_number . '.';
+                                    $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+                                    break;
+                                case 'shipping line':
+                                    $response = 'This shipment is under ' . $shipment->shipping_line . '.';
+                                    $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+                                    break;
+                                case 'shipping':
+                                    $response = 'This shipment is under ' . $shipment->shipping_line . '.';
+                                    $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+                                    break;
+                                case 'description':
+                                    $response =  'Size: ' . $shipment->size . 'Item: ' . $shipment->item_description . ' Weight: ' . $shipment->weight . '.';
+                                    $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+                                    break;
+                                case 'details':
+                                    $response =  'Size: ' . $shipment->size . 'Item: ' . $shipment->item_description . ' Weight: ' . $shipment->weight . '.';
+                                    $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+                                    break;
+                                case 'item':
+                                    $response =  'Size: ' . $shipment->size . 'Item: ' . $shipment->item_description . ' Weight: ' . $shipment->weight . '.';
+                                    $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+                                    break;
+                                default:
+                                    $response = 'Sorry, I didn\'t understand that. You can ask about the shipment\'s status or DO status.';
+                                    break;
                             }
-                            break;
-                        case 'delivery':
-                            if ($shipment->predicted_delivery_date !== null) {
-                                $response = 'The Delivery date of this shipment is ' . $shipment->predicted_delivery_date . '.';
-                            } else {
-                                $response = 'The shipment is currently being processed. We will let you know when it will be delivered.';
-                            }
-                            break;
-                        case 'entry number':
-                            $response = 'The Entry number of this shipment is ' . $shipment->entry_number . '.';
-                            break;
-                        case 'entry':
-                            $response = 'The Entry numberof this shipment is ' . $shipment->entry_number . '.';
-                            break;
-                        case 'shipping line':
-                            $response = 'This shipment is under ' . $shipment->shipping_line . '.';
-                            break;
-                        case 'shipping':
-                            $response = 'This shipment is under ' . $shipment->shipping_line . '.';
-                            break;
-                        case 'description':
-                            $response =  'Size: ' . $shipment->size . 'Item: ' . $shipment->item_description . ' Weight: ' . $shipment->weight . '.';
-                            break;
-                        case 'details':
-                            $response =  'Size: ' . $shipment->size . 'Item: ' . $shipment->item_description . ' Weight: ' . $shipment->weight . '.';
-                            break;
-                        case 'item':
-                            $response =  'Size: ' . $shipment->size . 'Item: ' . $shipment->item_description . ' Weight: ' . $shipment->weight . '.';
-                            break;
-                        default:
-                            $response = 'Sorry, I didn\'t understand that. You can ask about the shipment\'s status or DO status.';
-                            break;
+                        }
                     }
-                    $response .= ' Would you like to know more about this shipment? You can also say "reset" to start over or "stop" to end this conversation.';
                 } else {
                     // The user needs to provide a valid BL number before requesting shipment details
                     $response = 'Sorry, I don\'t have any shipments to provide details about. Please provide a BL number.';

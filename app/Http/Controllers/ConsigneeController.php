@@ -281,7 +281,9 @@ class ConsigneeController extends Controller
             ->take(5)
             ->get();
 
-        return view('clients.dashboard', compact('shipments', 'labels', 'values'));
+        $notifications = auth()->user()->notifications;
+
+        return view('clients.dashboard', compact('shipments', 'labels', 'values', 'notifications'));
     }
 
     function consignee_open_shipment()

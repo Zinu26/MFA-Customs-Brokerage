@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Events\ShipmentCreated;
+use App\Events\ShipmentUpdated;
+
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -15,6 +18,14 @@ class EventServiceProvider extends ServiceProvider
      * @var array<class-string, array<int, class-string>>
      */
     protected $listen = [
+
+        ShipmentCreated::class => [
+            ShipmentNotificationListener::class, 'onShipmentCreated'
+        ],
+        ShipmentUpdated::class => [
+            ShipmentNotificationListener::class, 'onShipmentUpdated'
+        ],
+
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],

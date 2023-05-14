@@ -40,7 +40,10 @@
                         <td>{{ $client->user->email }}</td>
                         <td>{{ $client->address }}</td>
                         <td class="text-center col-1">
-                            @include('admin.clientPanel.restore')
+                            @if(Auth::user()->type == 'admin')
+                                @include('admin.clientPanel.restore')
+                            @endif
+                                @include('admin.clientPanel.view')
                         </td>
                     </tr>
                 @endif

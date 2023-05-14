@@ -108,53 +108,8 @@
                     </tbody>
                 </table>
             </div>
-            <div>
-                <canvas id="pie-chart"></canvas>
-            </div>
         </div>
 
         @include('chatbot.bot')
     </main>
 </section>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-{{-- Graph --}}
-<script>
-    var labels = {!! json_encode($labels) !!};
-    var values = {!! json_encode($values) !!};
-    var colors = [
-        'rgba(54, 162, 235, 0.8)',
-        'rgba(255, 99, 132, 0.8)',
-        'rgba(255, 205, 86, 0.8)'
-    ];
-
-    var data = {
-        labels: labels,
-        datasets: [{
-            data: values,
-            backgroundColor: colors
-        }]
-    };
-
-    var options = {
-        responsive: true,
-        maintainAspectRatio: false,
-        legend: {
-            position: 'right',
-            labels: {
-                boxWidth: 15,
-                fontColor: 'black',
-                fontSize: 13,
-                padding: 15,
-                fontFamily: 'Arial'
-            }
-        }
-    };
-
-    var ctx = document.getElementById('pie-chart').getContext('2d');
-    var chart = new Chart(ctx, {
-        type: 'pie',
-        data: data,
-        options: options
-    });
-</script>
