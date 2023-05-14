@@ -10,7 +10,7 @@
             <div class="left">
                 <h1>Dashboard</h1>
             </div>
-            @if (Auth::user()->type == 0)
+            @if (Auth::user()->type == 'admin')
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#activityLogsModal">
                     Activity Logs
                 </button>

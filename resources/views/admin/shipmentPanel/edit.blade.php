@@ -1,7 +1,7 @@
     <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#editModal{{ $shipment->id }}"><i
             class="fa fa-pencil"></i></button>
 
-    <!--Add modal-->
+    <!--Edit modal-->
     <div class="modal fade bd-example-modal-lg" id="editModal{{ $shipment->id }}" tabindex="-1"
         aria-labelledby="exampleModalLabel" aria-hidden="true" style="color: black;">
         <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -9,7 +9,9 @@
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Shipment</h1>
                 </div>
-                <form action="{{ route('edit_shipment', $shipment->id) }}" method="POST">
+                <form
+                    action="@if (Auth::user()->type == 'admin') {{ route('edit_shipment', $shipment->id) }}@elseif(Auth::user()->type == 'employee'){{ route('edit_shipment.employee', $shipment->id) }} @endif"
+                    method="POST">
                     @csrf
                     <div class="modal-body">
                         <input type="hidden" name="id" value="{{ $shipment->id }}" />
@@ -146,7 +148,7 @@
                                     value="{{ $shipment->delivery_status }}" placeholder="Delivery Status"
                                     aria-label="Delivery Status" class="form-control" readonly>
                             </div>
-                        </div>
+                        </div><br>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

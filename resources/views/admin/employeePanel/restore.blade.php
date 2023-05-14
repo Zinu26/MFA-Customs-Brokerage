@@ -1,6 +1,6 @@
 <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#unarchiveModal{{$user->id}}"><i class="fa fa-arrow-up"></i></button>
 
-<!--Hide modal-->
+<!--Restore modal-->
 <div class="modal fade" id="unarchiveModal{{$user->id}}" data-bs-backdrop="static" style="color: black;" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">

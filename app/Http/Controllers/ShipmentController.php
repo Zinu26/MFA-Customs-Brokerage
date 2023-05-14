@@ -5,14 +5,18 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Shipment;
 use App\Models\Consignee;
+use App\Models\Notification;
 use App\Models\User;
 use App\Models\Dataset;
+use App\Models\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\ActivityLog;
 use DateTime;
 use Carbon\Carbon;
+use App\Notifications\ShipmentUpdate;
+
 
 class ShipmentController extends Controller
 {
@@ -21,7 +25,8 @@ class ShipmentController extends Controller
         $shipments = Shipment::all();
         $users = User::where('type', 2)->with('consignee')->get();
         $shipping_lines = DB::table('datasets')->pluck('shipping_line')->unique();
-        return view('admin.shipmentPanel.index', compact('shipments', 'users', 'shipping_lines'));
+        $files = File::all();
+        return view('admin.shipmentPanel.index', compact('shipments', 'users', 'shipping_lines', 'files'));
     }
 
     function close_shipment()
@@ -36,6 +41,7 @@ class ShipmentController extends Controller
         $shipment = new Shipment;
 
         $shipment->consignee_name = $request->input('consignee_name');
+        $shipment->user_id = User::where('name', $shipment->consignee_name)->first()->id;
         $shipment->item_description = $request->input('item_description');
         $shipment->size = $request->input('size');
         $shipment->weight = $request->input('weight');
@@ -54,6 +60,10 @@ class ShipmentController extends Controller
 
         $shipment->destination_address = $consignee->address;
         $shipment->save();
+
+        $consigneeUser = User::find($shipment->user_id);
+        $consigneeUser->notify(new ShipmentUpdate($shipment, 'A new shipment has been added.', json_encode($shipment->toArray()), 'add'));
+
 
         // log the activity
         $log = new ActivityLog;
@@ -135,9 +145,13 @@ class ShipmentController extends Controller
             $dataset->save();
         }
 
+        $changes = $shipment->getChanges();
+
+        $consigneeUser = User::find($shipment->user_id);
+        $consigneeUser->notify(new ShipmentUpdate($shipment, 'A shipment has been updated.', json_encode($changes), 'update'));
+
         // Log activity
         $activity = 'Shipment ' . $shipment->id . ' details were updated';
-        $changes = $shipment->getChanges();
         $logData = [
             'user_id' => Auth::id(),
             'loggable' => $shipment,
@@ -162,9 +176,49 @@ class ShipmentController extends Controller
                 'bl_number' => $shipment->bl_number,
                 'entry_number' => $shipment->entry_number,
                 'arrival' => Carbon::parse($shipment->arrival)->format('F d, Y'),
+                'do_status' => $shipment->do_status,
+                'billing_status' => $shipment->billing_status,
+                'shipment_status' => $shipment->shipment_status,
             ]);
         } else {
-            return response()->json(['message' => 'No Data Found!']);
+            return response()->json(['message' => 'Sorry, your tracking attempt was unsuccessful! Please check your tracking number and try again']);
         }
+    }
+
+    public function uploadFiles(Request $request)
+    {
+        $shipment_id = $request->input('id');
+        $files = $request->file('files');
+
+        foreach ($files as $file) {
+            $filename = $file->getClientOriginalName();
+            $size = $file->getSize();
+            $location = $file->store('public/files');
+
+            $fileData = new File();
+            $fileData->shipment_id = $shipment_id;
+            $fileData->name = $filename;
+            $fileData->size = $size;
+            $fileData->location = $location;
+            $fileData->save();
+        }
+
+        return redirect()->back()->with('success', 'Files uploaded successfully.');
+    }
+
+    public function download($id)
+    {
+        $file = File::findOrFail($id);
+        $path = Storage::url($file->location);
+
+        return response()->download(public_path($path), $file->name);
+    }
+
+    // Define a controller method to update the read_at column
+    public function markAsRead(Notification $notification)
+    {
+        $notification->read_at = now();
+        $notification->save();
+        return response()->json(['success' => true]);
     }
 }

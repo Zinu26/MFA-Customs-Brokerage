@@ -75,7 +75,7 @@ nav .nav-bar .sidebarOpen {
 .nav-links li a::before {
     content: '';
     position: absolute;
-    left: 50%;
+    left: 40%;
     bottom: 0;
     transform: translateX(50%);
     height: 6px;

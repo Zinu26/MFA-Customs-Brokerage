@@ -1,6 +1,6 @@
 <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#archiveModal{{$user->id}}"><i class="fa fa-trash"></i></button>
 
-<!--Hide modal-->
+<!--Archive modal-->
 <div class="modal fade" id="archiveModal{{$user->id}}" data-bs-backdrop="static" style="color: black;" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
