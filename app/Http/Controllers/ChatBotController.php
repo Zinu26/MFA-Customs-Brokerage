@@ -6,15 +6,12 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Shipment;
-use App\Models\FAQ;
 
 class ChatBotController extends Controller
 {
     public function home()
     {
-        $faqs = Faq::all();
-
-        return view('landing', compact('faqs'));
+        return view('landing');
     }
 
     // Basic words
