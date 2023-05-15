@@ -7,6 +7,7 @@ use App\Models\Consignee;
 use App\Models\User;
 use App\Models\Shipment;
 use App\Models\Dataset;
+use App\Models\CloseShipment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\ActivityLog;
@@ -264,26 +265,14 @@ class ConsigneeController extends Controller
 
     function consignee_dashboard()
     {
-        // this is for delivery status evaluation
-        $data = Dataset::select('delivery_status', DB::raw('count(*) as count'))
-            ->groupBy('delivery_status')->where('consignee_name', Auth::user()->name)
-            ->get();
 
-        $labels = [];
-        $values = [];
-
-        foreach ($data as $item) {
-            $labels[] = $item->delivery_status;
-            $values[] = $item->count;
-        }
-
-        $shipments = Shipment::orderBy('arrival', 'desc')->where('consignee_name', Auth::user()->name)
+        $shipments = Shipment::orderBy('arrival_date', 'desc')->where('consignee_name', Auth::user()->name)
             ->take(5)
             ->get();
 
         $notifications = auth()->user()->notifications;
 
-        return view('clients.dashboard', compact('shipments', 'labels', 'values', 'notifications'));
+        return view('clients.dashboard', compact('shipments', 'notifications'));
     }
 
     function consignee_open_shipment()
@@ -295,8 +284,71 @@ class ConsigneeController extends Controller
 
     function consignee_close_shipment()
     {
-        $shipments = Dataset::where('consignee_name', Auth::user()->name)->get();
+        $shipments = Dataset::where('consignee_name', Auth::user()->name)->get()->merge(CloseShipment::where('consignee_name', Auth::user()->name)->get());
 
         return view('clients.close_shipments', compact('shipments'));
+    }
+
+
+    public function downloadCsv()
+    {
+        $data = Shipment::where('consignee_name', '=', Auth::user()->name)->get()->merge(Dataset::where('consignee_name', Auth::user()->name)->get());
+
+        $headers = [
+            'Content-type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename=shipment_record.csv',
+        ];
+
+        $callback = function () use ($data) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, ['Entry Number', 'BL Number', 'Consignee Name', 'Shipping Line', 'Arrival Date', 'Process Start', 'Process End', 'Predicted Delivery Date', 'Actual Delivery Date', 'Port of Discharge', 'Size of Shipment', 'Weight of Shipment', 'Description of Shipment']);
+
+            foreach ($data as $shipment) {
+                $shipment->arrival_date = date('Y-m-d', strtotime($shipment->arrival_date));
+                $shipment->process_started = date('Y-m-d', strtotime($shipment->process_started));
+                $shipment->process_finished = date('Y-m-d', strtotime($shipment->process_finished));
+                $shipment->predicted_delivery_date = date('Y-m-d', strtotime($shipment->predicted_delivery_date));
+                $shipment->delivered_date = date('Y-m-d', strtotime($shipment->delivered_date));
+                fputcsv($file, [$shipment->entry_number, $shipment->bl_number, $shipment->consignee_name, $shipment->shipping_line, $shipment->arrival_date, $shipment->process_started, $shipment->process_finished, $shipment->predicted_delivery_date, $shipment->delivered_date, $shipment->port_of_origin, $shipment->size, $shipment->weight, $shipment->shipment_details]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    public function downloadCsv_by_date(Request $request)
+    {
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        $shipments = Shipment::where('consignee_name', '=', Auth::user()->name)->get()->merge(Dataset::where('consignee_name', Auth::user()->name)->get())
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->get();
+
+        $headers = [
+            'Content-type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename=shipment_record.csv',
+        ];
+
+        $callback = function () use ($shipments) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, ['Entry Number', 'BL Number', 'Consignee Name', 'Shipping Line', 'Arrival Date', 'Process Start', 'Process End', 'Predicted Delivery Date', 'Actual Delivery Date', 'Port of Discharge', 'Size of Shipment', 'Weight of Shipment', 'Description of Shipment']);
+
+            foreach ($shipments as $shipment) {
+                $shipment->arrival_date = date('Y-m-d', strtotime($shipment->arrival_date));
+                $shipment->process_started = date('Y-m-d', strtotime($shipment->process_started));
+                $shipment->process_finished = date('Y-m-d', strtotime($shipment->process_finished));
+                $shipment->predicted_delivery_date = date('Y-m-d', strtotime($shipment->predicted_delivery_date));
+                $shipment->delivered_date = date('Y-m-d', strtotime($shipment->delivered_date));
+
+                fputcsv($file, [$shipment->entry_number, $shipment->bl_number, $shipment->consignee_name, $shipment->shipping_line, $shipment->arrival_date, $shipment->process_started, $shipment->process_finished, $shipment->predicted_delivery_date, $shipment->delivered_date, $shipment->port_of_origin, $shipment->size, $shipment->weight, $shipment->item_description]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }

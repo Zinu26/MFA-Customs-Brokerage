@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->string('consignee_name');
-            $table->date('arrival');
+            $table->string('bl_number');
+            $table->string('entry_number');
+            $table->date('arrival_date');
             $table->date('process_started')->nullable()->default;
             $table->date('process_finished')->nullable()->default;
             $table->date('predicted_delivery_date')->nullable()->default;
@@ -23,15 +25,12 @@ return new class extends Migration
             $table->string('port_of_origin')->nullable()->default;
             $table->string('destination_address')->nullable()->default;
             $table->string('size');
-            $table->string('item_description');
+            $table->string('shipment_details');
             $table->string('weight');
-            $table->string('bl_number');
-            $table->string('entry_number');
             $table->string('shipping_line');
             $table->string('do_status');
             $table->string('shipment_status');
             $table->string('billing_status');
-            $table->string('delivery_status');
             $table->boolean('status')->default(false);
 
             $table->timestamps();

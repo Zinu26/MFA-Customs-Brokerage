@@ -5,9 +5,9 @@
 <title>MFA Customs Brokerage</title>
 <div class="table">
     <div class="table-header">
-        <p>Shipments | {{Auth::user()->name}}</p>
+        <p>Closed Shipments | {{ Auth::user()->name }}</p>
         <div>
-            <a href="{{route('consignee_open_shipment')}}">
+            <a href="{{ route('consignee_open_shipment') }}">
                 <button class="btn btn-success"><i class="fa fa-folder-plus"></i> Open Shipments</button>
             </a>
         </div>
@@ -19,11 +19,11 @@
         <thead>
             <tr>
                 <th class="text-center">S.N.</th>
-                <th class="text-center">Consignees</th>
-                <th class="text-center">Arrival</th>
+                <th class="text-center">Entry Number</th>
+                <th class="text-center">BL Number</th>
+                <th class="text-center">Arrival Date</th>
                 <th class="text-center">Predicted Delivery Date</th>
                 <th class="text-center">Actual Delivery Date</th>
-                <th class="text-center">Delivery Status</th>
                 <th class="text-center">Option</th>
             </tr>
         </thead>
@@ -32,12 +32,13 @@
                 @if ($shipment->consignee_name == Auth::user()->name)
                     <tr class="text-center">
                         <td>{{ $loop->iteration }}</td>
-                        <td>{{ $shipment->consignee_name }}</td>
-                        <td>{{ $shipment->arrival_date }}</td>
-                        <td>{{ $shipment->predicted_delivery_dates }}</td>
-                        <td>{{ $shipment->delivered_date }}</td>
-                        <td>{{ $shipment->delivery_status }}</td>
+                        <td>{{ $shipment->entry_number }}</td>
+                        <td>{{ $shipment->bl_number }}</td>
+                        <td>{{ \Carbon\Carbon::parse($shipment->arrival_date)->format('Y-m-d') }}</td>
+                        <td>{{ \Carbon\Carbon::parse($shipment->predicted_delivery_date)->format('Y-m-d') }}</td>
+                        <td>{{ \Carbon\Carbon::parse($shipment->delivered_date)->format('Y-m-d') }}</td>
                         <td class="text-center col-1">
+                            @include('admin.clientPanel.view_close_shipments')
                         </td>
                     </tr>
                 @endif
