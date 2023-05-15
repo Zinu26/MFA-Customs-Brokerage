@@ -105,8 +105,6 @@
                 </span>
             </li>
         </ul>
-
-
         <div class="table-data">
             <div class="order">
                 <div class="head">
@@ -114,35 +112,41 @@
                     <i class='bx bx-search'></i>
                     <i class='bx bx-filter'></i>
                 </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Consignee</th>
-                            <th>Arrival Date</th>
-                            <th>Shipping Line</th>
-                            {{-- <th>Port of Origin</th> --}}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($shipments as $shipment)
-                            @if ($shipment->status == 0)
-                                <tr>
-                                    <td>
-                                        <strong>
-                                            <p>{{ $shipment->consignee_name }}</p>
-                                        </strong>
-                                    </td>
-                                    <td>{{ $shipment->arrival_date }}</td>
-                                    <td>{{ $shipment->shipping_line }}</td>
-                                    {{-- <td>{{ $shipment->port_of_origin }}</td> --}}
-                                </tr>
-                            @endif
-                        @endforeach
-                    </tbody>
-                </table>
+                @if ($shipments->contains('status', 0))
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Consignee</th>
+                                <th>Arrival Date</th>
+                                <th>Shipping Line</th>
+                                {{-- <th>Port of Origin</th> --}}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($shipments as $shipment)
+                                @if ($shipment->status == 0)
+                                    <tr>
+                                        <td>
+                                            <strong>
+                                                <p>{{ $shipment->consignee_name }}</p>
+                                            </strong>
+                                        </td>
+                                        <td>{{ $shipment->arrival_date }}</td>
+                                        <td>{{ $shipment->shipping_line }}</td>
+                                        {{-- <td>{{ $shipment->port_of_origin }}</td> --}}
+                                    </tr>
+                                @endif
+                            @endforeach
+                        </tbody>
+                    </table>
+                @else
+                    <div class="no-shipment-found">
+                        <p style="font-size: 2rem; text-align: center; opacity: 0.5;">No Recent Shipment Found</p>
+                    </div>
+                @endif
             </div>
             <div>
-                <canvas id="bar-chart"></canvas>
+                <canvas id="bar-chart" style="height: 400px; width: 400px;"></canvas>
             </div>
         </div>
     </main>
