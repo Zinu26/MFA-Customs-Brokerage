@@ -211,6 +211,8 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
+        'Charts' => ConsoleTVs\Charts\Facades\Charts::class,
+
     ])->toArray(),
 
 ];

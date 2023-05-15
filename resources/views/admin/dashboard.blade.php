@@ -91,7 +91,7 @@
                         style="font-size: 50px; color:goldenrod;"></i>
                 </a>
                 <span class="text">
-                    <h3>{{ \App\Models\Shipment::all()->count() }}</h3>
+                    <h3>{{ \App\Models\Shipment::where('status', 0)->count() }}</h3>
                     <p>In Process Shipments</p>
                 </span>
             </li>
@@ -100,7 +100,7 @@
                     <i class='fa fa-circle-check mb-2' style="font-size: 50px; color:springgreen;"></i>
                 </a>
                 <span class="text">
-                    <h3>{{ \App\Models\Dataset::all()->count() }}</h3>
+                    <h3>{{ \App\Models\Dataset::all()->count() + \App\Models\CloseShipment::all()->count() }}</h3>
                     <p>Closed Shipments</p>
                 </span>
             </li>
@@ -125,63 +125,65 @@
                     </thead>
                     <tbody>
                         @foreach ($shipments as $shipment)
-                            <tr>
-                                <td>
-                                    <strong>
-                                        <p>{{ $shipment->consignee_name }}</p>
-                                    </strong>
-                                </td>
-                                <td>{{ $shipment->arrival }}</td>
-                                <td>{{ $shipment->shipping_line }}</td>
-                                {{-- <td>{{ $shipment->port_of_origin }}</td> --}}
-                            </tr>
+                            @if ($shipment->status == 0)
+                                <tr>
+                                    <td>
+                                        <strong>
+                                            <p>{{ $shipment->consignee_name }}</p>
+                                        </strong>
+                                    </td>
+                                    <td>{{ $shipment->arrival_date }}</td>
+                                    <td>{{ $shipment->shipping_line }}</td>
+                                    {{-- <td>{{ $shipment->port_of_origin }}</td> --}}
+                                </tr>
+                            @endif
                         @endforeach
                     </tbody>
                 </table>
             </div>
             <div>
-                <canvas id="pie-chart"></canvas>
+                <canvas id="bar-chart"></canvas>
             </div>
         </div>
     </main>
 </section>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
 <script>
-    var labels = {!! json_encode($labels) !!};
-    var values = {!! json_encode($values) !!};
-    var colors = [
-        'rgba(54, 162, 235, 0.8)',
-        'rgba(255, 99, 132, 0.8)',
-        'rgba(255, 205, 86, 0.8)'
-    ];
-
     var data = {
-        labels: labels,
-        datasets: [{
-            data: values,
-            backgroundColor: colors
-        }]
+        labels: ['{{ $prev_month->format('M Y') }}', '{{ $today->format('M Y') }}',
+            '{{ $next_month->format('M Y') }}'
+        ],
+        datasets: [
+            @foreach ($data as $d)
+                {
+                    label: '{{ $d['status'] }}',
+                    backgroundColor: '{{ $d['status'] === 'Early' ? '#4EA646' : ($d['status'] === 'On-Time' ? '#F0AD4E' : '#D9534F') }}',
+                    borderColor: '{{ $d['status'] === 'Early' ? '#4EA646' : ($d['status'] === 'On-Time' ? '#F0AD4E' : '#D9534F') }}',
+                    borderWidth: 1,
+                    data: {{ json_encode($d['counts']) }}
+                },
+            @endforeach
+        ]
     };
 
     var options = {
         responsive: true,
         maintainAspectRatio: false,
         legend: {
-            position: 'right',
-            labels: {
-                boxWidth: 15,
-                fontColor: 'black',
-                fontSize: 13,
-                padding: 15,
-                fontFamily: 'Arial'
-            }
+            position: 'top'
+        },
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
         }
     };
 
-    var ctx = document.getElementById('pie-chart').getContext('2d');
-    var chart = new Chart(ctx, {
-        type: 'pie',
+    var chart = new Chart(document.getElementById('bar-chart'), {
+        type: 'bar',
         data: data,
         options: options
     });

@@ -5,8 +5,8 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "require": {
-        "php": "^8.2",
-        "consoletvs/charts": "*",
+        "php": "^8.1",
+        "consoletvs/charts": "^6.6",
         "google/cloud-dialogflow": "*",
         "guzzlehttp/guzzle": "^7.5",
         "laravel/framework": "^9.19",

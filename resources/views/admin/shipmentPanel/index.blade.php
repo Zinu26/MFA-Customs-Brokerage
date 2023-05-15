@@ -6,7 +6,7 @@
 
 <div class="table">
     <div class="table-header">
-        <p>Shipments</p>
+        <p>Open Shipments</p>
         <div>
             @include('admin.shipmentPanel.create')
             <a href="@if(Auth::user()->type == 'admin') {{route('close_shipments')}}@elseif(Auth::user()->type == 'employee') {{route('close_shipments.employee')}} @endif">
@@ -24,12 +24,12 @@
             <tr>
                 <th class="text-center">S.N.</th>
                 <th class="text-center">Consignees</th>
-                <th class="text-center">Arrival</th>
+                <th class="text-center">BL Number</th>
+                <th class="text-center">Arrival Date</th>
                 <th class="text-center">Predicted Delivery Date</th>
                 <th class="text-center">DO Status</th>
                 <th class="text-center">Shipment Status</th>
                 <th class="text-center">Billing</th>
-                <th class="text-center">Delivery</th>
                 <th class="text-center">Option</th>
             </tr>
         </thead>
@@ -39,7 +39,8 @@
                     <tr class="text-center">
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $shipment->consignee_name }}</td>
-                        <td>{{ $shipment->arrival }}</td>
+                        <td>{{ $shipment->bl_number }}</td>
+                        <td>{{ $shipment->arrival_date }}</td>
                         <td>
                             @if ($shipment->predicted_delivery_date != null)
                                 {{ $shipment->predicted_delivery_date }}
@@ -50,7 +51,6 @@
                         <td>{{ $shipment->do_status }}</td>
                         <td>{{ $shipment->shipment_status }}</td>
                         <td>{{ $shipment->billing_status }}</td>
-                        <td>{{ $shipment->delivery_status }}</td>
                         <td>
                             @include('admin.shipmentPanel.view')
                             @include('admin.shipmentPanel.edit')

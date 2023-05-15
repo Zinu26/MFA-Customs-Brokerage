@@ -68,8 +68,13 @@ class User extends Authenticatable
         return $this->hasMany(Shipment::class, 'consignee_name', 'name');
     }
 
-    public function closed()
+    public function dataset()
     {
         return $this->hasMany(Dataset::class, 'consignee_name', 'name');
+    }
+
+    public function closed()
+    {
+        return $this->hasMany(CloseShipment::class, 'consignee_name', 'name');
     }
 }

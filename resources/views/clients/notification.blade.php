@@ -86,14 +86,9 @@
         <div class="modal-content">
             <div class="modal-header" style="background-color: #29924c;">
                 <h5 class="modal-title" id="notification-modal-label"></h5>
-                <button type="button" class="btn-close" id="notification-close" aria-label="Close"><i
-                        class="fa fa-close"></i></button>
             </div>
             <div class="modal-body">
                 <p id="notification-modal-body"></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" id='notification-close'>Close</button>
             </div>
         </div>
     </div>
@@ -169,15 +164,6 @@
             // Show the modal
             const modal = new bootstrap.Modal(document.getElementById(`viewModal`));
             modal.show();
-
-            document.addEventListener('click', function() {
-                if(modal.show())
-                {
-                    moda.hide();
-                }
-            });
         });
     });
-
-
 </script>
