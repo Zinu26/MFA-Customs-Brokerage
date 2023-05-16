@@ -30,14 +30,17 @@
         </div>
         <div class="container-fluid w-100 px-3 py-2 d-flex" style="background: #29924c; position: absolute; bottom: 0;">
             <div class="mr-2 pl-2" style="background: #ffffff1c; width: calc(100% - 45px); border-radius: 5px;">
-                <input id="input" class="text-black" placeholder="Ask something about MFA..." type="text" name="input"
-                    style="background: none; width:100%; height: 100%; border: 0; outline: none;">
+                <input id="input" class="text-black" placeholder="Ask something about MFA..." type="text"
+                    name="input" style="background: none; width:100%; height: 100%; border: 0; outline: none;">
             </div>
             <div id="button-submit" class="text-center"
                 style="background: #146b31; height: 100%; width: 50px; border-radius: 5px; cursor: pointer;">
                 <i class="fa fa-paper-plane text-white" aria-hidden="true" style="line-height: 45px;"></i>
             </div>
         </div>
+    </div>
+    <div class="help-message">
+        <img src="https://images.myhardhatstickers.com/img/lg/H/ask-me-hard-hat-decals-hh-0517.png" alt="Need help?">
     </div>
 </div>
 
@@ -69,6 +72,23 @@
     chatbotCloseBtn.addEventListener("click", () => {
         chatbotWindow.style.display = "none";
     });
+</script>
+
+<script>
+    function showHelpMessage() {
+        var helpMessage = document.querySelector('.help-message');
+        helpMessage.style.display = 'block';
+        setTimeout(function() {
+            helpMessage.style.display = 'none';
+        }, 3000);
+    }
+
+    function startHelpMessageInterval() {
+        showHelpMessage();
+        setInterval(showHelpMessage, 8000);
+    }
+
+    startHelpMessageInterval();
 </script>
 
 <script>
@@ -156,7 +176,6 @@
     })
 </script>
 
-
 <script>
     var contentBox = document.getElementById("content-box");
     var maxContentHeight = parseInt(contentBox.style.height);
@@ -173,21 +192,3 @@
     window.addEventListener("resize", toggleContentScroll);
     contentBox.addEventListener("DOMNodeInserted", toggleContentScroll);
 </script>
-
-
-
-{{-- For Testing purposes
-    // Mock backend response
-    function mockBackendResponse(userInput) {
-    const response = "You said: " + userInput;
-    return Promise.resolve({ body: { response } });
-    }
-
-    // Function to send user input to mock backend and get chatbot response
-    function sendUserInputToBackend(userInput) {
-    mockBackendResponse(userInput).then((response) => {
-        const chatbotResponse = response.body.response;
-        const chatbotMessageElement = createChatbotMessageElement(chatbotResponse);
-        addMessageToChatbotBody(chatbotMessageElement);
-    });
-    } --}}

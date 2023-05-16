@@ -8,8 +8,8 @@
 /* Chatbot toggle */
 #chatbot-toggle {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
+    bottom: 50px;
+    right: 50px;
     width: 50px;
     height: 50px;
     border-radius: 50%;
@@ -25,8 +25,8 @@
 }
 
 .chatbot-img {
-    width: 60px;
-    height: 60px;
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     transition: all 0.2s ease-in-out;
@@ -36,7 +36,7 @@
     display: none;
     flex-direction: column;
     align-items: flex-start;
-    margin-bottom: 60px;
+    margin-bottom: 100px;
     right: 0px;
     width: 400px;
     height: 500px;
@@ -48,49 +48,49 @@
     position: relative;
     resize: both;
     transition: all 0.3s ease-in-out;
-  }
+}
 
-  .chatbot-body {
+.chatbot-body {
     flex: 1;
     width: 100%;
-  }
+}
 
-  .container-fluid {
+.container-fluid {
     width: 100%;
-  }
+}
 
-  .container-fluid p-2 {
+.container-fluid p-2 {
     overflow-y: hidden;
     margin-bottom: 100px;
-  }
+}
 
-  .container-fluid.w-100.px-3.py-2.d-flex {
+.container-fluid.w-100.px-3.py-2.d-flex {
     position: absolute;
     bottom: 0;
     background: #29924c;
     width: 100%;
-  }
+}
 
-  #input {
+#input {
     background: none;
     width: 100%;
     height: 100%;
     border: 0;
     outline: none;
-  }
+}
 
-  #button-submit {
+#button-submit {
     background: #146b31;
     height: 100%;
     width: 50px;
     border-radius: 5px;
     cursor: pointer;
-  }
+}
 
-  #content-box {
+#content-box {
     width: 100%;
     height: 100%;
-  }
+}
 
 
 .chatbot-header {
@@ -120,6 +120,29 @@
 
 .chatbot-close:hover {
     transform: rotate(90deg);
+}
+
+.help-message {
+    position: absolute;
+    right: 30px;
+    bottom: 30px;
+    transform: translateY(-50%);
+    padding: 10px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 20px;
+    z-index: -9999999;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: none;
+}
+
+.help-message img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: none;
+    background-color: transparent;
 }
 
 @keyframes loading {
