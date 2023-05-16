@@ -12,6 +12,5 @@
     </p>
     <p>User requested name: {{ $get_user_name }}</p>
     <h3>OTP: {{ $validToken }}</h3>
-
 </body>
 </html>
