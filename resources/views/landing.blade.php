@@ -36,3 +36,18 @@
 </body>
 
 </html>
+
+
+<script>
+    const sidebarOpen = document.querySelector('.sidebarOpen');
+    const sidebarClose = document.querySelector('.sidebarClose');
+    const menu = document.querySelector('.menu');
+
+    sidebarOpen.addEventListener('click', () => {
+        menu.classList.add('show');
+    });
+
+    sidebarClose.addEventListener('click', () => {
+        menu.classList.remove('show');
+    });
+</script>

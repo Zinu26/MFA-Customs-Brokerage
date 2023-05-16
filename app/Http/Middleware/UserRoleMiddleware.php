@@ -17,11 +17,13 @@ class UserRoleMiddleware
      */
     public function handle(Request $request, Closure $next, $userType)
     {
-        if(Auth::check() && Auth::user()->type == $userType){
+        if (Auth::check() && Auth::user()->type == $userType) {
             return $next($request);
         }
 
         return redirect()->back()
-                    ->with('warning', 'You do not have permission to access the page. Please logout first.');
+            ->withErrors(['login' => 'You do not have permission to access the page. Please logout first.'])
+            ->withInput()
+            ->with('warning', 'You do not have permission to access the page. Please logout first.');
     }
 }
