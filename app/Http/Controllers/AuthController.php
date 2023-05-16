@@ -54,7 +54,7 @@ class AuthController extends Controller
                 $get_user_email = $get_email;
                 $get_user_name = $request->username;
                 Mail::to($get_email)->send(new VerificationMail($get_user_email, $validToken, $get_user_name));
-        
+
                 return view('verification');
             }
         }
@@ -63,7 +63,6 @@ class AuthController extends Controller
             ->withErrors(['login' => 'The provided credentials do not match our records.'])
             ->withInput()
             ->with('error', 'The provided credentials do not match our records.');
-
     }
 
     public function otpActivation(Request $request){
@@ -77,10 +76,10 @@ class AuthController extends Controller
             $delete_token = VerifyToken::where('token', $get_token->token)->first();
             $delete_token->delete();
             if(Auth::user()->type == 'employee'){
-            return redirect()->route('employee.dashboard')->with('message', 'OTP activation successful!');
+            return redirect()->route('employee.dashboard')->with('success', 'OTP activation successful!');
             }
             else if(Auth::user()->type == 'consignee'){
-                return redirect()->route('client.dashboard')->with('message', 'OTP activation successful!');
+                return redirect()->route('client.dashboard')->with('success', 'OTP activation successful!');
             }
         }
 
@@ -110,8 +109,9 @@ class AuthController extends Controller
             ->first();
 
         if (!$consignee && !$user) {
-            session()->flash('failed', 'The provided credentials do not match our records.');
-            return back()->withErrors(['login' => 'The provided credentials do not match our records.'])->withInput();
+            return back()->withErrors(['login' => 'The provided credentials do not match our records.'])
+                ->withInput()
+                ->with('error', 'The provided credentials do not match our records.');
         }
 
         // The email and tin are correct, log the user in
@@ -136,10 +136,8 @@ class AuthController extends Controller
             $get_user_email = $request->email;
             $get_user_name = Auth::user()->name;
             Mail::to($get_user_email)->send(new VerificationMail($get_user_email, $validToken, $get_user_name));
-    
+
             return view('verification');
-
-
         }
     }
 
@@ -158,8 +156,7 @@ class AuthController extends Controller
                 'loggable_type' => 'Admin',
                 'activity' => 'Admin logged out',
             ]);
-        }
-        else if ($user->type == 'employee') {
+        } else if ($user->type == 'employee') {
             // Create a new activity log record for this user
             ActivityLog::create([
                 'user_id' => Auth::id(),

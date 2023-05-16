@@ -85,11 +85,6 @@ body {
     animation-delay: -4.5s;
 }
 
-.inputBox.is-invalid input {
-    border-color: red;
-    background-color: #f9d6d5;
-}
-
 @keyframes animate {
     0% {
         transform: rotate(0deg);
