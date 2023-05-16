@@ -80,7 +80,26 @@ class ShipmentController extends Controller
     {
         $shipment = Shipment::findOrFail($id);
 
+        // Check if process start date is earlier than arrival date
+        $arrivalDate = Carbon::parse($shipment->arrival_date);
+        $processStartDate = Carbon::parse($request->input('process_started'));
+        if ($processStartDate->lessThan($arrivalDate)) {
+            return redirect()->back()->with('error', 'Process start date cannot be earlier than arrival date.');
+        }
 
+        // Check if process finish date is earlier than process start date
+        if ($request->has('process_ended')) {
+            $processEndDate = Carbon::parse($request->input('process_ended'));
+            if ($processEndDate->lessThan($processStartDate)) {
+                return redirect()->back()->with('error', 'Process finish date cannot be earlier than process start date.');
+            }
+
+            // Check if delivered date is earlier than process finish date
+            $deliveredDate = Carbon::parse($request->input('delivered_date'));
+            if ($deliveredDate->lessThan($processEndDate)) {
+                return redirect()->back()->with('error', 'Delivered date cannot be earlier than process finish date.');
+            }
+        }
         if ($shipment->process_started == null) {
             $shipment->process_started = $request->input('process_started');
         }
@@ -183,11 +202,11 @@ class ShipmentController extends Controller
                 'delivery_date' => $shipment->delivered_date
             ];
             $consigneeUser = User::find($shipment->user_id);
-            if ($diffInDays < 0) {
-                $consigneeUser->notify(new ShipmentUpdate($shipment, 'The consignment was delivered ' . $formattedDiff . ' early.', json_encode($data), 'update'));
-            } elseif ($diffInDays == 0) {
+            if ($shipment->delivery_status === "Early") {
+                $consigneeUser->notify(new ShipmentUpdate($shipment, 'The consignment was delivered ' . $formattedDiff . ' ahead of the anticipated delivery schedule.', json_encode($data), 'update'));
+            } elseif ($shipment->delivery_status === "On-Time") {
                 $consigneeUser->notify(new ShipmentUpdate($shipment, 'The consignment was delivered on time as per the anticipated delivery date.', json_encode($data), 'update'));
-            } else {
+            } elseif ($shipment->delivery_status === "Delayed") {
                 $consigneeUser->notify(new ShipmentUpdate($shipment, 'The consignment was ' . $formattedDiff . ' delayed from the anticipated delivery date.', json_encode($data), 'update'));
             }
         }
