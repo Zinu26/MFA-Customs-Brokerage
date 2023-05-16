@@ -247,3 +247,9 @@ section{
 #content main .table-data .todo .todo-list li:last-child {
     margin-bottom: 0;
 }
+.no-shipment-found {
+    text-align: center;
+    opacity: 0.5;
+    font-size: 24px;
+    margin-top: 50px;
+}

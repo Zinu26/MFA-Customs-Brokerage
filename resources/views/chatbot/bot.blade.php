@@ -14,7 +14,7 @@
     </button>
     <div class="chatbot-window" id="chatbot-window">
         <div class="chatbot-header">
-            <h3 class="chatbot-title">MFA Customs Brokerage</h3>
+            <h3 class="chatbot-title">MFA Chatbot</h3>
             <button class="chatbot-close" id="chatbot-close-btn">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="18px"
                     height="18px">
@@ -25,11 +25,10 @@
         </div>
         <div class="chatbot-body" id="chatbot-body">
             <div></div>
-            <div id="content-box" class="container-fluid p-2" style="height: calc(100vh - 130px); overflow-y: scroll;">
-
+            <div id="content-box" class="container-fluid p-2" style="overflow-y: hidden; margin-bottom: 100px;">
             </div>
         </div>
-        <div class="container-fluid w-100 px-3 py-2 d-flex" style="background: #29924c; height: 62px;">
+        <div class="container-fluid w-100 px-3 py-2 d-flex" style="background: #29924c; position: absolute; bottom: 0;">
             <div class="mr-2 pl-2" style="background: #ffffff1c; width: calc(100% - 45px); border-radius: 5px;">
                 <input id="input" class="text-black" type="text" name="input"
                     style="background: none; width:100%; height: 100%; border: 0; outline: none;">
@@ -42,6 +41,7 @@
     </div>
 </div>
 
+
 <!-- Add this script tag before the closing body tag -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/guzzle.js/5.3.0/guzzle.min.js"></script>
 
@@ -53,49 +53,7 @@
     const chatbotToggle = document.getElementById("chatbot-toggle");
     const chatbotWindow = document.getElementById("chatbot-window");
     const chatbotCloseBtn = document.getElementById("chatbot-close-btn");
-    const chatbotInput = document.getElementById("chatbot-input");
-    const chatbotBody = document.getElementById("chatbot-body");
 
-    // Function to create user message element
-    function createUserMessageElement(message) {
-        const userMessageContainer = document.createElement("div");
-        userMessageContainer.classList.add("user-message-container");
-        const userMessage = document.createElement("div");
-        userMessage.classList.add("user-message");
-        userMessage.textContent = message;
-        userMessageContainer.appendChild(userMessage);
-        return userMessageContainer;
-    }
-
-    // Function to create chatbot message element
-    function createChatbotMessageElement(message) {
-        const chatbotMessageContainer = document.createElement("div");
-        chatbotMessageContainer.classList.add("chatbot-message-container");
-        const chatbotMessage = document.createElement("div");
-        chatbotMessage.classList.add("chatbot-message");
-        chatbotMessage.textContent = message;
-        chatbotMessageContainer.appendChild(chatbotMessage);
-        return chatbotMessageContainer;
-    }
-
-    // Function to add message to chatbot body
-    function addMessageToChatbotBody(messageElement) {
-        chatbotBody.appendChild(messageElement);
-        chatbotBody.scrollTop = chatbotBody.scrollHeight;
-    }
-
-    // Function to send user input to backend and get chatbot response
-    function sendUserInputToBackend(userInput) {
-        const formData = new FormData();
-        formData.append("message", userInput);
-        guzzle.post("/chatbot", {
-            body: formData
-        }).then((response) => {
-            const chatbotResponse = response.body.response;
-            const chatbotMessageElement = createChatbotMessageElement(chatbotResponse);
-            addMessageToChatbotBody(chatbotMessageElement);
-        });
-    }
 
     // Event listener for chatbot toggle button
     chatbotToggle.addEventListener("click", () => {
@@ -111,78 +69,121 @@
     chatbotCloseBtn.addEventListener("click", () => {
         chatbotWindow.style.display = "none";
     });
-
-    // Event listener for chatbot input
-    chatbotInput.addEventListener("keydown", (event) => {
-        if (event.key === "Enter") {
-            const userInput = chatbotInput.value.trim();
-            if (userInput) {
-                const userMessageElement = createUserMessageElement(userInput);
-                addMessageToChatbotBody(userMessageElement);
-                chatbotInput.value = "";
-
-                // Send user input to backend and get chatbot response
-                sendUserInputToBackend(userInput);
-            }
-        }
-    });
 </script>
 
-<script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E="
-    crossorigin="anonymous"></script>
 <script>
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     })
-    $('#button-submit').on('click', function() {
+
+    function promptForInput() {
+        $('#content-box').append(`<div class="d-flex mb-2">
+            <div class="mr-2" style="width: 65px; height: 55px;">
+                <img src="/images/bot-avatar.jpg" width="100%" height="100%" style="border-radius: 50px;">
+            </div>
+            <div class="text-white px-3 py-2" style="width: 270px; background: #29924c; border-radius: 10px; font-size: 85%;">
+                Hi, <strong><u>{{Auth::user()->name}}</u></strong>, what can I do for you? Just provide a BL Number if you need fast track of your shipment
+            </div>
+        </div>`);
+    }
+
+    // call the function to prompt the user for input when the page loads
+    promptForInput();
+
+    function sendMessage() {
+        // Check if input field is empty
+        if ($('#input').val() === '') {
+            $('#button-submit').prop('disabled', true);
+            $('#button-submit').css('cursor', 'not-allowed');
+            return;
+        }
+
+        // Disable input field and submit button
+        $('#input').prop('disabled', true);
+        $('#button-submit').prop('disabled', true);
+        $('#input').css('cursor', 'not-allowed');
+
         $value = $('#input').val();
         $('#content-box').append(`<div class="mb-2">
-            <div class="float-right px-3 py-2" style="width: 270px; background: #5dd184; border-radius: 10px; float: right; font-size: 85%;">
-                ` + $value + `
-            </div>
-            <div style="clear: both;"></div>
-        </div>`);
+                            <div class="float-right px-3 py-2" style="width: 270px; background: #5dd184; border-radius: 10px; float: right; font-size: 85%;">
+                                ` + $value + `
+                            </div>
+                            <div style="clear: both;"></div>
+                        </div>`);
 
         $.ajax({
             type: 'post',
-            url: '{{ url('send') }}',
+            url: '{{ route('sendChat') }}',
             data: {
                 'input': $value
             },
             success: function(data) {
                 $('#content-box').append(`<div class="d-flex mb-2">
-            <div class="mr-2" style="width: 65px; height: 55px;">
-                <img src="/images/bot-avatar.jpg" width="100%"
-                    height="100%" style="border-radius: 50px;">
-            </div>
-            <div class="text-white px-3 py-2"
-                style="width: 270px; background: #29924c; border-radius: 10px; font-size: 85%;">
-                ` + data + `
-            </div>
-        </div>`)
+                                    <div class="mr-2" style="width: 65px; height: 55px;">
+                                        <img src="/images/bot-avatar.jpg" width="100%" height="100%" style="border-radius: 50px;">
+                                    </div>
+                                    <div class="text-white px-3 py-2" style="width: 270px; background: #29924c; border-radius: 10px; font-size: 85%;">
+                                    </div>
+                                </div>`);
+
+                let index = 0;
+                let messageBox = $('#content-box .text-white:last');
+                let message = data;
+
+                function appendLetter() {
+                    if (index < message.length) {
+                        messageBox.append(message.charAt(index));
+                        index++;
+                        setTimeout(appendLetter, 25); // delay between letters in milliseconds
+                    } else {
+                        // Enable input field and submit button
+                        $('#input').prop('disabled', false);
+                        $('#button-submit').prop('disabled', false);
+                        $('#input').css('cursor', 'text');
+
+                        // Scroll down content box if it's scrollable
+                        let contentBox = $('#content-box')[0];
+                        if (contentBox.scrollHeight > contentBox.clientHeight) {
+                            contentBox.scrollTop = contentBox.scrollHeight - contentBox
+                                .clientHeight;
+                        }
+                    }
+                }
+
+                setTimeout(appendLetter, 1000); // delay before starting in milliseconds
+
                 $value = $('#input').val('');
             }
         })
+    }
+
+    $('#button-submit').on('click', function() {
+        sendMessage();
+    })
+
+    $('#input').on('keypress', function(e) {
+        if (e.which === 13) { // enter key pressed
+            sendMessage();
+        }
     })
 </script>
 
 
+<script>
+    var contentBox = document.getElementById("content-box");
+    var maxContentHeight = parseInt(contentBox.style.height);
 
-{{-- For Testing purposes
-    // Mock backend response
-    function mockBackendResponse(userInput) {
-    const response = "You said: " + userInput;
-    return Promise.resolve({ body: { response } });
+    function toggleContentScroll() {
+        if (contentBox.scrollHeight > maxContentHeight) {
+            contentBox.style.overflowY = "scroll";
+        } else {
+            contentBox.style.overflowY = "hidden";
+        }
     }
 
-    // Function to send user input to mock backend and get chatbot response
-    function sendUserInputToBackend(userInput) {
-    mockBackendResponse(userInput).then((response) => {
-        const chatbotResponse = response.body.response;
-        const chatbotMessageElement = createChatbotMessageElement(chatbotResponse);
-        addMessageToChatbotBody(chatbotMessageElement);
-    });
-    } --}}
-
+    // Call toggleContentScroll when the window is resized or when the content is changed dynamically
+    window.addEventListener("resize", toggleContentScroll);
+    contentBox.addEventListener("DOMNodeInserted", toggleContentScroll);
+</script>

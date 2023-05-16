@@ -9,16 +9,19 @@
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="exampleModalLabel">Add Shipment</h1>
             </div>
-            <form action="{{ route('add_shipment') }}" method="POST">
+            <form
+                action="@if (Auth::user()->type == 'admin') {{ route('add_shipment') }}@elseif(Auth::user()->type == 'employee'){{ route('add_shipment.employee') }} @endif"
+                method="POST">
                 @csrf
                 <div class="modal-body">
                     <div class="input-group">
                         <span class="input-group-text"
                             style="background-color: #4EA646; font-weight: 600; color: white;">Consignee</span>
-                        <select name="consignee_name" class="form-control" id="exampleFormControlSelect1" onchange="getConsigneeAddress()" required>
+                        <select name="consignee_name" class="form-control" id="exampleFormControlSelect1"
+                            onchange="getConsigneeAddress()" required>
                             <option value="" disabled selected>Select consignee</option>
                             @foreach ($users as $user)
-                                <option value='{{$user->name}}'>{{$user->name}}</option>
+                                <option value='{{ $user->name }}'>{{ $user->name }}</option>
                             @endforeach
                         </select>
                     </div></br>
@@ -69,8 +72,8 @@
                     </div></br>
                     <div class="input-group">
                         <span class="input-group-text"
-                            style="background-color: #4EA646; font-weight: 600; color: white;">Arrival Time</span>
-                        <input type="date" name="arrival_time" placeholder="Arrival Time" aria-label="Arrival Time"
+                            style="background-color: #4EA646; font-weight: 600; color: white;">Arrival Date</span>
+                        <input type="date" name="arrival_date" placeholder="Arrival Date" aria-label="Arrival Date"
                             class="form-control" required>
                     </div></br>
 
@@ -84,8 +87,8 @@
                         </select>
                     </div></br>
                     <div class="row">
-                        <div class="form-group col-md-3">
-                            <label for="exampleFormControlSelect1">Shipment Status</label>
+                        <div class="form-group col-md-4">
+                            <label for="exampleFormControlSelect1"><strong>Shipment Status</strong></label>
                             <select class="form-control" id="exampleFormControlSelect1" name="shipment_status">
                                 <option value="" disabled selected>---Select---</option>
                                 <option value="AG">AG</option>
@@ -93,8 +96,8 @@
                                 <option value="AP">AP</option>
                             </select>
                         </div>
-                        <div class="form-group col-md-3">
-                            <label for="exampleFormControlSelect1">DO Status</label>
+                        <div class="form-group col-md-4">
+                            <label for="exampleFormControlSelect1"><strong>DO Status</strong></label>
                             <select class="form-control" id="exampleFormControlSelect1" name="do_status">
                                 <option value="" disabled selected>---Select---</option>
                                 <option value="Pending">Pending</option>
@@ -102,19 +105,13 @@
                                 <option value="Done">Done</option>
                             </select>
                         </div>
-                        <div class="form-group col-md-3">
-                            <label for="exampleFormControlSelect1">Billing Status</label>
+                        <div class="form-group col-md-4">
+                            <label for="exampleFormControlSelect1"><strong>Billing Status</strong></label>
                             <select class="form-control" id="exampleFormControlSelect1" name="billing_status">
                                 <option value="" disabled selected>---Select---</option>
                                 <option value="Pending">Pending</option>
                                 <option value="On Going">On Going</option>
                                 <option value="Done">Done</option>
-                            </select>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="exampleFormControlSelect1">Delivery</label>
-                            <select class="form-control" id="exampleFormControlSelect1" name="delivery_status">
-                                <option value="Pending">Pending</option>
                             </select>
                         </div>
                     </div>

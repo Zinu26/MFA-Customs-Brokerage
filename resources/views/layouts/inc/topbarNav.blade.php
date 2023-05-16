@@ -15,7 +15,11 @@
                 <li><a href="{{ route('about') }}">About Us </a></li>
                 <li><a href="{{ route('service') }}">Services </a></li>
                 <li><a href="{{ route('contact') }}"> Contact Us </a></li>
-                <li><a href="{{ route('login') }}">Log in<i class="fa fa-user-circle" aria-hidden="true"></i></a></li>
+                @auth
+                    <li><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+                @else
+                    <li><a href="{{ route('login') }}">Log in <i class="fa fa-user-circle" aria-hidden="true"></i></a></li>
+                @endauth
                 <li class="search">
                     <form action="{{ route('search') }}" method="GET">
                         @csrf
@@ -60,7 +64,12 @@
                             '<p><strong>BL Number</strong>: ' + response.bl_number + '</p>' +
                             '<p><strong>Entry Number</strong>: ' + response.entry_number +
                             '</p>' +
-                            '<p><strong>Arrival</strong>: ' + response.arrival + '</p>'
+                            '<p><strong>Arrival</strong>: ' + response.arrival + '</p>' +
+                            '<p><strong>DO Status</strong>: ' + response.do_status + '</p>' +
+                            '<p><strong>Billing Status</strong>: ' + response.billing_status +
+                            '</p>' +
+                            '<p><strong>Shipment Status</strong>: ' + response.shipment_status +
+                            '</p>'
                         );
                     } else if ('message' in response) {
                         $('#search-result').text(response.message);

@@ -7,10 +7,16 @@
 <section id="content">
     <main>
         <div class="head-title">
+         @if(session()->has('message'))
+            <div class="alert alert-success">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+                {{session()->get('message')}}
+            </div>  
+        @endif
             <div class="left">
                 <h1>Dashboard</h1>
             </div>
-            @if (Auth::user()->type == 0)
+            @if (Auth::user()->type == 'admin')
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#activityLogsModal">
                     Activity Logs
                 </button>
@@ -91,7 +97,7 @@
                         style="font-size: 50px; color:goldenrod;"></i>
                 </a>
                 <span class="text">
-                    <h3>{{ \App\Models\Shipment::all()->count() }}</h3>
+                    <h3>{{ \App\Models\Shipment::where('status', 0)->count() }}</h3>
                     <p>In Process Shipments</p>
                 </span>
             </li>
@@ -100,13 +106,11 @@
                     <i class='fa fa-circle-check mb-2' style="font-size: 50px; color:springgreen;"></i>
                 </a>
                 <span class="text">
-                    <h3>{{ \App\Models\Dataset::all()->count() }}</h3>
+                    <h3>{{ \App\Models\Dataset::all()->count() + \App\Models\CloseShipment::all()->count() }}</h3>
                     <p>Closed Shipments</p>
                 </span>
             </li>
         </ul>
-
-
         <div class="table-data">
             <div class="order">
                 <div class="head">
@@ -114,74 +118,82 @@
                     <i class='bx bx-search'></i>
                     <i class='bx bx-filter'></i>
                 </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Consignee</th>
-                            <th>Arrival Date</th>
-                            <th>Shipping Line</th>
-                            {{-- <th>Port of Origin</th> --}}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($shipments as $shipment)
+                @if ($shipments->contains('status', 0))
+                    <table>
+                        <thead>
                             <tr>
-                                <td>
-                                    <strong>
-                                        <p>{{ $shipment->consignee_name }}</p>
-                                    </strong>
-                                </td>
-                                <td>{{ $shipment->arrival }}</td>
-                                <td>{{ $shipment->shipping_line }}</td>
-                                {{-- <td>{{ $shipment->port_of_origin }}</td> --}}
+                                <th>Consignee</th>
+                                <th>Arrival Date</th>
+                                <th>Shipping Line</th>
+                                {{-- <th>Port of Origin</th> --}}
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach ($shipments as $shipment)
+                                @if ($shipment->status == 0)
+                                    <tr>
+                                        <td>
+                                            <strong>
+                                                <p>{{ $shipment->consignee_name }}</p>
+                                            </strong>
+                                        </td>
+                                        <td>{{ $shipment->arrival_date }}</td>
+                                        <td>{{ $shipment->shipping_line }}</td>
+                                        {{-- <td>{{ $shipment->port_of_origin }}</td> --}}
+                                    </tr>
+                                @endif
+                            @endforeach
+                        </tbody>
+                    </table>
+                @else
+                    <div class="no-shipment-found">
+                        <p style="font-size: 2rem; text-align: center; opacity: 0.5;">No Recent Shipment Found</p>
+                    </div>
+                @endif
             </div>
             <div>
-                <canvas id="pie-chart"></canvas>
+                <canvas id="bar-chart" style="height: 400px; width: 400px;"></canvas>
             </div>
         </div>
     </main>
 </section>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
 <script>
-    var labels = {!! json_encode($labels) !!};
-    var values = {!! json_encode($values) !!};
-    var colors = [
-        'rgba(54, 162, 235, 0.8)',
-        'rgba(255, 99, 132, 0.8)',
-        'rgba(255, 205, 86, 0.8)'
-    ];
-
     var data = {
-        labels: labels,
-        datasets: [{
-            data: values,
-            backgroundColor: colors
-        }]
+        labels: ['{{ $prev_month->format('M Y') }}', '{{ $today->format('M Y') }}',
+            '{{ $next_month->format('M Y') }}'
+        ],
+        datasets: [
+            @foreach ($data as $d)
+                {
+                    label: '{{ $d['status'] }}',
+                    backgroundColor: '{{ $d['status'] === 'Early' ? '#4EA646' : ($d['status'] === 'On-Time' ? '#F0AD4E' : '#D9534F') }}',
+                    borderColor: '{{ $d['status'] === 'Early' ? '#4EA646' : ($d['status'] === 'On-Time' ? '#F0AD4E' : '#D9534F') }}',
+                    borderWidth: 1,
+                    data: {{ json_encode($d['counts']) }}
+                },
+            @endforeach
+        ]
     };
 
     var options = {
         responsive: true,
         maintainAspectRatio: false,
         legend: {
-            position: 'right',
-            labels: {
-                boxWidth: 15,
-                fontColor: 'black',
-                fontSize: 13,
-                padding: 15,
-                fontFamily: 'Arial'
-            }
+            position: 'top'
+        },
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
         }
     };
 
-    var ctx = document.getElementById('pie-chart').getContext('2d');
-    var chart = new Chart(ctx, {
-        type: 'pie',
+    var chart = new Chart(document.getElementById('bar-chart'), {
+        type: 'bar',
         data: data,
         options: options
     });

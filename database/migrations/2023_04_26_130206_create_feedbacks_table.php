@@ -16,7 +16,9 @@ return new class extends Migration
             $table->string('name');
             $table->string('email');
             $table->string('contact');
-            $table->string('message');
+            $table->text('message');
+            $table->boolean('isRead')->default(false);
+            $table->timestamp('read_at');
             $table->timestamps();
         });
     }

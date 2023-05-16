@@ -5,14 +5,19 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Shipment;
 use App\Models\Consignee;
+use App\Models\Notification;
 use App\Models\User;
 use App\Models\Dataset;
+use App\Models\CloseShipment;
+use App\Models\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\ActivityLog;
 use DateTime;
 use Carbon\Carbon;
+use App\Notifications\ShipmentUpdate;
+
 
 class ShipmentController extends Controller
 {
@@ -21,12 +26,13 @@ class ShipmentController extends Controller
         $shipments = Shipment::all();
         $users = User::where('type', 2)->with('consignee')->get();
         $shipping_lines = DB::table('datasets')->pluck('shipping_line')->unique();
-        return view('admin.shipmentPanel.index', compact('shipments', 'users', 'shipping_lines'));
+        $files = File::all();
+        return view('admin.shipmentPanel.index', compact('shipments', 'users', 'shipping_lines', 'files'));
     }
 
     function close_shipment()
     {
-        $shipments = Dataset::all();
+        $shipments = Dataset::all()->merge(CloseShipment::all());
         $consignees = Consignee::all();
         return view('admin.shipmentPanel.close_shipments', compact('shipments', 'consignees'));
     }
@@ -36,24 +42,28 @@ class ShipmentController extends Controller
         $shipment = new Shipment;
 
         $shipment->consignee_name = $request->input('consignee_name');
-        $shipment->item_description = $request->input('item_description');
+        $shipment->user_id = User::where('name', $shipment->consignee_name)->first()->id;
+        $shipment->shipment_details = $request->input('item_description');
         $shipment->size = $request->input('size');
         $shipment->weight = $request->input('weight');
         $shipment->bl_number = $request->input('BL_number');
         $shipment->entry_number = $request->input('entry_number');
         $shipment->shipping_line = $request->input('shipping_line');
-        $shipment->arrival = $request->input('arrival_time');
+        $shipment->arrival_date = $request->input('arrival_date');
         $shipment->port_of_origin = $request->input('port_of_origin');
         $shipment->shipment_status = $request->input('shipment_status');
         $shipment->do_status = $request->input('do_status');
         $shipment->billing_status = $request->input('billing_status');
-        $shipment->delivery_status = $request->input('delivery_status');
 
         $user = User::where('name', $shipment->consignee_name)->first();
         $consignee = Consignee::where('user_id', $user->id)->first();
 
         $shipment->destination_address = $consignee->address;
         $shipment->save();
+
+        $consigneeUser = User::find($shipment->user_id);
+        $consigneeUser->notify(new ShipmentUpdate($shipment, 'A new shipment has been added.', json_encode($shipment->toArray()), 'add'));
+
 
         // log the activity
         $log = new ActivityLog;
@@ -83,7 +93,7 @@ class ShipmentController extends Controller
         if ($shipment->process_started != null && $shipment->process_finished != null) {
             $url = 'https://shipmentapi.onrender.com/predict/';
             $data = array(
-                'arrival' => $shipment->arrival,
+                'arrival' => $shipment->arrival_date,
                 'process_start' => $shipment->process_started,
                 'process_finished' => $shipment->process_finished
             );
@@ -104,7 +114,7 @@ class ShipmentController extends Controller
 
             if (curl_errno($ch)) {
                 print_r('Error' . curl_error($ch));
-                //palagay nalang dito ng error message
+                print_r('API call failed. Please try again later.');
             } else {
                 curl_close($ch);
                 $response = json_decode($response);
@@ -112,32 +122,78 @@ class ShipmentController extends Controller
                 $shipment->predicted_delivery_date = $response;
             }
         }
+
+        $shipment->delivered_date = $request->input('delivered_date');
+        $delivery_status = '';
+        if ($shipment->delivered_date != null) {
+            if ($shipment->delivered_date < $shipment->predicted_delivery_date) {
+                $delivery_status = 'Early';
+            } else if ($shipment->delivered_date == $shipment->predicted_delivery_date) {
+                $delivery_status = 'On-Time';
+            } else {
+                $delivery_status = 'Delayed';
+            }
+            $shipment->delivery_status = $delivery_status;
+        }
         $shipment->shipment_status = $request->input('shipment_status');
         $shipment->do_status = $request->input('do_status');
         $shipment->billing_status = $request->input('billing_status');
-        $shipment->delivery_status = $request->input('delivery_status');
         $shipment->save();
 
-        if ($shipment->process_started != null && $shipment->process_finished != null && $shipment->shipment_status == 'AG' && $shipment->billing_status == 'Done' && $shipment->delivery_status == 'Done' && $shipment->do_status == 'Done') {
+        if ($shipment->delivered_date != null && $shipment->shipment_status == 'AP' && $shipment->billing_status == 'Done' && $shipment->do_status == 'Done') {
             $shipment->status = '1';
             $shipment->save();
-            $dataset = new Dataset;
-            $dataset->consignee_name = $shipment->consignee_name;
-            $dataset->bl_number = $shipment->bl_number;
-            $dataset->arrival_date = $shipment->arrival;
-            $dataset->process_started = $shipment->process_started;
-            $dataset->process_finished = $shipment->process_finished;
-            $dataset->shipment_size = $shipment->size;
-            $dataset->shipment_details = $shipment->item_description;
-            $dataset->shipping_line = $shipment->shipping_line;
-            $dataset->weight = $shipment->weight;
-            $dataset->status = false;
-            $dataset->save();
+            $closed = new CloseShipment();
+            $closed->shipment_id = $shipment->id;
+            $closed->consignee_name = $shipment->consignee_name;
+            $closed->entry_number = $shipment->entry_number;
+            $closed->bl_number = $shipment->bl_number;
+            $closed->arrival_date = $shipment->arrival_date;
+            $closed->process_started = $shipment->process_started;
+            $closed->process_finished = $shipment->process_finished;
+            $closed->predicted_delivery_date = $shipment->predicted_delivery_date;
+            $closed->delivered_date = $shipment->delivered_date;
+            $closed->size = $shipment->size;
+            $closed->weight = $shipment->weight;
+            $closed->shipment_details = $shipment->shipment_details;
+            $closed->shipping_line = $shipment->shipping_line;
+            $closed->port_of_origin = $shipment->port_of_origin;
+            $closed->destination_address = $shipment->destination_address;
+            $closed->delivery_status = $shipment->delivery_status;
+            $closed->status = false;
+
+            $closed->save();
+        }
+
+        $changes = $shipment->getChanges();
+
+
+        if ($shipment->delivered_date == null) {
+            $consigneeUser = User::find($shipment->user_id);
+            $consigneeUser->notify(new ShipmentUpdate($shipment, 'A shipment has been updated.', json_encode($changes), 'update'));
+        }
+        if ($shipment->delivered_date != null) {
+            $deliveredDate = Carbon::parse($shipment->delivered_date);
+            $predictedDeliveryDate = Carbon::parse($shipment->predicted_delivery_date);
+            $diffInDays = $deliveredDate->diffInDays($predictedDeliveryDate);
+            $formattedDiff = $deliveredDate->diff($predictedDeliveryDate)->format('%r%a day/s');
+
+            $data = [
+                'predicted_delivery_date' => $shipment->predicted_delivery_date,
+                'delivery_date' => $shipment->delivered_date
+            ];
+            $consigneeUser = User::find($shipment->user_id);
+            if ($diffInDays < 0) {
+                $consigneeUser->notify(new ShipmentUpdate($shipment, 'The consignment was delivered ' . $formattedDiff . ' early.', json_encode($data), 'update'));
+            } elseif ($diffInDays == 0) {
+                $consigneeUser->notify(new ShipmentUpdate($shipment, 'The consignment was delivered on time as per the anticipated delivery date.', json_encode($data), 'update'));
+            } else {
+                $consigneeUser->notify(new ShipmentUpdate($shipment, 'The consignment was ' . $formattedDiff . ' delayed from the anticipated delivery date.', json_encode($data), 'update'));
+            }
         }
 
         // Log activity
         $activity = 'Shipment ' . $shipment->id . ' details were updated';
-        $changes = $shipment->getChanges();
         $logData = [
             'user_id' => Auth::id(),
             'loggable' => $shipment,
@@ -162,9 +218,49 @@ class ShipmentController extends Controller
                 'bl_number' => $shipment->bl_number,
                 'entry_number' => $shipment->entry_number,
                 'arrival' => Carbon::parse($shipment->arrival)->format('F d, Y'),
+                'do_status' => $shipment->do_status,
+                'billing_status' => $shipment->billing_status,
+                'shipment_status' => $shipment->shipment_status,
             ]);
         } else {
-            return response()->json(['message' => 'No Data Found!']);
+            return response()->json(['message' => 'Sorry, your tracking attempt was unsuccessful! Please check your tracking number and try again']);
         }
+    }
+
+    public function uploadFiles(Request $request)
+    {
+        $shipment_id = $request->input('id');
+        $files = $request->file('files');
+
+        foreach ($files as $file) {
+            $filename = $file->getClientOriginalName();
+            $size = $file->getSize();
+            $location = $file->store('public/files');
+
+            $fileData = new File();
+            $fileData->shipment_id = $shipment_id;
+            $fileData->name = $filename;
+            $fileData->size = $size;
+            $fileData->location = $location;
+            $fileData->save();
+        }
+
+        return redirect()->back()->with('success', 'Files uploaded successfully.');
+    }
+
+    public function download($id)
+    {
+        $file = File::findOrFail($id);
+        $path = Storage::url($file->location);
+
+        return response()->download(public_path($path), $file->name);
+    }
+
+    // Define a controller method to update the read_at column
+    public function markAsRead(Notification $notification)
+    {
+        $notification->read_at = now();
+        $notification->save();
+        return response()->json(['success' => true]);
     }
 }

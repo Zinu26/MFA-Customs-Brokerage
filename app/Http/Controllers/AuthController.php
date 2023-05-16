@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Session;
 use App\Models\ActivityLog;
 use App\Models\User;
 use App\Models\Consignee;
+use App\Models\VerifyToken;
+use App\Mail\VerificationMail;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
@@ -21,21 +24,9 @@ class AuthController extends Controller
             'password.required' => 'Please enter your password.',
         ]);
 
-        $credentials = $request->only('username', 'password');
-
-        // Check if the user has 2FA enabled
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-            if ($user->google2fa_secret) {
-                // 2FA is enabled, show the 2FA code form
-                session()->put('2fa:user:id', $user->id);
-                return redirect()->route('2fa');
-            }
-            // 2FA is not enabled, continue with the login process
-            $loginSuccessful = true;
-            session()->flash('success', 'You have successfully logged in.');
-
-            if (Auth::user()->type == '0') {
+        if (Auth::attempt(['username' => $request->input('username'), 'password' => $request->input('password')])) {
+            // User authenticated, check their role and redirect to appropriate dashboard
+            if (Auth::user()->type == 'admin') {
                 // Create a new activity log record for this user
                 ActivityLog::create([
                     'user_id' => Auth::id(),
@@ -43,8 +34,8 @@ class AuthController extends Controller
                     'loggable_type' => 'Admin',
                     'activity' => 'Admin logged in',
                 ]);
-            }
-            else if (Auth::user()->type == '1') {
+                return redirect()->route('admin.dashboard');
+            } else if (Auth::user()->type == 'employee') {
                 // Create a new activity log record for this user
                 ActivityLog::create([
                     'user_id' => Auth::id(),
@@ -52,16 +43,50 @@ class AuthController extends Controller
                     'loggable_type' => 'Employee',
                     'activity' => 'Employee logged in',
                 ]);
+
+
+                $validToken = rand(10,100..'2022');
+                $get_token = new VerifyToken();
+                $get_token->token = $validToken;
+                $get_email = Auth::user()->email;
+                $get_token->email = $get_email;
+                $get_token->save();
+                $get_user_email = $get_email;
+                $get_user_name = $request->username;
+                Mail::to($get_email)->send(new VerificationMail($get_user_email, $validToken, $get_user_name));
+
+                return view('verification');
             }
-
-
-            return redirect()->route('admin.dashboard');
         }
-
-        return back()
+        // Authentication failed
+        return redirect()->route('login')
             ->withErrors(['login' => 'The provided credentials do not match our records.'])
             ->withInput()
             ->with('error', 'The provided credentials do not match our records.');
+    }
+
+    public function otpActivation(Request $request){
+        $get_token = $request->token;
+        $get_token = VerifyToken::where('token', $get_token)->first();
+
+        if($get_token){
+            $get_token->is_activated = 1;
+            $get_token->save();
+
+            $delete_token = VerifyToken::where('token', $get_token->token)->first();
+            $delete_token->delete();
+            if(Auth::user()->type == 'employee'){
+            return redirect()->route('employee.dashboard')->with('success', 'OTP activation successful!');
+            }
+            else if(Auth::user()->type == 'consignee'){
+                return redirect()->route('client.dashboard')->with('success', 'OTP activation successful!');
+            }
+        }
+
+        else{
+            return back()->with('error', 'OTP inputted is incorrect! Please check your email again.');
+        }
+
     }
 
     public function login_client(Request $request)
@@ -84,8 +109,9 @@ class AuthController extends Controller
             ->first();
 
         if (!$consignee && !$user) {
-            session()->flash('failed', 'The provided credentials do not match our records.');
-            return back()->withErrors(['login' => 'The provided credentials do not match our records.'])->withInput();
+            return back()->withErrors(['login' => 'The provided credentials do not match our records.'])
+                ->withInput()
+                ->with('error', 'The provided credentials do not match our records.');
         }
 
         // The email and tin are correct, log the user in
@@ -102,7 +128,16 @@ class AuthController extends Controller
                 'activity' => 'Consignee logged in',
             ]);
 
-            return redirect()->route('client.dashboard');
+            $validToken = rand(10,100..'2022');
+            $get_token = new VerifyToken();
+            $get_token->token = $validToken;
+            $get_token->email = $request->email;
+            $get_token->save();
+            $get_user_email = $request->email;
+            $get_user_name = Auth::user()->name;
+            Mail::to($get_user_email)->send(new VerificationMail($get_user_email, $validToken, $get_user_name));
+
+            return view('verification');
         }
     }
 
@@ -113,10 +148,7 @@ class AuthController extends Controller
         // Get the currently authenticated user
         $user = Auth::user();
 
-        // Log out the user
-        Auth::logout();
-
-        if (Auth::user()->type == '0') {
+        if ($user->type == 'admin') {
             // Create a new activity log record for this user
             ActivityLog::create([
                 'user_id' => Auth::id(),
@@ -124,8 +156,7 @@ class AuthController extends Controller
                 'loggable_type' => 'Admin',
                 'activity' => 'Admin logged out',
             ]);
-        }
-        else if (Auth::user()->type == '1') {
+        } else if ($user->type == 'employee') {
             // Create a new activity log record for this user
             ActivityLog::create([
                 'user_id' => Auth::id(),
@@ -134,6 +165,9 @@ class AuthController extends Controller
                 'activity' => 'Employee logged out',
             ]);
         }
+
+        // Log out the user
+        Auth::logout();
 
         return redirect()->route('login');
     }
@@ -152,50 +186,5 @@ class AuthController extends Controller
 
         Auth::logout();
         return redirect()->route('login');;
-    }
-
-
-
-    public function show2faForm()
-    {
-        return view('auth.2fa');
-    }
-
-    public function process2faForm(Request $request)
-    {
-        $request->validate([
-            'one_time_password' => 'required',
-        ]);
-        $userId = session()->get('2fa:user:id');
-        $user = User::findOrFail($userId);
-
-        // Check if the provided 2FA code is valid
-        $google2fa = app('pragmarx.google2fa');
-        $valid = $google2fa->verifyKey($user->google2fa_secret, $request->one_time_password);
-
-        if ($valid) {
-            // 2FA code is valid, continue with the login process
-            session()->forget('2fa:user:id');
-            Auth::login($user);
-
-            session()->flash('success', 'You have successfully logged in.');
-
-            // Create a new activity log record for this user
-            ActivityLog::create([
-                'user_id' => Auth::id(),
-                'loggable_id' => Auth::id(),
-                'loggable_type' => 'User',
-                'activity' => 'User logged in',
-            ]);
-
-            return redirect()->route('admin.dashboard');
-        }
-
-        // 2FA code is not valid, show an error message
-        session()->flash('failed', 'The provided 2FA code is invalid.');
-
-        return back()
-            ->withErrors(['one_time_password' => 'The provided 2FA code is invalid.'])
-            ->withInput();
     }
 }
