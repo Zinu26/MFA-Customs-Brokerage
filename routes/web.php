@@ -76,6 +76,7 @@ Route::post('/shipments/details', [NotificationController::class, 'getShipmentDe
 //LOGIN
 Route::post('/user/login', [AuthController::class, 'login'])->name('submit.login');
 Route::post('/client/login', [AuthController::class, 'login_client'])->name('submit.login.client');
+Route::post('/otp-verification',[AuthController::class, 'otpActivation'])->name('submit.otp');
 
 //LOG OUT
 Route::get('/user/logout', [AuthController::class, 'logout'])->name('logout');
