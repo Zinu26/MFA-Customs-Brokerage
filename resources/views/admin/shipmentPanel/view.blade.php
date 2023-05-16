@@ -21,7 +21,7 @@
                         <span class="input-group-text"
                             style="background-color: #4EA646; font-weight: 600; color: white;">Item
                             Description</span>
-                        <input type="text" value="{{ $shipment->item_description }}" class="form-control" required>
+                        <input type="text" value="{{ $shipment->shipment_details }}" class="form-control" required>
                     </div></br>
                     <div class="input-group">
                         <span class="input-group-text"
@@ -51,7 +51,7 @@
                     <div class="input-group">
                         <span class="input-group-text"
                             style="background-color: #4EA646; font-weight: 600; color: white;">Arrival Time</span>
-                        <input type="date" value="{{ $shipment->arrival }}" class="form-control" required>
+                        <input type="date" value="{{ $shipment->arrival_date }}" class="form-control" required>
                     </div></br>
                     @if ($shipment->process_started != null || $shipment->process_finished != null)
                         <div class="input-group">
@@ -75,24 +75,13 @@
                             @endif
                         </div></br>
                     @endif
-                    @if ($shipment->port_of_origin != null)
-                        <div class="input-group">
-                            <span class="input-group-text"
-                                style="background-color: #4EA646; font-weight: 600; color: white;">Port of
-                                origin</span>
-                            <input type="text"
-                                @if ($shipment->port_of_origin != null) value="{{ $shipment->port_of_origin }}"  readonly @endif
-                                name="port_of_origin" placeholder="Port of origin" aria-label="Port of origin"
-                                class="form-control">
-                        </div></br>
-                    @endif
                     @if ($shipment->predicted_delivery_date != null)
                         <div class="input-group">
                             <span class="input-group-text"
                                 style="background-color: #4EA646; font-weight: 600; color: white;">Predicted
                                 Delivery Date</span>
                             <input type="text"
-                                @if ($shipment->predicted_delivery_date != null) value="{{ $shipment->predicted_delivery_date }}"  readonly @endif
+                                @if ($shipment->predicted_delivery_date != null) value="{{ \Carbon\Carbon::parse($shipment->predicted_delivery_date)->format('d M Y') }}"  readonly @endif
                                 name="predicted_delivery_date" placeholder="Predicted Delivery Date"
                                 aria-label="Predicted Delivery Date" class="form-control">
                         </div></br>
@@ -103,11 +92,20 @@
                                 style="background-color: #4EA646; font-weight: 600; color: white;">Actual Delivery
                                 Date</span>
                             <input type="text"
-                                @if ($shipment->delivered_date != null) value="{{ $shipment->delivered_date }}"  readonly @endif
+                                @if ($shipment->delivered_date != null) value="{{ \Carbon\Carbon::parse($shipment->delivered_date)->format('d M Y') }}"  readonly @endif
                                 name="delivered_date" placeholder="Actual Delivery Date"
                                 aria-label="Actual Delivery Date" class="form-control">
                         </div></br>
                     @endif
+                    <div class="input-group">
+                        <span class="input-group-text"
+                            style="background-color: #4EA646; font-weight: 600; color: white;">Port of
+                            origin</span>
+                        <input type="text"
+                            @if ($shipment->port_of_origin != null) value="{{ $shipment->port_of_origin }}"  readonly @endif
+                            name="port_of_origin" placeholder="Port of origin" aria-label="Port of origin"
+                            class="form-control">
+                    </div></br>
                     <div class="input-group">
                         <span class="input-group-text"
                             style="background-color: #4EA646; font-weight: 600; color: white;">Destination
@@ -118,23 +116,18 @@
                             aria-label="Destination Address" class="form-control">
                     </div></br>
                     <div class="row">
-                        <div class="form-group col-md-3">
-                            <label for="exampleFormControlSelect1">Shipment Status</label>
+                        <div class="form-group col-md-4">
+                            <label for="exampleFormControlSelect1"><strong>Shipment Status</strong></label>
                             <input type="text" value="{{ $shipment->shipment_status }}" class="form-control"
                                 required>
                         </div>
-                        <div class="form-group col-md-3">
-                            <label for="exampleFormControlSelect1">DO Status</label>
+                        <div class="form-group col-md-4">
+                            <label for="exampleFormControlSelect1"><strong>DO Status</strong></label>
                             <input type="text" value="{{ $shipment->do_status }}" class="form-control" required>
                         </div>
-                        <div class="form-group col-md-3">
-                            <label for="exampleFormControlSelect1">Billing Status</label>
+                        <div class="form-group col-md-4">
+                            <label for="exampleFormControlSelect1"><strong>Billing Status</strong></label>
                             <input type="text" value="{{ $shipment->billing_status }}" class="form-control"
-                                required>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="exampleFormControlSelect1">Delivery</label>
-                            <input type="text" value="{{ $shipment->delivery_status }}" class="form-control"
                                 required>
                         </div>
                     </div>

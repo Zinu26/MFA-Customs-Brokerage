@@ -25,14 +25,14 @@
             <li>
                 <i class='fa fa-truck mb-2' style="font-size: 50px; color:goldenrod;"></i>
                 <span class="text">
-                    <h3>{{ Auth::user()->shipments()->whereNotNull('predicted_delivery_date')->count() }}</h3>
+                    <h3>{{ Auth::user()->shipments()->whereNotNull('delivered_date')->whereNull('delivered_date')->count() }}</h3>
                     <p>To Deliver Shipments</p>
                 </span>
             </li>
             <li>
                 <i class='fa fa-circle-check mb-2' style="font-size: 50px; color:springgreen;"></i>
                 <span class="text">
-                    <h3>{{ Auth::user()->closed()->count() }}</h3>
+                    <h3>{{ Auth::user()->closed()->count() + Auth::user()->dataset()->count() }}</h3>
                     <p>Closed Shipments</p>
                 </span>
             </li>
@@ -40,66 +40,39 @@
 
         <div class="table-data">
             <div class="order">
-                {{-- RECENT SHIPMENTS --}}
-                <div class="head">
-                    <h3>To Deliver Shipments</h3>
-                    <i class='bx bx-filter'></i>
-                </div>
-                <table class="table table-dark">
-                    <thead>
-                        <tr>
-                            <th>BL Number</th>
-                            <th class="text-center">Arrival Date</th>
-                            <th class="text-center">Delivery Date</th>
-                            <th class="text-center">Shipping Line</th>
-                        </tr>
-                    </thead>
-                    <tbody class="table-light" style="color: black;">
-                        @foreach ($shipments as $shipment)
-                            @if ($shipment->consignee_name == Auth::user()->name)
-                                @if ($shipment->predicted_delivery_date != null)
-                                    <tr>
-                                        <td>
-                                            <strong>
-                                                {{ $shipment->bl_number }}
-                                            </strong>
-                                        </td>
-                                        <td class="text-center">{{ $shipment->arrival }}</td>
-                                        <td class="text-center">{{ $shipment->predicted_delivery_date }}</td>
-                                        <td class="text-center">{{ $shipment->shipping_line }}</td>
-                                    </tr>
-                                @endif
-                            @endif
-                        @endforeach
-                    </tbody>
-                </table>
 
-                {{-- TO DELIVER --}}
+                {{-- IN PROCESS --}}
                 <div class="head">
                     <h3>In Process Shipments</h3>
                     <i class='bx bx-filter'></i>
+                    <a href="{{route('consignee_open_shipment')}}" class="btn btn-sm btn-primary"><i class="fa fa-eye"></i> View</a>
+                    @include('clients.report')
                 </div>
                 <table class="table table-dark">
                     <thead>
                         <tr>
                             <th>BL Number</th>
+                            <th class="text-center">Predicted Delivery Date</th>
                             <th class="text-center">Arrival Date</th>
-                            <th class="text-center">Process Started</th>
+                            <th class="text-center">Process Start Date</th>
+                            <th class="text-center">Process End Date</th>
                             <th class="text-center">Shipping Line</th>
                         </tr>
                     </thead>
                     <tbody class="table-light" style="color: black;">
                         @foreach ($shipments as $shipment)
                             @if ($shipment->consignee_name == Auth::user()->name)
-                                @if ($shipment->process_started != null && $shipment->process_finished == null)
+                                @if ($shipment->process_started != null && $shipment->process_finished != null && $shipment->status != 1)
                                     <tr>
                                         <td>
                                             <strong>
                                                 <p>{{ $shipment->bl_number }}</p>
                                             </strong>
                                         </td>
+                                        <td class="text-center">@if($shipment->predicted_delivery_date != null){{ $shipment->predicted_delivery_date }} @else ------SHIPMENT IS STILL IN PROCESS------ @endif</td>
                                         <td class="text-center">{{ $shipment->arrival }}</td>
                                         <td class="text-center">{{ $shipment->process_started }}</td>
+                                        <td class="text-center">{{ $shipment->process_finished }}</td>
                                         <td class="text-center">{{ $shipment->shipping_line }}</td>
                                     </tr>
                                 @endif

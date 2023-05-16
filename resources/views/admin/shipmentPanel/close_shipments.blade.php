@@ -32,9 +32,9 @@
                 <tr class="text-center">
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $shipment->consignee_name }}</td>
-                    <td>{{ $shipment->arrival_date }}</td>
-                    <td>{{ $shipment->predicted_delivery_dates }}</td>
-                    <td>{{ $shipment->delivered_date }}</td>
+                    <td>{{ date('Y-m-d', strtotime($shipment->arrival_date)) }}</td>
+                    <td>{{ date('Y-m-d', strtotime($shipment->predicted_delivery_date)) }}</td>
+                    <td>{{ date('Y-m-d', strtotime($shipment->delivered_date)) }}</td>
                     <td class="text-center col-1">
                         @include('admin.clientPanel.view_close_shipments')
                     </td>

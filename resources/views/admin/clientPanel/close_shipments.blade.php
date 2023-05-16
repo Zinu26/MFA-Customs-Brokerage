@@ -5,7 +5,7 @@
 <title>MFA Customs Brokerage</title>
 <div class="table">
     <div class="table-header">
-        <p>{{ $consignee->user->name }}</p>
+        <p>{{ $consignee->user->name }} | Close Shipments</p>
         <div>
             <a
                 href="@if (Auth::user()->type == 'admin') {{ route('open_shipment', $consignee->id) }} @elseif (Auth::user()->type == 'employee'){{ route('open_shipment.employee', $consignee->id) }} @endif">
@@ -21,10 +21,9 @@
             <tr>
                 <th class="text-center">S.N.</th>
                 <th class="text-center">Consignees</th>
-                <th class="text-center">Arrival</th>
+                <th class="text-center">Arrival Date</th>
                 <th class="text-center">Predicted Delivery Date</th>
                 <th class="text-center">Actual Delivery Date</th>
-                <th class="text-center">Delivery Status</th>
                 <th class="text-center">Option</th>
             </tr>
         </thead>
@@ -34,10 +33,9 @@
                     <tr class="text-center">
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $shipment->consignee_name }}</td>
-                        <td>{{ $shipment->arrival_date }}</td>
-                        <td>{{ $shipment->predicted_delivery_dates }}</td>
-                        <td>{{ $shipment->delivered_date }}</td>
-                        <td>{{ $shipment->delivery_status }}</td>
+                        <td>{{ date('Y-m-d', strtotime($shipment->arrival_date)) }}</td>
+                        <td>{{ date('Y-m-d', strtotime($shipment->predicted_delivery_date)) }}</td>
+                        <td>{{ date('Y-m-d', strtotime($shipment->delivered_date)) }}</td>
                         <td class="text-center col-1">
                             @include('admin.clientPanel.view_close_shipments')
                         </td>

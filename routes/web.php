@@ -159,6 +159,8 @@ Route::middleware(['auth', 'user-type:consignee'])->group(function () {
         Route::get('/clients/dashboard', 'consignee_dashboard')->name('client.dashboard');
         Route::get('/clients/open_shipment', 'consignee_open_shipment')->name('consignee_open_shipment');
         Route::get('/clients/close_shipment', 'consignee_close_shipment')->name('consignee_close_shipment');
+        Route::get('/clients/download/report', 'downloadCsv')->name('downloadCsv');
+        Route::get('/clients/download-by-date/report/', 'downloadCsv_by_date')->name('downloadCsv_by_date');
     });
 
     Route::get('/client/notification', function () {
