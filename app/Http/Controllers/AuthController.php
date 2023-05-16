@@ -48,7 +48,6 @@ class AuthController extends Controller
             ->withErrors(['login' => 'The provided credentials do not match our records.'])
             ->withInput()
             ->with('error', 'The provided credentials do not match our records.');
-
     }
 
     public function login_client(Request $request)
@@ -71,8 +70,9 @@ class AuthController extends Controller
             ->first();
 
         if (!$consignee && !$user) {
-            session()->flash('failed', 'The provided credentials do not match our records.');
-            return back()->withErrors(['login' => 'The provided credentials do not match our records.'])->withInput();
+            return back()->withErrors(['login' => 'The provided credentials do not match our records.'])
+                ->withInput()
+                ->with('error', 'The provided credentials do not match our records.');
         }
 
         // The email and tin are correct, log the user in
@@ -108,8 +108,7 @@ class AuthController extends Controller
                 'loggable_type' => 'Admin',
                 'activity' => 'Admin logged out',
             ]);
-        }
-        else if ($user->type == 'employee') {
+        } else if ($user->type == 'employee') {
             // Create a new activity log record for this user
             ActivityLog::create([
                 'user_id' => Auth::id(),
