@@ -14,6 +14,8 @@
     </div>
 </div>
 
+@include('layouts.inc.message')
+
 <div id="content">
     <table id="datatableid" class="table table-bordered table-dark">
         <thead>
@@ -37,7 +39,13 @@
                         <td>{{ $shipment->entry_number }}</td>
                         <td>{{ $shipment->bl_number }}</td>
                         <td>{{ $shipment->arrival_date }}</td>
-                        <td>{{ $shipment->predicted_delivery_date }}</td>
+                        <td>
+                            @if ($shipment->predicted_delivery_date != null)
+                                {{ $shipment->predicted_delivery_date }}
+                            @else
+                                ----SHIPMENT STILL IN PROCESS----
+                            @endif
+                        </td>
                         <td>{{ $shipment->shipment_status }}</td>
                         <td>{{ $shipment->do_status }}</td>
                         <td>{{ $shipment->billing_status }}</td>

@@ -44,18 +44,21 @@ class AuthController extends Controller
                     'activity' => 'Employee logged in',
                 ]);
 
+                //For Testing purposes
+                return redirect()->route('employee.dashboard')->with('success', 'OTP activation successful!');
 
-                $validToken = rand(10,100..'2022');
-                $get_token = new VerifyToken();
-                $get_token->token = $validToken;
-                $get_email = Auth::user()->email;
-                $get_token->email = $get_email;
-                $get_token->save();
-                $get_user_email = $get_email;
-                $get_user_name = $request->username;
-                Mail::to($get_email)->send(new VerificationMail($get_user_email, $validToken, $get_user_name));
+                // OTP
+                // $validToken = rand(10,100..'2022');
+                // $get_token = new VerifyToken();
+                // $get_token->token = $validToken;
+                // $get_email = Auth::user()->email;
+                // $get_token->email = $get_email;
+                // $get_token->save();
+                // $get_user_email = $get_email;
+                // $get_user_name = $request->username;
+                // Mail::to($get_email)->send(new VerificationMail($get_user_email, $validToken, $get_user_name));
 
-                return view('verification');
+                // return view('verification');
             }
         }
         // Authentication failed
@@ -103,7 +106,7 @@ class AuthController extends Controller
         $tin = $request->input('tin');
 
         // Check if the email and tin exist in the consignees table
-        $user = User::where('email', $email)
+        $user = User::where('email', $email)->where('type', 2)
             ->first();
         $consignee = Consignee::where('tin', $tin)
             ->first();
@@ -128,14 +131,18 @@ class AuthController extends Controller
                 'activity' => 'Consignee logged in',
             ]);
 
-            $validToken = rand(10,100..'2022');
-            $get_token = new VerifyToken();
-            $get_token->token = $validToken;
-            $get_token->email = $request->email;
-            $get_token->save();
-            $get_user_email = $request->email;
-            $get_user_name = Auth::user()->name;
-            Mail::to($get_user_email)->send(new VerificationMail($get_user_email, $validToken, $get_user_name));
+            // For Testing purposes
+            return redirect()->route('client.dashboard')->with('success', 'OTP activation successful!');
+
+            // OTP
+            // $validToken = rand(10,100..'2022');
+            // $get_token = new VerifyToken();
+            // $get_token->token = $validToken;
+            // $get_token->email = $request->email;
+            // $get_token->save();
+            // $get_user_email = $request->email;
+            // $get_user_name = Auth::user()->name;
+            // Mail::to($get_user_email)->send(new VerificationMail($get_user_email, $validToken, $get_user_name));
 
             return view('verification');
         }

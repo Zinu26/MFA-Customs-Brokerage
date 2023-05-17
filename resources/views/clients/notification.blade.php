@@ -56,7 +56,7 @@
     <i class="fas fa-bell"></i>
     <span id="notification-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
         {{-- display read_at null value count --}}
-        {{ \App\Models\Notification::where('read_at', false)->where('notifiable_id', \Illuminate\Support\Facades\Auth::user()->id)->count() }}
+        {{ \App\Models\Notification::where('read_at', null)->where('notifiable_id', \Illuminate\Support\Facades\Auth::user()->id)->count() }}
     </span>
 </button>
 
@@ -87,9 +87,15 @@
             <div class="modal-header" style="background-color: #29924c;">
                 <h5 class="modal-title" id="notification-modal-label"></h5>
             </div>
-            <div class="modal-body">
-                <p id="notification-modal-body"></p>
-            </div>
+            <form method="POST" action="{{ route('markAsRead', $notification->id) }}">
+                @csrf
+                <div class="modal-body">
+                    <p id="notification-modal-body"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Mark as Read</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -137,6 +143,21 @@
 
             //mark as read
             notificationData.read_at = true;
+            // Get the notifiable_id
+            const notifiableId = notificationData.id;
+
+            // Pass the notifiable_id to the server
+            fetch(`/mark-notification-as-read/${notifiableId}`, {
+                    method: 'PUT'
+                })
+                .then(response => {
+                    // Handle the response as needed
+                    console.log('Notification marked as read');
+                })
+                .catch(error => {
+                    // Handle the error as needed
+                    console.error('Error marking notification as read:', error);
+                });
 
             // Format the changes field in a readable way
             const changes = JSON.parse(notificationData.data.changes);
