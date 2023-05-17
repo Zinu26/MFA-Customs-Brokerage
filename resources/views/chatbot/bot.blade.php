@@ -39,9 +39,6 @@
             </div>
         </div>
     </div>
-    <div class="help-message">
-        <img src="https://images.myhardhatstickers.com/img/lg/H/ask-me-hard-hat-decals-hh-0517.png" alt="Need help?">
-    </div>
 </div>
 
 

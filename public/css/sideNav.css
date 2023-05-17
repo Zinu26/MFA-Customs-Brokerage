@@ -74,7 +74,6 @@
 .sidebar ul li img {
     height: 50px;
     width: 50px;
-    margin-left: -30px;
     margin-top: -100px;
     opacity: 1;
     transition: all 0.5s ease;
@@ -87,7 +86,6 @@
 .sidebar ul li a {
     color: #fff;
     display: flex;
-    margin-left: -10px;
     align-items: center;
     text-decoration: none;
     border-radius: 0.8rem;
@@ -99,8 +97,8 @@
 }
 
 .sidebar ul li a i {
+    min-width: 50px;
     text-align: center;
-    left: 0px;
     height: 50px;
     border-radius: 12px;
     line-height: 50px;
@@ -151,52 +149,8 @@
     justify-content: space-between;
 }
 
-
-/* Media query for screens between 576px and 767px */
-@media screen and (max-width: 991px) {
-    .sidebar {
-        width: 120px;
-        padding: .4rem .8rem;
-    }
-
-    .sidebar.active {
-        width: 250px;
-    }
-
+@media only screen and (max-width: 991px) {
     .sidebar #btn {
         opacity: 0;
-    }
-    .sidebar ul li:hover .tooltip {
-        opacity: 1;
-    }
-    .sidebar ul li {
-        line-height: 5px;
-        margin-left: -15px;
-        text-align: center;
-    }
-
-    .sidebar ul li img {
-        height: 40px;
-        width: 40px;
-        margin-left: 5px;
-        margin-top: 0;
-    }
-
-    .sidebar ul li a {
-        display: block;
-        border-radius: 0;
-        padding: 0.8rem;
-    }
-
-    .sidebar ul li a i {
-        min-width: 40px;
-        height: 40px;
-        line-height: 40px;
-    }
-
-    .main-content {
-        left: 150px;
-        width: calc(100% - 120px);
-        padding: 0.8rem;
     }
 }

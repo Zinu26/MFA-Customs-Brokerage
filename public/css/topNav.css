@@ -8,9 +8,9 @@
 }
 
 :root {
-    --body-color: #E4E9f7;
-    --nav-color: #195c24;
-    --text-color: #fff;
+    --body-color: #E4E9F7;
+    --nav-color: #195C24;
+    --text-color: #FFF;
     --search-text: #010718;
 }
 
@@ -19,18 +19,24 @@ body {
     background-color: var(--body-color);
 }
 
-.nav-link:hover{
-    background-color: black;
+.nav-link:hover {
+    background-color: rgb(33, 100, 54);
     color: white;
     border-radius: 10px;
 }
 
+
 @media only screen and (max-width: 991px) {
-    .container-fluid{
+    nav {
+        position: absolute;
+        width: 100%;
+    }
+    .container-fluid {
         margin-top: -80px;
-        top:0;
+        top: 0;
+        width: 100%;
         z-index: 99999;
         text-align: center;
-        background: #fff;
+        background: #FFF;
     }
 }
