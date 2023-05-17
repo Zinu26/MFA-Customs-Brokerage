@@ -11,7 +11,7 @@
             <div class="alert alert-success">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
                 {{session()->get('message')}}
-            </div>  
+            </div>
         @endif
             <div class="left">
                 <h1>Dashboard</h1>

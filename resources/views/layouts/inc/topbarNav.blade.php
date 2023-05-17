@@ -9,35 +9,35 @@ integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQS
 </script>
 <body class="p-0 m-0 border-0 bd-example">
 
-    <nav class="navbar navbar-expand-lg bg-body-tertiary" style="height: 70px;">
-        <div class="container-fluid" style="background-color: #12171e; height: 70px;">
+    <nav class="navbar navbar-expand-lg bg-dark" style="height: 70px;">
+        <div class="container-fluid">
             <a class="navbar-brand" href="#"><img src="/images/topnav_logo.png"></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
+                <span><i class="fa fa-bars fa-lg" style="color: white;"></i></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <ul class="navbar-nav me-auto mb-0 mb-md-0">
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="{{ route('landing') }}">Home</a>
+                        <a class="nav-link" href="{{ route('landing') }}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="{{ route('about') }}">About Us</a>
+                        <a class="nav-link" href="{{ route('about') }}">About Us</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="{{ route('service') }}">Services</a>
+                        <a class="nav-link" href="{{ route('service') }}">Services</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="{{ route('contact') }}">Contact Us</a>
+                        <a class="nav-link" href="{{ route('contact') }}">Contact Us</a>
                     </li>
                     @auth
                         <li class="nav-item">
-                            <a class="nav-link text-white" href="{{ route('admin.dashboard') }}">Dashboard</a>
+                            <a class="nav-link" href="{{ route('admin.dashboard') }}">Dashboard</a>
                         </li>
                     @else
                         <li class="nav-item">
-                            <a class="nav-link text-white" href="{{ route('login') }}">Log in <i class="fa fa-user-circle"
+                            <a class="nav-link" href="{{ route('login') }}">Log in <i class="fa fa-user-circle"
                                     aria-hidden="true"></i></a>
                         </li>
                     @endauth
