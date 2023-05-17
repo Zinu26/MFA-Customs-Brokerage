@@ -174,7 +174,7 @@
     }
 }
 
-@media only screen and (max-width: 767px) {
+@media only screen and (max-width: 992px) {
     .chatbot-wrapper {
         position: fixed;
         bottom: 20px;

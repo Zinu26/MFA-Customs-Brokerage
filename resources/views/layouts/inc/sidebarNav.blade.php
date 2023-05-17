@@ -21,7 +21,7 @@
                     class="tooltip"> Clients</span></li>
             <li><a href="{{ route('shipments') }}"><i class="fas fa-truck"></i><span
                         class="nav-item"> Shipments</span></a><span class="tooltip"> Shipments</span></li>
-            <li><a href=""><i class="fas fa-envelope"></i><span class="nav-item">Feedbacks</span></a><span
+            <li><a href="{{route('admin.feedback')}}"><i class="fas fa-envelope"></i><span class="nav-item">Feedbacks</span></a><span
                     class="tooltip"> Feedbacks</span></li>
         @endif
         @if (Auth::user()->type == 'employee')
@@ -29,7 +29,7 @@
                     class="tooltip">Clients</span></li>
             <li><a href="{{ route('shipments.employee') }}"><i class="fas fa-truck"></i><span
                         class="nav-item">Shipments</span></a><span class="tooltip"> Shipments</span></li>
-            <li><a href=""><i class="fas fa-envelope"></i><span class="nav-item"> Feedbacks</span></a><span
+            <li><a href="{{route('employee.feedback')}}"><i class="fas fa-envelope"></i><span class="nav-item"> Feedbacks</span></a><span
                     class="tooltip">Feedbacks</span></li>
         @endif
         <li><a href="{{ route('logout') }}" class="logout"><i class="fas fa-power-off"></i><span

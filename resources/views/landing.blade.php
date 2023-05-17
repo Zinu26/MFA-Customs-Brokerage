@@ -2,6 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
+    <link rel="icon" href="/images/logo_1.png" type="image/x-icon" />
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -25,8 +26,6 @@
             </div>
         </section>
     </div>
-
-    @include ('chatbot.chatbot')
 </body>
 
 </html>

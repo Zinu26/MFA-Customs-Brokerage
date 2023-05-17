@@ -175,20 +175,3 @@
         }
     })
 </script>
-
-<script>
-    var contentBox = document.getElementById("content-box");
-    var maxContentHeight = parseInt(contentBox.style.height);
-
-    function toggleContentScroll() {
-        if (contentBox.scrollHeight > maxContentHeight) {
-            contentBox.style.overflowY = "scroll";
-        } else {
-            contentBox.style.overflowY = "hidden";
-        }
-    }
-
-    // Call toggleContentScroll when the window is resized or when the content is changed dynamically
-    window.addEventListener("resize", toggleContentScroll);
-    contentBox.addEventListener("DOMNodeInserted", toggleContentScroll);
-</script>
