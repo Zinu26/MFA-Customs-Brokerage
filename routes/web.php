@@ -11,6 +11,7 @@ use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\ChatBotController;
+use App\Http\Controllers\FeedbackController;
 use Illuminate\Auth\Events\Verified;
 
 use Illuminate\Support\Facades\Auth;
@@ -73,10 +74,12 @@ Route::get('/search', [ShipmentController::class, 'search'])->name('search');
 
 Route::post('/shipments/details', [NotificationController::class, 'getShipmentDetails'])->name('getShipmentDetails');
 
+Route::post('/send/feedback', [FeedbackController::class, 'sendFeedback'])->name('sendFeedback');
+
 //LOGIN
 Route::post('/user/login', [AuthController::class, 'login'])->name('submit.login');
 Route::post('/client/login', [AuthController::class, 'login_client'])->name('submit.login.client');
-Route::post('/otp-verification',[AuthController::class, 'otpActivation'])->name('submit.otp');
+Route::post('/otp-verification', [AuthController::class, 'otpActivation'])->name('submit.otp');
 
 //LOG OUT
 Route::get('/user/logout', [AuthController::class, 'logout'])->name('logout');
@@ -92,6 +95,10 @@ Route::middleware(['auth', 'user-type:admin'])->group(function () {
         Route::get('/users/{user}/activity-logs', 'index');
         Route::get('/activity-logs/download', 'download')->name('activity-logs.download');
     });
+
+    Route::get('/admin/feedback', [FeedbackController::class, 'index'])->name('admin.feedback');
+    Route::post('/admin/read_feedback/{id}', [FeedbackController::class, 'read'])->name('admin.read');
+    Route::post('/admin/unread_feedback/{id}', [FeedbackController::class, 'unread'])->name('admin.unread');
 
     Route::controller(UserController::class)->group(function () {
         Route::get('/admin/admin_list', 'admin_page')->name('admin_list');
@@ -131,6 +138,10 @@ Route::middleware(['auth', 'user-type:admin'])->group(function () {
 Route::middleware(['auth', 'user-type:employee'])->group(function () {
     Route::get('/employee/dashboard', [DashboardController::class, 'dashboard'])
         ->name('employee.dashboard')->middleware('verified');
+
+    Route::get('/employee/feedback', [FeedbackController::class, 'index'])->name('employee.feedback');
+    Route::post('/employee/read_feedback/{id}', [FeedbackController::class, 'read'])->name('employee.read');
+    Route::post('/employee/unread_feedback/{id}', [FeedbackController::class, 'unread'])->name('employee.unread');
 
     Route::controller(ConsigneeController::class)->group(function () {
         Route::get('/employee/client_list', 'client_page')->name('client_list.employee');

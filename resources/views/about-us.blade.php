@@ -15,3 +15,5 @@
  </p>
     </div>
 </div>
+
+@include('chatbot.chatbot')

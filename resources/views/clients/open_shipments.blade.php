@@ -23,9 +23,9 @@
                 <th class="text-center">BL Number</th>
                 <th class="text-center">Arrival Date</th>
                 <th class="text-center">Predicted Delivery Date</th>
-                <th class="text-center">DO Status</th>
                 <th class="text-center">Shipment Status</th>
-                <th class="text-center">Billing</th>
+                <th class="text-center">DO Status</th>
+                <th class="text-center">Billing Status</th>
                 <th class="text-center">Option</th>
             </tr>
         </thead>
@@ -38,8 +38,8 @@
                         <td>{{ $shipment->bl_number }}</td>
                         <td>{{ $shipment->arrival_date }}</td>
                         <td>{{ $shipment->predicted_delivery_date }}</td>
-                        <td>{{ $shipment->do_status }}</td>
                         <td>{{ $shipment->shipment_status }}</td>
+                        <td>{{ $shipment->do_status }}</td>
                         <td>{{ $shipment->billing_status }}</td>
                         <td class="text-center col-1">
                             @include('admin.clientPanel.view_open_shipments')

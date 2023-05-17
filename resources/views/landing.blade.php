@@ -2,6 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
+    <link rel="icon" href="/images/logo_1.png" type="image/x-icon" />
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -10,8 +11,8 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
-    @include('layouts.inc.header')
-    @include('layouts.inc.topbarNav')
+    @extends('layouts.inc.topbarNav')
+    @extends('layouts.inc.header')
     <link rel="stylesheet" href="/css/welcome.css" />
 </head>
 
@@ -23,16 +24,8 @@
                 <h1>Offers Highest Quality of Service</h1>
                 <h2>20 years in the business</h2>
             </div>
-            {{-- Track --}}
-            <div class="button-container">
-                <a href="{{ route('about') }}" style="text-decoration: none;">
-                    <button class="learn-more">Learn More about MFA</i></button>
-                </a>
-            </div>
         </section>
     </div>
-
-    @include ('chatbot.chatbot')
 </body>
 
 </html>

@@ -15,7 +15,7 @@
     <div class="box">
         <div class="contact form">
             <h3>Send a Message</h3>
-            <form method="POST" action="">
+            <form method="POST" action="{{route('sendFeedback')}}">
                 @csrf
                 <div class="formBox">
                     <div class="row50">
@@ -40,10 +40,12 @@
                             <textarea name="message" placeholder="Write your message here..."></textarea>
                         </div>
                     </div>
-                    <div id="app">
-                        <div id="message">Send</div>
-                        <div id="send_btn"><i class="fas fa-plane"></i></div>
-                    </div>
+                    <button type="submit" style="border: none; background:transparent;">
+                        <div id="app">
+                            <div id="message">Send</div>
+                            <div id="send_btn"><i class="fas fa-send"></i></div>
+                        </div>
+                    </button>
                 </div>
             </form>
         </div>
@@ -76,17 +78,17 @@
 
 
 <script>
-    $(function(){
-        $('#send_btn').on('click', function(){
-            setTimeout(function(){
+    $(function() {
+        $('#send_btn').on('click', function() {
+            setTimeout(function() {
                 $('#message').addClass('sending').text('Sending');
                 $('#send_btn').addClass('sending');
-            },0);
+            }, 0);
 
-            setTimeout(function(){
+            setTimeout(function() {
                 $('#message').addClass('sent').text('Sent');
                 $('#send_btn').addClass('sent');
-            },2600);
+            }, 2600);
         })
     })
 </script>
