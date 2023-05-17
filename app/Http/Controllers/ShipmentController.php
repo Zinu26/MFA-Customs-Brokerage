@@ -236,7 +236,12 @@ class ShipmentController extends Controller
             return response()->json([
                 'bl_number' => $shipment->bl_number,
                 'entry_number' => $shipment->entry_number,
-                'arrival' => Carbon::parse($shipment->arrival)->format('F d, Y'),
+                'port_of_origin' => $shipment->port_of_origin,
+                'arrival' => Carbon::parse($shipment->arrival_date)->format('F d, Y'),
+                'process_started' => Carbon::parse($shipment->process_started)->format('F d, Y'),
+                'process_finished' => Carbon::parse($shipment->process_finished)->format('F d, Y'),
+                'predicted_delivery_date' => Carbon::parse($shipment->predicted_delivery_date)->format('F d, Y'),
+                'delivered_date' => Carbon::parse($shipment->delivered_date)->format('F d, Y'),
                 'do_status' => $shipment->do_status,
                 'billing_status' => $shipment->billing_status,
                 'shipment_status' => $shipment->shipment_status,

@@ -74,7 +74,17 @@
                             '<p><strong>BL Number</strong>: ' + response.bl_number + '</p>' +
                             '<p><strong>Entry Number</strong>: ' + response.entry_number +
                             '</p>' +
+                            '<p><strong>Port of Dispatch</strong>: ' + response.port_of_origin +
+                            '</p>' +
                             '<p><strong>Arrival</strong>: ' + response.arrival + '</p>' +
+                            '<p><strong>Process Start Date</strong>: ' + response.process_started +
+                            '</p>' +
+                            '<p><strong>Process End Date</strong>: ' + response.process_finished +
+                            '</p>' +
+                            '<p><strong>Predicted Delivery Date</strong>: ' + response.predicted_delivery_date +
+                            '</p>' +
+                            '<p><strong>Actual Delivery Date</strong>: ' + response.delivered_date +
+                            '</p>' +
                             '<p><strong>DO Status</strong>: ' + response.do_status + '</p>' +
                             '<p><strong>Billing Status</strong>: ' + response.billing_status +
                             '</p>' +
