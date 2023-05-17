@@ -1,57 +1,67 @@
 <link rel="stylesheet" href="/css/topNav.css" />
 
+<body class="p-0 m-0 border-0 bd-example">
 
-<nav>
-    <div class="nav-bar">
-        <i class="fa fa-bars sidebarOpen"></i>
-        <span class="logo"><a href="#"><img src="/images/topnav_logo.png"></a></span>
-        <div class="menu">
-            <div class="logo-toggle">
-                <span class="logo"><a href="#"><img src="/images/topnav_logo.png"></a></span>
-                <i class="fa fa-xmark sidebarClose"></i>
-            </div>
-            <ul class="nav-links">
-                <li><a aria-current="page" href="./">Home</a></li>
-                <li><a href="{{ route('about') }}">About Us </a></li>
-                <li><a href="{{ route('service') }}">Services </a></li>
-                <li><a href="{{ route('contact') }}"> Contact Us </a></li>
-                @auth
-                    <li><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                @else
-                    <li><a href="{{ route('login') }}">Log in <i class="fa fa-user-circle" aria-hidden="true"></i></a></li>
-                @endauth
-                <li class="search">
-                    <form action="{{ route('search') }}" method="GET">
-                        @csrf
-                        <input type="text" name="bl_number" placeholder="Track Now">
-                        <button type="submit"><i class="fa fa-search"></i></button>
-                    </form>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
-
-<div class="modal" id="search-modal" tabindex="-1" role="dialog" aria-labelledby="search-modal-label"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="search-modal-label">Search Result</h5>
-            </div>
-            <div class="modal-body">
-                <p id="search-result"></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary" style="height: 70px;">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"><img src="/images/topnav_logo.png"></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="{{ route('landing') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('about') }}">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('service') }}">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('contact') }}">Contact Us</a>
+                    </li>
+                    @auth
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('admin.dashboard') }}">Dashboard</a>
+                        </li>
+                    @else
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('login') }}">Log in <i class="fa fa-user-circle"
+                                    aria-hidden="true"></i></a>
+                        </li>
+                    @endauth
+                </ul>
+                <form class="d-flex" role="search" action="{{ route('search') }}" method="GET">
+                    <input class="form-control me-2" type="text" name="bl_number" placeholder="Track Now"
+                        aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit"><i class="fa fa-search"></i></button>
+                </form>
             </div>
         </div>
+    </nav>
+
+    <div class="modal" id="search-modal" tabindex="-1" role="dialog" aria-labelledby="search-modal-label"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="search-modal-label">Search Result</h5>
+                </div>
+                <div class="modal-body">
+                    <p id="search-result"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
-
-
+</body>
 <!-- Include jQuery library -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
     $(function() {

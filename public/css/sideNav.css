@@ -1,11 +1,11 @@
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.sidebar{
+.sidebar {
     position: absolute;
     top: 0;
     left: 0;
@@ -16,11 +16,11 @@
     transition: all 0.5s ease;
 }
 
-.sidebar.active{
+.sidebar.active {
     width: 200px;
 }
 
-.sidebar #btn{
+.sidebar #btn {
     position: absolute;
     color: #fff;
     top: .4rem;
@@ -31,19 +31,19 @@
     cursor: pointer;
 }
 
-.sidebar.active #btn{
+.sidebar.active #btn {
     left: 90%;
 }
 
-.sidebar ul li p{
+.sidebar ul li p {
     opacity: 0;
-  }
+}
 
-  .sidebar.active ul li p{
+.sidebar.active ul li p {
     opacity: 1;
-  }
+}
 
-.sidebar .top .logo{
+.sidebar .top .logo {
     color: #fff;
     height: 170px;
     width: 170px;
@@ -53,16 +53,16 @@
     opacity: 0;
 }
 
-.sidebar.active .top .logo{
+.sidebar.active .top .logo {
     opacity: 1;
     transition: all 0.5s ease;
 }
 
-.bold{
+.bold {
     font-weight: 600;
 }
 
-.sidebar ul li{
+.sidebar ul li {
     position: relative;
     list-style-type: none;
     height: 50px;
@@ -71,34 +71,36 @@
     line-height: 50px;
 }
 
-.sidebar ul li img{
+.sidebar ul li img {
     height: 50px;
     width: 50px;
+    margin-left: -30px;
     margin-top: -100px;
     opacity: 1;
     transition: all 0.5s ease;
 }
 
-.sidebar.active ul li img{
+.sidebar.active ul li img {
     opacity: 0;
 }
 
-.sidebar ul li a{
+.sidebar ul li a {
     color: #fff;
     display: flex;
+    margin-left: -10px;
     align-items: center;
     text-decoration: none;
     border-radius: 0.8rem;
 }
 
-.sidebar ul li a:hover{
+.sidebar ul li a:hover {
     background-color: #fff;
     color: #12171e;
 }
 
-.sidebar ul li a i{
-    min-width: 50px;
+.sidebar ul li a i {
     text-align: center;
+    left: 0px;
     height: 50px;
     border-radius: 12px;
     line-height: 50px;
@@ -108,11 +110,11 @@
     opacity: 0;
 }
 
-.sidebar.active .nav-item{
+.sidebar.active .nav-item {
     opacity: 1;
 }
 
-.sidebar ul li .tooltip{
+.sidebar ul li .tooltip {
     position: absolute;
     left: 125px;
     top: 50%;
@@ -125,11 +127,11 @@
     opacity: 0;
 }
 
-.sidebar ul li:hover .tooltip{
+.sidebar ul li:hover .tooltip {
     opacity: 0;
 }
 
-.sidebar.active ul li .tooltip{
+.sidebar.active ul li .tooltip {
     display: none;
 }
 
@@ -144,139 +146,57 @@
     padding: 1rem;
 }
 
-.container{
+.container {
     display: flex;
     justify-content: space-between;
 }
 
-@media only screen and (max-width: 768px) {
-.sidebar {
-width: 100%;
-}
-.sidebar.active {
-width: 100%;
-}
-.sidebar.active #btn {
-left: 95%;
-}
-.main-content {
-left: 0;
-width: 100%;
-}
-}
-
-/* Media query for screens smaller than 576px */
-@media screen and (max-width: 575px) {
-  .sidebar {
-    width: 100%;
-    padding: .4rem;
-    transition: none;
-    position: static;
-    height: auto;
-  }
-
-  .sidebar.active {
-    width: 100%;
-  }
-
-  .sidebar #btn {
-    left: 0;
-    top: 0;
-    font-size: 1.4rem;
-    line-height: normal;
-    transform: none;
-  }
-
-  .sidebar.active #btn {
-    left: 90%;
-  }
-
-  .sidebar ul li {
-    height: auto;
-    margin: 0.4rem 0;
-    text-align: center;
-  }
-
-  .sidebar ul li img {
-    height: 30px;
-    width: 30px;
-    margin-top: 0;
-  }
-
-  .sidebar ul li a {
-    display: block;
-    border-radius: 0;
-    padding: 0.8rem;
-  }
-
-  .sidebar ul li a i {
-    min-width: 30px;
-    height: 30px;
-    line-height: 30px;
-  }
-
-  .sidebar ul li .tooltip {
-    display: none;
-  }
-
-  .main-content {
-    left: 0;
-    width: 100%;
-    padding: 0.4rem;
-  }
-
-  .container {
-    flex-direction: column;
-  }
-}
 
 /* Media query for screens between 576px and 767px */
-@media screen and (min-width: 576px) and (max-width: 767px) {
-  .sidebar {
-    width: 120px;
-    padding: .4rem .8rem;
-  }
+@media screen and (max-width: 991px) {
+    .sidebar {
+        width: 120px;
+        padding: .4rem .8rem;
+    }
 
-  .sidebar.active {
-    width: 250px;
-  }
+    .sidebar.active {
+        width: 250px;
+    }
 
-  .sidebar #btn {
-    font-size: 1.4rem;
-    line-height: normal;
-  }
+    .sidebar #btn {
+        opacity: 0;
+    }
+    .sidebar ul li:hover .tooltip {
+        opacity: 1;
+    }
+    .sidebar ul li {
+        line-height: 5px;
+        margin-left: -15px;
+        text-align: center;
+    }
 
-  .sidebar.active #btn {
-    left: 90%;
-  }
+    .sidebar ul li img {
+        height: 40px;
+        width: 40px;
+        margin-left: 5px;
+        margin-top: 0;
+    }
 
-  .sidebar ul li {
-    height: auto;
-    margin: 0.4rem 0;
-    text-align: center;
-  }
+    .sidebar ul li a {
+        display: block;
+        border-radius: 0;
+        padding: 0.8rem;
+    }
 
-  .sidebar ul li img {
-    height: 40px;
-    width: 40px;
-    margin-top: 0;
-  }
+    .sidebar ul li a i {
+        min-width: 40px;
+        height: 40px;
+        line-height: 40px;
+    }
 
-  .sidebar ul li a {
-    display: block;
-    border-radius: 0;
-    padding: 0.8rem;
-  }
-
-  .sidebar ul li a i {
-    min-width: 40px;
-    height: 40px;
-    line-height: 40px;
-  }
-
-  .main-content {
-    left: 120px;
-    width: calc(100% - 120px);
-    padding: 0.8rem;
-  }
+    .main-content {
+        left: 150px;
+        width: calc(100% - 120px);
+        padding: 0.8rem;
+    }
 }
