@@ -24,9 +24,9 @@
                 <th class="text-center">Consignees</th>
                 <th class="text-center">Arrival Date</th>
                 <th class="text-center">Predicted Delivery Date</th>
-                <th class="text-center">DO Status</th>
                 <th class="text-center">Shipment Status</th>
-                <th class="text-center">Billing</th>
+                <th class="text-center">DO Status</th>
+                <th class="text-center">Billing Status</th>
                 <th class="text-center">Delivery</th>
                 <th class="text-center">Option</th>
             </tr>
@@ -39,8 +39,8 @@
                         <td>{{ $shipment->consignee_name }}</td>
                         <td>{{ $shipment->arrival_date }}</td>
                         <td>{{ $shipment->predicted_delivery_date }}</td>
-                        <td>{{ $shipment->do_status }}</td>
                         <td>{{ $shipment->shipment_status }}</td>
+                        <td>{{ $shipment->do_status }}</td>
                         <td>{{ $shipment->billing_status }}</td>
                         <td>{{ $shipment->delivery_status }}</td>
                         <td class="text-center col-2">
