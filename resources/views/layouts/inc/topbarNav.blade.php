@@ -1,9 +1,16 @@
+
 <link rel="stylesheet" href="/css/topNav.css" />
 
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+<link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous">
+</script>
 <body class="p-0 m-0 border-0 bd-example">
 
     <nav class="navbar navbar-expand-lg bg-body-tertiary" style="height: 70px;">
-        <div class="container-fluid">
+        <div class="container-fluid" style="background-color: #12171e; height: 70px;">
             <a class="navbar-brand" href="#"><img src="/images/topnav_logo.png"></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -13,24 +20,24 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('landing') }}">Home</a>
+                        <a class="nav-link text-white" href="{{ route('landing') }}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('about') }}">About Us</a>
+                        <a class="nav-link text-white" href="{{ route('about') }}">About Us</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('service') }}">Services</a>
+                        <a class="nav-link text-white" href="{{ route('service') }}">Services</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('contact') }}">Contact Us</a>
+                        <a class="nav-link text-white" href="{{ route('contact') }}">Contact Us</a>
                     </li>
                     @auth
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('admin.dashboard') }}">Dashboard</a>
+                            <a class="nav-link text-white" href="{{ route('admin.dashboard') }}">Dashboard</a>
                         </li>
                     @else
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('login') }}">Log in <i class="fa fa-user-circle"
+                            <a class="nav-link text-white" href="{{ route('login') }}">Log in <i class="fa fa-user-circle"
                                     aria-hidden="true"></i></a>
                         </li>
                     @endauth
