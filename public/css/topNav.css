@@ -19,9 +19,12 @@ body {
     background-color: var(--body-color);
 }
 
+.nav-item .nav-link{
+    color:white;
+}
+
 .nav-link:hover {
     background-color: rgb(33, 100, 54);
-    color: white;
     border-radius: 10px;
 }
 
@@ -32,11 +35,23 @@ body {
         width: 100%;
     }
     .container-fluid {
-        margin-top: -80px;
-        top: 0;
         width: 100%;
+        height: 80px;
         z-index: 99999;
         text-align: center;
-        background: #FFF;
+        background: black;
+    }
+    .navbar-brand,.navbar-toggler,.navbar-collapse{
+        margin-top: -75px;
+    }
+    .nav-item, form{
+        background-color: black;
+        padding-bottom: 10px;
+    }
+    form{
+        padding: 30px;
+    }
+    .nav-item .nav-link{
+        color: white;
     }
 }

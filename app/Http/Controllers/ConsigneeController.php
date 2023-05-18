@@ -11,6 +11,8 @@ use App\Models\CloseShipment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\ActivityLog;
+use App\Models\Notification;
+use Spatie\Backup\Notifications\Notifiable;
 
 class ConsigneeController extends Controller
 {
@@ -272,6 +274,7 @@ class ConsigneeController extends Controller
 
         $notifications = auth()->user()->notifications;
 
+
         return view('clients.dashboard', compact('shipments', 'notifications'));
     }
 
@@ -350,5 +353,14 @@ class ConsigneeController extends Controller
         };
 
         return response()->stream($callback, 200, $headers);
+    }
+
+    public function markAsRead($id){
+        $notification = Notification::findOrFail($id);
+
+        $notification->read_at = now();
+        $notification->save();
+
+        return redirect()->back();
     }
 }

@@ -175,6 +175,8 @@ Route::middleware(['auth', 'user-type:consignee'])->group(function () {
         Route::get('/clients/download-by-date/report/', 'downloadCsv_by_date')->name('downloadCsv_by_date');
     });
 
+    Route::post('/mark-notification-as-read/{id}', [ConsigneeController::class, 'markAsRead'])->name('markAsRead');
+
     Route::get('/client/notification', function () {
         return view('clients.notification');
     })->name('notification');

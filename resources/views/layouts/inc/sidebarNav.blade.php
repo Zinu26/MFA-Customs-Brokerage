@@ -12,7 +12,7 @@
     </div>
     <ul>
         <li><img src="/images/logo_1.png" alt="" class="icon"></li>
-        <li><a href="{{ route('admin.dashboard') }}"><i class="fas fa-dashboard"></i><span
+        <li><a href=" @if (Auth::user()->type == 'admin'){{ route('admin.dashboard') }} @elseif (Auth::user()->type == 'employee'){{ route('employee.dashboard') }}@endif"><i class="fas fa-dashboard"></i><span
                     class="nav-item"> Dashboard</a><span class="tooltip">Dashboard</span></li>
         @if (Auth::user()->type == 'admin')
             <li><a href="{{ route('admin_list') }}"><i class="fas fa-user-tie"></i><span class="nav-item">Admin</a><span

@@ -46,6 +46,10 @@ section{
     margin: 0 100px;
     transition: all 0.5s ease;
 }
+#content main::-webkit-scrollbar {
+    width: 0.5em;
+    background-color: transparent;
+}
 #content main .head-title {
     display: flex;
     align-items: center;
