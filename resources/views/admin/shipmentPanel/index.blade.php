@@ -9,7 +9,8 @@
         <p>Open Shipments</p>
         <div>
             @include('admin.shipmentPanel.create')
-            <a href="@if(Auth::user()->type == 'admin') {{route('close_shipments')}}@elseif(Auth::user()->type == 'employee') {{route('close_shipments.employee')}} @endif">
+            <a
+                href="@if (Auth::user()->type == 'admin') {{ route('close_shipments') }}@elseif(Auth::user()->type == 'employee') {{ route('close_shipments.employee') }} @endif">
                 <button class="btn btn-danger"><i class="fa fa-folder-minus"></i> Close Shipments</button>
             </a>
         </div>

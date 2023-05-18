@@ -1,30 +1,38 @@
 @include('layouts.inc.header')
 <link rel="stylesheet" href="/css/sideNav.css" />
 
-<div class="sidebar">
-    <div class="top">
-        <div class="logo">
-            <img src="/images/sidenav_logo.png" alt="" class="logo">
-        </div>
-        <i class="fa fa-bars" id="btn"></i>
-    </div>
-    <ul>
-        <li><img src="/images/logo_1.png" alt="" class="icon"></li>
+<body>
+    <nav class="main-menu">
+        <ul>
+            <li><img src="/images/sidenav_logo.png" class="icon"></li>
+            <li><img src="/images/logo_1.png" class="logo"></li>
+            <li>
+                <a href="{{ route('client.dashboard') }}">
+                    <i class="fa fa-dashboard fa-2x"></i>
+                    <span class="nav-text">
+                        Dashboard
+                    </span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('consignee_open_shipment') }}">
+                    <i class="fa fa-truck fa-2x"></i>
+                    <span class="nav-text">
+                        Shipments
+                    </span>
+                </a>
+            </li>
+        </ul>
 
-        <li><a href="{{route('client.dashboard')}}"><i class="fas fa-dashboard"></i><span class="nav-item">Dashboard</span></a><span
-                class="tooltip">Dashboard</span></li>
-        <li><a href="{{route('consignee_open_shipment')}}"><i class="fas fa-truck"></i><span class="nav-item">Shipments</span></a><span
-                class="tooltip">Shipments</span></li>
-        <li><a href="{{ route('logout_client') }}"><i class="fas fa-power-off"></i><span
-                    class="nav-item">Logout</span></a></li>
-    </ul>
-</div>
-
-<script>
-    let btn = document.querySelector('#btn')
-    let sidebar = document.querySelector('.sidebar')
-
-    btn.onclick = function() {
-        sidebar.classList.toggle('active');
-    };
-</script>
+        <ul class="logout">
+            <li>
+                <a href="{{ route('logout_client') }}">
+                    <i class="fa fa-power-off fa-2x"></i>
+                    <span class="nav-text">
+                        Logout
+                    </span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</body>
