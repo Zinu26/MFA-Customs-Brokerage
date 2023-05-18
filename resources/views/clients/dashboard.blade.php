@@ -76,7 +76,7 @@
                                             </strong>
                                         </td>
                                         <td class="text-center">@if($shipment->predicted_delivery_date != null){{ $shipment->predicted_delivery_date }} @else ------SHIPMENT IS STILL IN PROCESS------ @endif</td>
-                                        <td class="text-center">{{ $shipment->arrival }}</td>
+                                        <td class="text-center">{{ $shipment->arrival_date }}</td>
                                         <td class="text-center">{{ $shipment->process_started }}</td>
                                         <td class="text-center">{{ $shipment->process_finished }}</td>
                                         <td class="text-center">{{ $shipment->shipping_line }}</td>
