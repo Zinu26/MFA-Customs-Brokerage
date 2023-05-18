@@ -5,22 +5,60 @@
 <link rel="stylesheet" href="/css/login.css">
 <title>MFA Customs Brokerage</title>
 
+<style>
+    .notification {
+        position: fixed;
+        top: 200px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .notification.success {
+        background-color: #5cb85c;
+        /* green */
+        color: #fff;
+    }
+
+    .notification.error {
+        background-color: #d9534f;
+        /* red */
+        color: #fff;
+    }
+
+    .notification.warning {
+        background-color: #f0ad4e;
+        /* yellow */
+        color: #fff;
+    }
+
+    .notification.hide {
+        opacity: 0;
+    }
+</style>
+<div>
+    @if (session()->has('success'))
+        <div class="notification success" id="notification">
+            <i class="fa-sharp fa-solid fa-circle-check"></i> {{ session()->get('success') }}
+        </div>
+    @endif
+
+    @if (session()->has('error'))
+        <div class="notification error" id="notification">
+            <i class="fa-sharp fa-solid fa-circle-exclamation"></i> {{ session()->get('error') }}
+        </div>
+    @endif
+
+    @if (session()->has('warning'))
+        <div class="notification warning" id="notification">
+            <i class="fa-sharp fa-solid fa-triangle-exclamation"></i> {{ session()->get('warning') }}
+        </div>
+    @endif
+</div>
 <div class="box">
     <span class="borderLine"></span>
-    <form action="{{ route(session()->has('2fa:user:id') ? 'submit.2fa' : 'submit.login') }}" method="POST"
-        autocomplete="off">
+    <form action="{{ route('submit.login') }}" method="POST" autocomplete="off">
         @csrf
-        @if (session()->has('2fa:user:id'))
-            <div class="inputBox @error('one_time_password') is-invalid @enderror">
-                <input type="text" name="one_time_password" id="one_time_password" required="required"
-                    value="{{ old('one_time_password') }}">
-                <span>2FA Code</span>
-                <i></i>
-                @error('one_time_password')
-                    <span class="error-feedback">{{ $message }}</span>
-                @enderror
-            </div>
-        @endif
+
         <h3>
             <script src="https://cdn.lordicon.com/ritcuqlt.js"></script>
             <lord-icon src="https://cdn.lordicon.com/ajkxzzfb.json" trigger="loop" delay="2000"
@@ -46,7 +84,7 @@
         </div>
         <div class="links">
             {{-- <a href="#">Forgot Password</a> --}}
-            <a href="{{route('login.client')}}">Login as Client</a>
+            <a href="{{ route('login.client') }}">Login as Client</a>
         </div>
         <input type="submit" name="login" value="Login">
     </form>

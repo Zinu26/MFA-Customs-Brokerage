@@ -10,8 +10,7 @@
         in MFA's website and needs Two-Factor Authentication to continue. Provided below
         is the OTP. If you did not request this, then you may ignore this email.<br><br>
     </p>
-    <p>User requested name: {{ $get_user_name }}</p>
+    <p>User requested name: <strong>{{ $get_user_name }}</strong></p>
     <h3>OTP: {{ $validToken }}</h3>
-
 </body>
 </html>
