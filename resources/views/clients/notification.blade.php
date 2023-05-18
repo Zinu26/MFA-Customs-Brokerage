@@ -1,56 +1,59 @@
-<style>
-    .notification-window {
-        position: absolute;
-        top: 80px;
-        right: 120px;
-        z-index: 1;
-        background-color: rgb(17, 40, 104);
-        color: #ccc;
-        border: 1px solid #ccc;
-        padding: 10px;
-        display: none;
-        max-height: 500px;
-        overflow-y: auto;
-    }
+<head>
 
-    .notification-window h3 {
-        margin-top: 0;
-    }
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <style>
+        .notification-window {
+            position: absolute;
+            top: 80px;
+            right: 120px;
+            z-index: 1;
+            background-color: rgb(17, 40, 104);
+            color: #ccc;
+            border: 1px solid #ccc;
+            padding: 10px;
+            display: none;
+            max-height: 500px;
+            overflow-y: auto;
+        }
 
-    .notification-window ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-    }
+        .notification-window h3 {
+            margin-top: 0;
+        }
 
-    .notification-window li {
-        margin-bottom: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        padding: 10px;
-        cursor: pointer;
-    }
+        .notification-window ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
 
-    .notification-window li:hover {
-        background-color: #f8f8f8;
-        color: black;
-    }
+        .notification-window li {
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+        }
 
-    .notification-window li .notification-message {
-        font-size: 16px;
-        margin-bottom: 5px;
-    }
+        .notification-window li:hover {
+            background-color: #f8f8f8;
+            color: black;
+        }
 
-    .notification-window li .notification-details {
-        font-size: 12px;
-        color: #666;
-    }
+        .notification-window li .notification-message {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
 
-    .notification-window button {
-        margin-top: 10px;
-    }
-</style>
+        .notification-window li .notification-details {
+            font-size: 12px;
+            color: #666;
+        }
 
+        .notification-window button {
+            margin-top: 10px;
+        }
+    </style>
+</head>
 
 <button type="button" id="notification-toggle" class="btn btn-primary position-relative">
     <i class="fas fa-bell"></i>
@@ -64,8 +67,8 @@
     <h3>Notifications</h3>
     <ul>
         @foreach ($notifications as $notification)
-            <li class="notification-card" data-notification="{{ json_encode($notification) }}" data-bs-toggle="modal"
-                data-bs-target="#viewModal">
+            <li class="notification-card" data-notification="{{ json_encode($notification) }}"
+                data-notification-id="{{ $notification->id }}" data-bs-toggle="modal" data-bs-target="#viewModal">
                 <div class="notification-message">
                     Shipment #{{ $notification->data['shipment_id'] }}: {{ $notification->data['message'] }}
                 </div>
@@ -77,8 +80,6 @@
     </ul>
 </div>
 
-
-
 <!-- Modal -->
 <div class="modal fade bd-example-modal-lg" id="viewModal" tabindex="-1" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
@@ -87,15 +88,13 @@
             <div class="modal-header" style="background-color: #29924c;">
                 <h5 class="modal-title" id="notification-modal-label"></h5>
             </div>
-            <form method="POST" action="{{ route('markAsRead', $notification->id) }}">
-                @csrf
-                <div class="modal-body">
-                    <p id="notification-modal-body"></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-success">Mark as Read</button>
-                </div>
-            </form>
+            <div class="modal-body">
+                <p id="notification-modal-body"></p>
+            </div>
+            {{-- <div class="modal-footer">
+                <button type="button" class="btn btn-success mark-as-read-btn" data-bs-dismiss="modal">Mark as
+                    Read</button>
+            </div> --}}
         </div>
     </div>
 </div>
@@ -141,50 +140,50 @@
             // Get the notification data from the data attribute
             const notificationData = JSON.parse(card.dataset.notification);
 
-            //mark as read
-            notificationData.read_at = true;
-            // Get the notifiable_id
-            const notifiableId = notificationData.id;
-
-            // Pass the notifiable_id to the server
-            fetch(`/mark-notification-as-read/${notifiableId}`, {
-                    method: 'PUT'
-                })
-                .then(response => {
-                    // Handle the response as needed
-                    console.log('Notification marked as read');
-                })
-                .catch(error => {
-                    // Handle the error as needed
-                    console.error('Error marking notification as read:', error);
-                });
-
             // Format the changes field in a readable way
             const changes = JSON.parse(notificationData.data.changes);
             const formattedChanges = JSON.stringify(changes, null, 2).replace(/,\n/g, '\n').replace(
                 /"/g, '');
 
-            // Format the created_at and updated_at fields in AM/PM format
-            const formattedCreatedAt = new Date(notificationData.created_at).toLocaleString('en-US', {
-                hour: 'numeric',
-                minute: 'numeric',
-                hour12: true
-            });
-            const formattedUpdatedAt = new Date(notificationData.updated_at).toLocaleString('en-US', {
-                hour: 'numeric',
-                minute: 'numeric',
-                hour12: true
-            });
 
             // Set the title and body of the modal
             notificationModalTitle.textContent =
                 `Shipment #${notificationData.data.shipment_id} | ${notificationData.data.message}`;
             notificationModalBody.innerHTML =
-                `<p>Changes:</p><pre>${formattedChanges}</pre><p>`;
+                `<p>Changes:</p><pre>${formattedChanges}</pre>`;
 
             // Show the modal
             const modal = new bootstrap.Modal(document.getElementById(`viewModal`));
             modal.show();
         });
     });
+</script>
+<script>
+    var markAsReadBtns = document.getElementsByClassName('mark-as-read-btn');
+    for (var i = 0; i < markAsReadBtns.length; i++) {
+        markAsReadBtns[i].addEventListener('click', function() {
+            var notificationId = this.closest('.notification-card').dataset.notificationId;
+            markNotificationAsRead(notificationId);
+            closeModal();
+        });
+    }
+
+    function markNotificationAsRead(notificationId) {
+        // Send an AJAX request to the server
+        axios.post('/notifications/' + notificationId + '/mark-as-read')
+            .then(function(response) {
+                // Handle success response
+                console.log(response.data);
+            })
+            .catch(function(error) {
+                // Handle error response
+                console.log(error);
+            });
+    }
+
+    function closeModal() {
+        var modal = document.getElementById('viewModal');
+        var bootstrapModal = new bootstrap.Modal(modal);
+        bootstrapModal.hide();
+    }
 </script>

@@ -32,9 +32,9 @@ section{
     --light-orange: #FFE0D3;
 }
 
-.sidebar.active ~ #content main{
-    margin-left: 10%;
-    transition: all 0.3s ease;
+.main-menu:hover ~ #content main{
+    margin-left: 13%;
+    transition: all 0.1s ease;
 }
 
 #content main {
