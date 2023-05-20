@@ -272,10 +272,10 @@ class ConsigneeController extends Controller
             ->take(5)
             ->get();
 
-        $notifications = auth()->user()->notifications;
+        $notifications = auth()->user()->notifications->sortByDesc('created_at');
+        $latestNotification = $notifications->first();
 
-
-        return view('clients.dashboard', compact('shipments', 'notifications'));
+        return view('clients.dashboard', compact('shipments', 'notifications', 'latestNotification'));
     }
 
     function consignee_open_shipment()
