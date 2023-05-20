@@ -14,6 +14,15 @@
             display: none;
             max-height: 500px;
             overflow-y: auto;
+            scrollbar-width: none;
+            /* Hide scrollbar for Firefox */
+            -ms-overflow-style: none;
+            /* Hide scrollbar for IE and Edge */
+        }
+
+        .notification-window::-webkit-scrollbar {
+            /* Hide scrollbar for Chrome, Safari, and Opera */
+            display: none;
         }
 
         .notification-window h3 {
@@ -52,28 +61,58 @@
         .notification-window button {
             margin-top: 10px;
         }
+
+        @media (max-width: 1080px) {
+            .notification-window {
+                top: 90px;
+                right: 20px;
+            }
+
+            .notification-window li {
+                padding: 8px;
+            }
+
+            .notification-window li .notification-message {
+                font-size: 14px;
+            }
+
+            .notification-window li .notification-details {
+                font-size: 10px;
+            }
+
+            .notification-window button {
+                margin-top: 5px;
+            }
+        }
     </style>
 </head>
 
 <button type="button" id="notification-toggle" class="btn btn-primary position-relative">
     <i class="fas fa-bell"></i>
-    <span id="notification-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-        {{-- display read_at null value count --}}
-        {{ \App\Models\Notification::where('read_at', null)->where('notifiable_id', \Illuminate\Support\Facades\Auth::user()->id)->count() }}
-    </span>
+    {{-- <span id="notification-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"> --}}
+    {{-- display read_at null value count --}}
+    {{-- {{ \App\Models\Notification::where('read_at', null)->where('notifiable_id', \Illuminate\Support\Facades\Auth::user()->id)->count() }}
+    </span> --}}
 </button>
 
 <div id="notification-window" class="notification-window">
     <h3>Notifications</h3>
     <ul>
         @foreach ($notifications as $notification)
-            <li class="notification-card" data-notification="{{ json_encode($notification) }}"
-                data-notification-id="{{ $notification->id }}" data-bs-toggle="modal" data-bs-target="#viewModal">
+            <li class="notification-card {{ $notification->id === $latestNotification->id ? 'latest-notification' : '' }}"
+                data-notification="{{ json_encode($notification) }}" data-notification-id="{{ $notification->id }}"
+                data-bs-toggle="modal" data-bs-target="#viewModal">
                 <div class="notification-message">
                     Shipment #{{ $notification->data['shipment_id'] }}: {{ $notification->data['message'] }}
                 </div>
                 <div class="notification-details">
-                    {{ $notification->created_at->diffForHumans() }}
+                    @if ($notification->created_at->isToday())
+                        Today, {{ $notification->created_at->format('h:i A') }}
+                    @elseif ($notification->created_at->isYesterday())
+                        Yesterday, {{ $notification->created_at->format('h:i A') }}
+                    @else
+                        {{ $notification->created_at->diffForHumans() }}
+                    @endif
                 </div>
             </li>
         @endforeach
