@@ -9,7 +9,8 @@
         <p>Open Shipments</p>
         <div>
             @include('admin.shipmentPanel.create')
-            <a href="@if(Auth::user()->type == 'admin') {{route('close_shipments')}}@elseif(Auth::user()->type == 'employee') {{route('close_shipments.employee')}} @endif">
+            <a
+                href="@if (Auth::user()->type == 'admin') {{ route('close_shipments') }}@elseif(Auth::user()->type == 'employee') {{ route('close_shipments.employee') }} @endif">
                 <button class="btn btn-danger"><i class="fa fa-folder-minus"></i> Close Shipments</button>
             </a>
         </div>
@@ -27,9 +28,9 @@
                 <th class="text-center">BL Number</th>
                 <th class="text-center">Arrival Date</th>
                 <th class="text-center">Predicted Delivery Date</th>
-                <th class="text-center">DO Status</th>
                 <th class="text-center">Shipment Status</th>
-                <th class="text-center">Billing</th>
+                <th class="text-center">DO Status</th>
+                <th class="text-center">Billing Status</th>
                 <th class="text-center">Option</th>
             </tr>
         </thead>
@@ -48,8 +49,8 @@
                                 ----SHIPMENT STILL IN PROCESS----
                             @endif
                         </td>
-                        <td>{{ $shipment->do_status }}</td>
                         <td>{{ $shipment->shipment_status }}</td>
+                        <td>{{ $shipment->do_status }}</td>
                         <td>{{ $shipment->billing_status }}</td>
                         <td>
                             @include('admin.shipmentPanel.view')

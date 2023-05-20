@@ -48,7 +48,7 @@
                         </div></br>
                         <div class="input-group">
                             <span class="input-group-text"
-                                style="background-color: #4EA646; font-weight: 600; color: white;">Arrival Time</span>
+                                style="background-color: #4EA646; font-weight: 600; color: white;">Arrival Date</span>
                             <input type="date" value="{{ $shipment->arrival_date }}" class="form-control" readonly>
                         </div></br>
 

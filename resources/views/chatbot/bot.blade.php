@@ -84,7 +84,7 @@
                 <img src="/images/bot-avatar.jpg" width="100%" height="100%" style="border-radius: 50px;">
             </div>
             <div class="text-white px-3 py-2" style="width: 270px; background: #29924c; border-radius: 10px; font-size: 85%;">
-                Hi, <strong><u>{{Auth::user()->name}}</u></strong>, what can I do for you? Just provide a BL Number if you need fast track of your shipment
+                Hi, <strong><u>{{ Auth::user()->name }}</u></strong>, what can I do for you? Just provide a BL Number if you need fast track of your shipment
             </div>
         </div>`);
     }
@@ -186,4 +186,21 @@
     // Call toggleContentScroll when the window is resized or when the content is changed dynamically
     window.addEventListener("resize", toggleContentScroll);
     contentBox.addEventListener("DOMNodeInserted", toggleContentScroll);
+</script>
+
+<script>
+    function showHelpMessage() {
+        var helpMessage = document.querySelector('.help-message');
+        helpMessage.style.display = 'block';
+        setTimeout(function () {
+            helpMessage.style.display = 'none';
+        }, 3000);
+    }
+
+    function startHelpMessageInterval() {
+        showHelpMessage();
+        setInterval(showHelpMessage, 8000);
+    }
+
+    startHelpMessageInterval();
 </script>

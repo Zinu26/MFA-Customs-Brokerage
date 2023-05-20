@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Session;
 use App\Models\ActivityLog;
 use App\Models\User;
 use App\Models\Consignee;
+use App\Models\VerifyToken;
+use App\Mail\VerificationMail;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
@@ -40,7 +43,22 @@ class AuthController extends Controller
                     'loggable_type' => 'Employee',
                     'activity' => 'Employee logged in',
                 ]);
-                return redirect()->route('employee.dashboard');
+
+                //For Testing purposes
+                return redirect()->route('employee.dashboard')->with('success', 'OTP activation successful!');
+
+                // OTP
+                // $validToken = rand(10,100..'2022');
+                // $get_token = new VerifyToken();
+                // $get_token->token = $validToken;
+                // $get_email = Auth::user()->email;
+                // $get_token->email = $get_email;
+                // $get_token->save();
+                // $get_user_email = $get_email;
+                // $get_user_name = $request->username;
+                // Mail::to($get_email)->send(new VerificationMail($get_user_email, $validToken, $get_user_name));
+
+                // return view('verification');
             }
         }
         // Authentication failed
@@ -48,6 +66,29 @@ class AuthController extends Controller
             ->withErrors(['login' => 'The provided credentials do not match our records.'])
             ->withInput()
             ->with('error', 'The provided credentials do not match our records.');
+    }
+
+    public function otpActivation(Request $request){
+        $get_token = $request->token;
+        $get_token = VerifyToken::where('token', $get_token)->first();
+
+        if($get_token){
+            $get_token->is_activated = 1;
+            $get_token->save();
+
+            $delete_token = VerifyToken::where('token', $get_token->token)->first();
+            $delete_token->delete();
+            if(Auth::user()->type == 'employee'){
+            return redirect()->route('employee.dashboard')->with('success', 'OTP activation successful!');
+            }
+            else if(Auth::user()->type == 'consignee'){
+                return redirect()->route('client.dashboard')->with('success', 'OTP activation successful!');
+            }
+        }
+
+        else{
+            return back()->with('error', 'OTP inputted is incorrect! Please check your email again.');
+        }
 
     }
 
@@ -65,14 +106,15 @@ class AuthController extends Controller
         $tin = $request->input('tin');
 
         // Check if the email and tin exist in the consignees table
-        $user = User::where('email', $email)
+        $user = User::where('email', $email)->where('type', 2)
             ->first();
         $consignee = Consignee::where('tin', $tin)
             ->first();
 
         if (!$consignee && !$user) {
-            session()->flash('failed', 'The provided credentials do not match our records.');
-            return back()->withErrors(['login' => 'The provided credentials do not match our records.'])->withInput();
+            return back()->withErrors(['login' => 'The provided credentials do not match our records.'])
+                ->withInput()
+                ->with('error', 'The provided credentials do not match our records.');
         }
 
         // The email and tin are correct, log the user in
@@ -89,7 +131,20 @@ class AuthController extends Controller
                 'activity' => 'Consignee logged in',
             ]);
 
-            return redirect()->route('client.dashboard');
+            // For Testing purposes
+            return redirect()->route('client.dashboard')->with('success', 'OTP activation successful!');
+
+            // OTP
+            // $validToken = rand(10,100..'2022');
+            // $get_token = new VerifyToken();
+            // $get_token->token = $validToken;
+            // $get_token->email = $request->email;
+            // $get_token->save();
+            // $get_user_email = $request->email;
+            // $get_user_name = Auth::user()->name;
+            // Mail::to($get_user_email)->send(new VerificationMail($get_user_email, $validToken, $get_user_name));
+
+            return view('verification');
         }
     }
 
@@ -108,8 +163,7 @@ class AuthController extends Controller
                 'loggable_type' => 'Admin',
                 'activity' => 'Admin logged out',
             ]);
-        }
-        else if ($user->type == 'employee') {
+        } else if ($user->type == 'employee') {
             // Create a new activity log record for this user
             ActivityLog::create([
                 'user_id' => Auth::id(),

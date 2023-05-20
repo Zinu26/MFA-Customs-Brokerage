@@ -11,6 +11,8 @@ use App\Models\CloseShipment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\ActivityLog;
+use App\Models\Notification;
+use Spatie\Backup\Notifications\Notifiable;
 
 class ConsigneeController extends Controller
 {
@@ -270,9 +272,10 @@ class ConsigneeController extends Controller
             ->take(5)
             ->get();
 
-        $notifications = auth()->user()->notifications;
+        $notifications = auth()->user()->notifications->sortByDesc('created_at');
+        $latestNotification = $notifications->first();
 
-        return view('clients.dashboard', compact('shipments', 'notifications'));
+        return view('clients.dashboard', compact('shipments', 'notifications', 'latestNotification'));
     }
 
     function consignee_open_shipment()

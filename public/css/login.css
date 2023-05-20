@@ -5,13 +5,6 @@
     font-family: 'Poppins', sans-serif;
 }
 
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-}
-
 .box {
     position: absolute;
     top: 50%;
@@ -83,11 +76,6 @@ body {
     transform-origin: bottom right;
     animation: animate 6s linear infinite;
     animation-delay: -4.5s;
-}
-
-.inputBox.is-invalid input {
-    border-color: red;
-    background-color: #f9d6d5;
 }
 
 @keyframes animate {

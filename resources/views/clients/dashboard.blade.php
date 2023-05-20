@@ -7,6 +7,12 @@
 <section id="content">
     <main>
         <div class="head-title">
+        @if(session()->has('message'))
+            <div class="alert alert-success">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+                {{session()->get('message')}}
+            </div>
+        @endif
             <div class="left">
                 <h1>Dashboard</h1>
             </div>
@@ -70,7 +76,7 @@
                                             </strong>
                                         </td>
                                         <td class="text-center">@if($shipment->predicted_delivery_date != null){{ $shipment->predicted_delivery_date }} @else ------SHIPMENT IS STILL IN PROCESS------ @endif</td>
-                                        <td class="text-center">{{ $shipment->arrival }}</td>
+                                        <td class="text-center">{{ $shipment->arrival_date }}</td>
                                         <td class="text-center">{{ $shipment->process_started }}</td>
                                         <td class="text-center">{{ $shipment->process_finished }}</td>
                                         <td class="text-center">{{ $shipment->shipping_line }}</td>

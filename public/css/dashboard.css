@@ -32,9 +32,9 @@ section{
     --light-orange: #FFE0D3;
 }
 
-.sidebar.active ~ #content main{
-    margin-left: 10%;
-    transition: all 0.3s ease;
+.main-menu:hover ~ #content main{
+    margin-left: 13%;
+    transition: all 0.1s ease;
 }
 
 #content main {
@@ -45,6 +45,10 @@ section{
     overflow-y: auto;
     margin: 0 100px;
     transition: all 0.5s ease;
+}
+#content main::-webkit-scrollbar {
+    width: 0.5em;
+    background-color: transparent;
 }
 #content main .head-title {
     display: flex;
