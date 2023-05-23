@@ -1,5 +1,5 @@
 <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#unarchiveModal{{ $client->id }}"><i
-        class="fa fa-arrow-up"></i> Restore</button>
+        class="fa fa-arrow-up"></i></button>
 
 <!--Hide modal-->
 <div class="modal fade" id="unarchiveModal{{ $client->id }}" data-bs-backdrop="static" style="color: black;"
