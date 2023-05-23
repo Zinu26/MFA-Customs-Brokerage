@@ -114,6 +114,9 @@
                         {{ $notification->created_at->diffForHumans() }}
                     @endif
                 </div>
+                @if ($notification->id === $latestNotification->id && empty($isNotificationWindowOpen))
+                    <span class="badge badge-primary">New</span>
+                @endif
             </li>
         @endforeach
     </ul>
@@ -150,28 +153,43 @@
     const notificationModalBody = document.getElementById('notification-modal-body');
     const notificationModalClose = document.getElementById('notification-close');
 
+    // Variable to track if the notification window is open
+    let isNotificationWindowOpen = false;
+
+    // Check if the notification window state is stored in the local storage
+    const storedNotificationWindowState = localStorage.getItem('notificationWindowState');
+    if (storedNotificationWindowState === 'open') {
+        notificationWindow.style.display = 'block';
+        isNotificationWindowOpen = true;
+    } else {
+        notificationWindow.style.display = 'none';
+        isNotificationWindowOpen = false;
+    }
 
     // Add a click event listener to the toggle button
     notificationToggle.addEventListener('click', function() {
         // Toggle the notification window's display style
         if (notificationWindow.style.display === 'block') {
             notificationWindow.style.display = 'none';
+            isNotificationWindowOpen = false;
+            localStorage.setItem('notificationWindowState', 'closed');
         } else {
             notificationWindow.style.display = 'block';
+            isNotificationWindowOpen = true;
+            localStorage.setItem('notificationWindowState', 'open');
         }
     });
 
     // Add a click event listener to the document
     document.addEventListener('click', function(event) {
         // Check if the clicked element is not part of the notification window
-        if (!notificationWindow.contains(event.target) && event.target !== notificationToggle && event
-            .target !== notificationBadge && notificationWindow.style.display === 'block') {
+        if (!notificationWindow.contains(event.target) && event.target !== notificationToggle && event.target !== notificationBadge && notificationWindow.style.display === 'block') {
             // Hide the notification window
             notificationWindow.style.display = 'none';
+            isNotificationWindowOpen = false;
+            localStorage.setItem('notificationWindowState', 'closed');
         }
-
     });
-
 
     const notificationCards = document.querySelectorAll('.notification-card');
     notificationCards.forEach(function(card) {
@@ -181,48 +199,26 @@
 
             // Format the changes field in a readable way
             const changes = JSON.parse(notificationData.data.changes);
-            const formattedChanges = JSON.stringify(changes, null, 2).replace(/,\n/g, '\n').replace(
-                /"/g, '');
-
+            const formattedChanges = JSON.stringify(changes, null, 2).replace(/,\n/g, '\n').replace(/"/g, '');
 
             // Set the title and body of the modal
-            notificationModalTitle.textContent =
-                `Shipment #${notificationData.data.shipment_id} | ${notificationData.data.message}`;
-            notificationModalBody.innerHTML =
-                `<p>Changes:</p><pre>${formattedChanges}</pre>`;
+            notificationModalTitle.textContent = `Shipment #${notificationData.data.shipment_id} | ${notificationData.data.message}`;
+            notificationModalBody.innerHTML = `<p>Changes:</p><pre>${formattedChanges}</pre>`;
 
             // Show the modal
             const modal = new bootstrap.Modal(document.getElementById(`viewModal`));
             modal.show();
+
+            // Remove the "New" badge from the clicked notification card
+            const newBadge = card.querySelector('.badge');
+            if (newBadge) {
+                newBadge.remove();
+            }
+
+            // Update the isNotificationWindowOpen variable to false
+            isNotificationWindowOpen = false;
+            localStorage.setItem('notificationWindowState', 'closed');
         });
     });
 </script>
-<script>
-    var markAsReadBtns = document.getElementsByClassName('mark-as-read-btn');
-    for (var i = 0; i < markAsReadBtns.length; i++) {
-        markAsReadBtns[i].addEventListener('click', function() {
-            var notificationId = this.closest('.notification-card').dataset.notificationId;
-            markNotificationAsRead(notificationId);
-            closeModal();
-        });
-    }
 
-    function markNotificationAsRead(notificationId) {
-        // Send an AJAX request to the server
-        axios.post('/notifications/' + notificationId + '/mark-as-read')
-            .then(function(response) {
-                // Handle success response
-                console.log(response.data);
-            })
-            .catch(function(error) {
-                // Handle error response
-                console.log(error);
-            });
-    }
-
-    function closeModal() {
-        var modal = document.getElementById('viewModal');
-        var bootstrapModal = new bootstrap.Modal(modal);
-        bootstrapModal.hide();
-    }
-</script>
