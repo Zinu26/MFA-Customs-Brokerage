@@ -85,11 +85,8 @@
             @enderror
         </div>
         <div class="links">
-            <a href="{{ route('forgot-password') }}">Forgot Password</a>
-            
-        </div>
-        <div class="links">
-            <a href="{{ route('login.client') }}"><strong><u>Login as Client</u></strong></a>
+            {{-- <a href="#">Forgot Password</a> --}}
+            <a href="{{ route('login.client') }}">Login as Client</a>
         </div>
         <input type="submit" name="login" value="Login">
     </form>
