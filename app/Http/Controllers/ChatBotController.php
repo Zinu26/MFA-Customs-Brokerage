@@ -346,9 +346,19 @@ class ChatBotController extends Controller
 
         // Check if any of the words or synonyms are present in the input
         foreach ($words as $word => $synonyms) {
-            if (in_array($word, $words_in_input) || array_intersect($synonyms, $words_in_input)) {
+            $rootWord = null;
+
+            // Find the root word that matches the predefined words
+            foreach ($words_in_input as $input_word) {
+                if (in_array($input_word, $synonyms)) {
+                    $rootWord = $word;
+                    break;
+                }
+            }
+
+            if (!is_null($rootWord)) {
                 // Generate a random response based on the detected word
-                switch ($word) {
+                switch ($rootWord) {
                     case 'mfa':
                         $responses = [
                             'MFA Customs Brokerage is a business partner of Sonya Trucking Services.',
@@ -544,9 +554,16 @@ class ChatBotController extends Controller
     private function getGenericResponse()
     {
         $responses = [
-            'I\'m sorry, I didn\'t quite understand. Could you please rephrase your question?',
-            'I\'m not sure I understand what you\'re asking. Can you provide more context?',
-            'I\'m afraid I can\'t answer that. Is there something else I can help you with?',
+            'I\'m sorry, but I\'m unable to assist with that particular inquiry. If you have any questions related to customs brokerage or shipment import/export, I\'ll be more than happy to help you out.',
+            'It seems like your question isn\'t related to customs brokerage or shipment import/export, which is the expertise of MFA Customs Brokerage. If you have any queries or concerns about customs processes or international trade, feel free to ask.',
+            'While I understand your query, it appears to be outside the scope of customs brokerage and shipment import/export, which is the focus of MFA Customs Brokerage. If you have any questions regarding customs procedures or international shipping, I\'m here to provide you with accurate information.',
+            'Sorry, that\'s not related to our business. Can I help with customs brokerage or shipment import/export?',
+            'I appreciate your question, but it doesn\'t align with the core business of MFA Customs Brokerage, which primarily revolves around customs processes and shipment import/export. If you have any inquiries related to these areas, I\'ll be glad to assist you.',
+            'It seems like your question falls outside the purview of MFA Customs Brokerage, which specializes in customs brokerage and shipment import/export. If you need guidance or support regarding customs procedures, documentation, or international logistics, I\'m here to lend a hand.',
+            'Not our expertise. Have any questions about customs or international trade?',
+            'Out of our scope. Need assistance with customs procedures or international shipping?',
+            'Doesn\'t align with our business. Any inquiries about customs or import/export?',
+            'Not our focus. Need guidance on customs, documentation, or logistics?',
         ];
 
         return $responses[array_rand($responses)];
