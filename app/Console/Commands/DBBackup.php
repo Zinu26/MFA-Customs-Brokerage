@@ -27,8 +27,9 @@ class DBBackup extends Command
      */
     public function handle()
     {
-        $filename = "backup_" . strtotime(now()) . ".sql";
-        $command = "C:/xampp/mysql/bin/mysqldump.exe --user=" . env('DB_USERNAME') . " --password=" . env('DB_PASSWORD') . " --host=" . env('DB_HOST') . " " . env('DB_DATABASE') . " > " . storage_path() . "/app/backup/" . $filename;
+        $filename = "backup_".strtotime(now()).".sql";
+        $command = "E:/xampp/mysql/bin/mysqldump.exe --user=".env('DB_USERNAME')." --password=".env
+        ('DB_PASSWORD')." --host=".env('DB_HOST')." ".env('DB_DATABASE')." > ".storage_path()."/app/backup/".$filename;
         exec($command);
     }
 }

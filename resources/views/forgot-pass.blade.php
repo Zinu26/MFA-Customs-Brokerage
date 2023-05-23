@@ -6,6 +6,20 @@
 <title>MFA Customs Brokerage</title>
 
 <style>
+    .button {
+        display: inline-block;
+        padding: 8px 20px;
+        font-size: 18px;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        outline: none;
+        color: black;
+        background-color: white;
+        border: none;
+        border-radius: 8px;
+    }
+
     .notification {
         position: fixed;
         top: 200px;
@@ -56,7 +70,7 @@
 </div>
 <div class="box">
     <span class="borderLine"></span>
-    <form action="{{ route('submit.login') }}" method="POST" autocomplete="off">
+    <form action="{{ route('send.link') }}" method="POST" autocomplete="off">
         @csrf
 
         <h3>
@@ -65,31 +79,20 @@
                 colors="primary:#b4b4b4,secondary:#4bb3fd" style="width:50px;height:50px">
             </lord-icon>
         </h3>
-        <h2>Sign in</h2>
-        <div class="inputBox @error('username') is-invalid @enderror">
-            <input type="text" name="username" id="username" required="required" value="{{ old('username') }}">
-            <span>Username</span>
+        <h2>Forgot Password</h2>
+        <div class="inputBox @error('email') is-invalid @enderror">
+            <input type="text" name="email" id="email" required="required" value="{{ old('email') }}">
+            <span>Email</span>
             <i></i>
-            @error('username')
+            @error('email')
                 <span class="error-feedback">{{ $message }}</span>
             @enderror
         </div>
-        <div class="inputBox @error('password') is-invalid @enderror">
-            <input type="password" name="password" id="password" required="required" value="{{ old('password') }}">
-            <span>Password</span>
-            <i></i>
-            @error('password')
-                <span class="error-feedback">{{ $message }}</span>
-            @enderror
-        </div>
+
         <div class="links">
-            <a href="{{ route('forgot-password') }}">Forgot Password</a>
-            
+            <a href="{{ route('login') }}">Back to Login</a>
         </div>
-        <div class="links">
-            <a href="{{ route('login.client') }}"><strong><u>Login as Client</u></strong></a>
-        </div>
-        <input type="submit" name="login" value="Login">
+        <button class="button" type="submit" name="forgot">Send Password Reset Link</button>
     </form>
 </div>
 

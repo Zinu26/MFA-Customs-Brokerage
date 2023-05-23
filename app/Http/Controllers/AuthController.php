@@ -10,6 +10,8 @@ use App\Models\User;
 use App\Models\Consignee;
 use App\Models\VerifyToken;
 use App\Mail\VerificationMail;
+use Illuminate\Support\Facades\DB;
+use App\Mail\ForgetMail;
 use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
@@ -148,7 +150,25 @@ class AuthController extends Controller
         }
     }
 
+    public function sendResetlink(Request $request){
+        $email = $request->email;
 
+        if(User::where('email', $email)->doesntExist()){
+            return back()->with('error', 'Email does not exist!');
+        }
+        //generate a random token
+        $getToken = rand(10, 100000);
+            DB::table('password_resets')->insert([
+                'email' => $email,
+                'token' => $getToken
+            ]);
+
+            //send mail to email provided
+            Mail::to($email)->send(new ForgetMail($getToken));
+
+            return redirect()->back()->with('success', 'Password Reset Link sent to email!');
+
+    }
 
     public function logout()
     {
