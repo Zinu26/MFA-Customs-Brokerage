@@ -27,12 +27,6 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
-// Route::get('/', function () {
-//     return view('landing');
-// });
-
-
-
 // Route::get('/users/{user}/activity-logs', [ActivityLogController::class, 'index']);
 
 // Route::post('/chatbot', [ChatBotController::class, 'handleRequest']);
@@ -85,6 +79,8 @@ Route::post('/otp-verification', [AuthController::class, 'otpActivation'])->name
 Route::get('/user/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/logout', [AuthController::class, 'logout_client'])->name('logout_client');
 
+
+Route::get('/forgot-password', [AuthController::class, 'showForgotPasswordForm'])->name('forgot-password');
 
 //ADMIN PANEL
 Route::middleware(['auth', 'user-type:admin'])->group(function () {

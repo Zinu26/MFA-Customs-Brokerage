@@ -29,6 +29,11 @@ class AuthController extends Controller
             if (Auth::user()->type == 'admin') {
                 if (Auth::user()->isArchived != true) {
                     // Create a new activity log record for this user
+
+                    $user = User::where('id', Auth::id())->first();
+                    $user->isActivate = true;
+                    $user->save();
+
                     ActivityLog::create([
                         'user_id' => Auth::id(),
                         'loggable_id' => Auth::id(),
@@ -180,6 +185,11 @@ class AuthController extends Controller
         // Get the currently authenticated user
         $user = Auth::user();
 
+        $userActivate = User::where('id', $user->id)->first();
+
+        $userActivate->isActivate = false;
+        $userActivate->save();
+
         if ($user->type == 'admin') {
             // Create a new activity log record for this user
             ActivityLog::create([
@@ -209,6 +219,11 @@ class AuthController extends Controller
         $user = Auth::user();
         $consignee = $user->consignee;
 
+        $userActivate = User::where('id', $user->id)->first();
+
+        $userActivate->isActivate = false;
+        $userActivate->save();
+
         ActivityLog::create([
             'user_id' => $user->id,
             'loggable_id' => $consignee->id,
@@ -218,5 +233,10 @@ class AuthController extends Controller
 
         Auth::logout();
         return redirect()->route('login');;
+    }
+
+    public function showForgotPasswordForm()
+    {
+        return view('auth.forgot-password');
     }
 }
