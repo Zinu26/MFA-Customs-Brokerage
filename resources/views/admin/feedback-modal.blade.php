@@ -1,6 +1,8 @@
 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#viewMessageModal{{ $feedback->id }}">
-    @if ($feedback->isRead == false)
-    <i class="fa fa-envelope"></i>@else<i class="fa fa-envelope-open"></i>
+    @if ($feedback->isRead == false && $feedback->replied_at == null)
+        <i class="fa fa-envelope"></i>
+    @elseif($feedback->replied_at != null || $feedback->isRead == true)
+        <i class="fa fa-envelope-open"></i>
     @endif
 </button>
 

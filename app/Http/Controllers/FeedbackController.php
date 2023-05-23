@@ -62,6 +62,10 @@ class FeedbackController extends Controller
         // Get the user email who gave the feedback
         $userEmail = $feedback->email;
 
+        $feedback->user_id = Auth::id();
+        $feedback->replied_at = now();
+        $feedback->save();
+
         // Send email reply
         Mail::to($userEmail)->send(new FeedbackReplyMail($request->reply));
 

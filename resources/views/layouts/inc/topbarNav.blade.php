@@ -3,11 +3,13 @@
     body {
         height: 100vh;
     }
-    nav{
+
+    nav {
         position: absolute;
     }
-    .nav-item .nav-link{
-        color:white;
+
+    .nav-item .nav-link {
+        color: white;
     }
 
     .nav-link:hover {
@@ -20,6 +22,7 @@
             position: absolute;
             width: 100%;
         }
+
         .container-fluid {
             width: 100%;
             height: 80px;
@@ -27,38 +30,50 @@
             text-align: center;
             background: black;
         }
-        .navbar-brand,.navbar-toggler,.navbar-collapse{
+
+        .navbar-brand,
+        .navbar-toggler,
+        .navbar-collapse {
             margin-top: -75px;
         }
-        .nav-item, form{
+
+        .nav-item,
+        form {
             background-color: black;
             padding-bottom: 10px;
         }
-        form{
+
+        form {
             padding: 30px;
         }
-        .nav-item .nav-link{
+
+        .nav-item .nav-link {
             color: white;
         }
+
         .modal {
             z-index: 9999;
         }
+
         #search-modal.modal {
-            top: 80px; /* Adjust this value as needed */
+            top: 80px;
+            /* Adjust this value as needed */
         }
     }
 </style>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
-integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
 <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
-integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous">
+    integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous">
 </script>
+
 <body class="p-0 m-0 border-0 bd-example">
 
     <nav class="navbar navbar-expand-lg bg-dark" style="height: 70px;">
-        <div class="container-fluid" style="text-align: center; width: 100%; height: 80px; z-index: 99999; background: black;">
+        <div class="container-fluid"
+            style="text-align: center; width: 100%; height: 80px; z-index: 99999; background: black;">
             <a class="navbar-brand" href="#"><img src="/images/topnav_logo.png"></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -80,17 +95,24 @@ integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQS
                         <a class="nav-link text-white" href="{{ route('contact') }}">Contact Us</a>
                     </li>
                     @auth
-                        @if (Auth::user()->type == 'admin')
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('admin.dashboard') }}">Dashboard</a>
-                            </li>
-                        @elseif(Auth::user()->type == 'employee')
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('employee.dashboard') }}">Dashboard</a>
-                            </li>
-                        @elseif(Auth::user()->type == 'consignee')
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('client.dashboard') }}">Dashboard</a>
+                        @if (Auth::user()->isActivate === true)
+                            @if (Auth::user()->type == 'admin')
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('admin.dashboard') }}">Dashboard</a>
+                                </li>
+                            @elseif(Auth::user()->type == 'employee')
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('employee.dashboard') }}">Dashboard</a>
+                                </li>
+                            @elseif(Auth::user()->type == 'consignee')
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('client.dashboard') }}">Dashboard</a>
+                                </li>
+                            @endif
+                        @else
+                            <li class="nav-item" style="background-color: black; padding-bottom: 10px;">
+                                <a class="nav-link text-white" href="{{ route('login') }}">Log in <i
+                                        class="fa fa-user-circle" aria-hidden="true"></i></a>
                             </li>
                         @endif
                     @else
@@ -100,7 +122,8 @@ integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQS
                         </li>
                     @endauth
                 </ul>
-                <form  style="background-color: black; padding-bottom: 10px;" class="d-flex" role="search" action="{{ route('search') }}" method="GET">
+                <form style="background-color: black; padding-bottom: 10px;" class="d-flex" role="search"
+                    action="{{ route('search') }}" method="GET">
                     <input class="form-control me-2" type="text" name="bl_number" placeholder="Track Now"
                         aria-label="Search">
                     <button class="btn btn-outline-success" type="submit"><i class="fa fa-search"></i></button>
@@ -143,13 +166,17 @@ integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQS
                             '<p><strong>Port of Dispatch</strong>: ' + response.port_of_origin +
                             '</p>' +
                             '<p><strong>Arrival</strong>: ' + response.arrival + '</p>' +
-                            '<p><strong>Process Start Date</strong>: ' + response.process_started +
+                            '<p><strong>Process Start Date</strong>: ' + response
+                            .process_started +
                             '</p>' +
-                            '<p><strong>Process End Date</strong>: ' + response.process_finished +
+                            '<p><strong>Process End Date</strong>: ' + response
+                            .process_finished +
                             '</p>' +
-                            '<p><strong>Predicted Delivery Date</strong>: ' + response.predicted_delivery_date +
+                            '<p><strong>Predicted Delivery Date</strong>: ' + response
+                            .predicted_delivery_date +
                             '</p>' +
-                            '<p><strong>Actual Delivery Date</strong>: ' + response.delivered_date +
+                            '<p><strong>Actual Delivery Date</strong>: ' + response
+                            .delivered_date +
                             '</p>' +
                             '<p><strong>DO Status</strong>: ' + response.do_status + '</p>' +
                             '<p><strong>Billing Status</strong>: ' + response.billing_status +

@@ -77,6 +77,7 @@ class AuthController extends Controller
     {
         $get_token = $request->input('token');
         $get_token = VerifyToken::where('token', $get_token)->where('is_activated', false)->first();
+        $user = User::where('email', $get_token->email)->first();
 
         if ($get_token) {
             // Check if token is expired
@@ -84,9 +85,14 @@ class AuthController extends Controller
             if ($get_token->created_at < $expirationTime) {
                 // Token expired, delete it
                 $get_token->delete();
+                $user->isActivate = false;
+                $user->save();
 
                 return redirect()->back()->with('error', 'OTP expired! Please request a new OTP');
             }
+
+            $user->isActivate = true;
+            $user->save();
 
             // Activate the token
             $get_token->is_activated = true;
@@ -114,6 +120,8 @@ class AuthController extends Controller
                 return redirect()->route('client.dashboard')->with('success', 'OTP activation successful!');
             }
         } else {
+            $user->isActivate = false;
+            $user->save();
             return redirect()->back()->with('error', 'OTP inputted is incorrect! Please try again');
         }
     }

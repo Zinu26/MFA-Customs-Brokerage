@@ -46,7 +46,7 @@
                                 @include('admin.adminPanel.edit')
                                 @include('admin.adminPanel.archive')
                             @else
-                                <p>------   ------</p>
+                                <p>------------</p>
                             @endif
                         </td>
                     </tr>

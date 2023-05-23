@@ -24,7 +24,7 @@
             <li>
                 <i class='fa fa-clock mb-2' style="font-size: 50px; color:cornflowerblue;"></i>
                 <span class="text">
-                    <h3>{{ Auth::user()->shipments()->whereNotNull('process_started')->whereNull('process_finished')->count() }}</h3>
+                    <h3>{{ Auth::user()->shipments()->where('status', false)->count() }}</h3>
                     <p>In Process Shipments</p>
                 </span>
             </li>
@@ -68,7 +68,7 @@
                     <tbody class="table-light" style="color: black;">
                         @foreach ($shipments as $shipment)
                             @if ($shipment->consignee_name == Auth::user()->name)
-                                @if ($shipment->process_started != null && $shipment->process_finished != null && $shipment->status != 1)
+                                @if ($shipment->process_started != null && $shipment->status != 1)
                                     <tr>
                                         <td>
                                             <strong>
@@ -78,7 +78,7 @@
                                         <td class="text-center">@if($shipment->predicted_delivery_date != null){{ $shipment->predicted_delivery_date }} @else ------SHIPMENT IS STILL IN PROCESS------ @endif</td>
                                         <td class="text-center">{{ $shipment->arrival_date }}</td>
                                         <td class="text-center">{{ $shipment->process_started }}</td>
-                                        <td class="text-center">{{ $shipment->process_finished }}</td>
+                                        <td class="text-center">@if($shipment->process_finished != null){{ $shipment->process_finished }}@else ---------------- @endif</td>
                                         <td class="text-center">{{ $shipment->shipping_line }}</td>
                                     </tr>
                                 @endif
