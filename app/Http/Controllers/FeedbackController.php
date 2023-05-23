@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Feedback;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\FeedbackReplyMail;
 
 class FeedbackController extends Controller
 {
@@ -22,13 +24,15 @@ class FeedbackController extends Controller
         return redirect()->back();
     }
 
-    public function index(){
+    public function index()
+    {
         $feedbacks = Feedback::all();
 
         return view('admin.feedback', compact('feedbacks'));
     }
 
-    public function read($id){
+    public function read($id)
+    {
         $feedback = Feedback::findOrFail($id);
 
         $feedback->user_id = Auth::user()->id;
@@ -39,7 +43,8 @@ class FeedbackController extends Controller
         return redirect()->back()->with('success', "Mark as read");
     }
 
-    public function unread($id){
+    public function unread($id)
+    {
         $feedback = Feedback::findOrFail($id);
 
         $feedback->user_id = Auth::user()->id;
@@ -48,5 +53,20 @@ class FeedbackController extends Controller
         $feedback->save();
 
         return redirect()->back()->with('success', "Mark as unread");
+    }
+
+    public function reply(Request $request, $id)
+    {
+        $feedback = Feedback::findOrFail($id);
+
+        // Get the user email who gave the feedback
+        $userEmail = $feedback->email;
+
+        // Send email reply
+        Mail::to($userEmail)->send(new FeedbackReplyMail($request->reply));
+
+        // Optionally, you can save the reply to the feedback model or perform other actions
+
+        return redirect()->back()->with('success', 'Reply sent successfully!');
     }
 }

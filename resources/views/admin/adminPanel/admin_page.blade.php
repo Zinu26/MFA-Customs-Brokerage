@@ -42,8 +42,12 @@
                         <td>{{ date('Y-m-d h:i:s A', strtotime($user->updated_at)) }}</td>
                         <td>{{ $user->username }}</td>
                         <td class="text-center">
-                            @include('admin.adminPanel.edit')
-                            @include('admin.adminPanel.archive')
+                            @if(Auth::user()->name != $user->name)
+                                @include('admin.adminPanel.edit')
+                                @include('admin.adminPanel.archive')
+                            @else
+                                <p>------   ------</p>
+                            @endif
                         </td>
                     </tr>
                 @endif
