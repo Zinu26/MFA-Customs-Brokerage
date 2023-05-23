@@ -42,7 +42,7 @@ class AuthController extends Controller
                         'loggable_type' => 'Admin',
                         'activity' => 'Admin logged in',
                     ]);
-                    return redirect()->route('admin.dashboard');
+                    return redirect()->route('admin.dashboard')->with('success', 'Logged in Successfully!');
                 } else {
                     return redirect()->route('login')
                         ->withErrors(['login' => 'The provided credentials is not active, please contact admin'])
