@@ -305,13 +305,21 @@ class ChatBotController extends Controller
 
     public function guest_send(Request $request)
     {
-        // Remove any non-alphanumeric characters from the input
         $input = preg_replace('/[^a-zA-Z0-9\s]/', '', strtolower($request->input));
 
+        $response = $this->getResponse($input);
 
-        // List of words and their synonyms to detect in the input
+        if (!$response) {
+            $response = $this->getGenericResponse();
+        }
+
+        return $response;
+    }
+
+    private function getResponse($input)
+    {
         $words  = [
-            'MFA' => ['mfa', 'customs brokerage', 'brokerage'],
+            'mfa' => ['MFA', 'customs brokerage', 'brokerage'],
             'rate' => ['rate', 'pricing', 'cost'],
             'fees' => ['fees', 'charges', 'costs'],
             'bulk' => ['bulk', 'large quantity', 'massive'],
@@ -341,13 +349,14 @@ class ChatBotController extends Controller
             if (in_array($word, $words_in_input) || array_intersect($synonyms, $words_in_input)) {
                 // Generate a random response based on the detected word
                 switch ($word) {
-                    case 'MFA':
+                    case 'mfa':
                         $responses = [
                             'MFA Customs Brokerage is a business partner of Sonya Trucking Services.',
                             'MFA Customs Brokerage guarantees the safety and security of the client\'s cargo during transportation.',
                             'MFA Customs Brokerage works with clients to ensure smooth and efficient customs clearance.',
                             'MFA Customs Brokerage provides personalized and reliable logistics solutions for clients.'
                         ];
+                        break;
                     case 'rate':
                         $responses = [
                             'The rate depends on shipment details such as items, sizes, and contents.',
@@ -529,16 +538,17 @@ class ChatBotController extends Controller
                 return $response;
             }
         }
+        return null;
+    }
 
-        // If the input is not related to shipments or company details, prompt a randomly-selected generic response
+    private function getGenericResponse()
+    {
         $responses = [
             'I\'m sorry, I didn\'t quite understand. Could you please rephrase your question?',
             'I\'m not sure I understand what you\'re asking. Can you provide more context?',
             'I\'m afraid I can\'t answer that. Is there something else I can help you with?',
-            'I\'m not programmed to answer that question. Is there something else you would like to know?',
-            'I\'m sorry, I didn\'t catch that. Could you please repeat your question?',
         ];
-        $response = $responses[array_rand($responses)];
-        return $response;
+
+        return $responses[array_rand($responses)];
     }
 }

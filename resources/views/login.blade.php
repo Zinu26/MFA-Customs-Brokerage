@@ -86,9 +86,6 @@
         </div>
         <div class="links">
             <a href="{{ route('forgot-password') }}">Forgot Password</a>
-            
-        </div>
-        <div class="links">
             <a href="{{ route('login.client') }}"><strong><u>Login as Client</u></strong></a>
         </div>
         <input type="submit" name="login" value="Login">
