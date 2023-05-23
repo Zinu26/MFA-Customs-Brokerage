@@ -110,7 +110,7 @@ class ShipmentController extends Controller
         }
 
         if ($shipment->process_started != null && $shipment->process_finished != null) {
-            $url = 'https://shipmentapi.onrender.com/predict/';
+            $url = 'https://api-shipment.onrender.com/predict/';
             $data = array(
                 'arrival' => $shipment->arrival_date,
                 'process_start' => $shipment->process_started,

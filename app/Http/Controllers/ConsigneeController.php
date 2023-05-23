@@ -326,8 +326,9 @@ class ConsigneeController extends Controller
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
 
-        $shipments = Shipment::where('consignee_name', '=', Auth::user()->name)->get()->merge(Dataset::where('consignee_name', Auth::user()->name)->get())
-            ->whereBetween('created_at', [$startDate, $endDate])
+        $shipments = Shipment::where('consignee_name', '=', Auth::user()->name)
+            ->orWhere('consignee_name', '=', Auth::user()->name)
+            ->whereBetween('arrival_date', [$startDate, $endDate])
             ->get();
 
         $headers = [
@@ -353,5 +354,14 @@ class ConsigneeController extends Controller
         };
 
         return response()->stream($callback, 200, $headers);
+    }
+
+    public function markAsRead($id){
+        $notification = Notification::findOrFail($id);
+
+        $notification->read_at = now();
+        $notification->save();
+
+        return redirect()->back();
     }
 }

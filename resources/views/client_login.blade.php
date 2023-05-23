@@ -11,6 +11,7 @@
         top: 200px;
         left: 50%;
         transform: translateX(-50%);
+        z-index: 1;
     }
 
     .notification.success {
@@ -75,7 +76,7 @@
             @enderror
         </div>
         <div class="inputBox @error('tin') is-invalid @enderror">
-            <input type="text" name="tin" id="tin" required="required" value="{{ old('tin') }}">
+            <input type="password" name="tin" id="tin" required="required" value="{{ old('tin') }}">
             <span>Tin</span>
             <i></i>
             @error('tin')

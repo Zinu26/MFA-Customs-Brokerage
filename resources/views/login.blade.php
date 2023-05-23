@@ -11,6 +11,7 @@
         top: 200px;
         left: 50%;
         transform: translateX(-50%);
+        z-index: 1;
     }
 
     .notification.success {
@@ -54,6 +55,7 @@
         </div>
     @endif
 </div>
+
 <div class="box">
     <span class="borderLine"></span>
     <form action="{{ route('submit.login') }}" method="POST" autocomplete="off">

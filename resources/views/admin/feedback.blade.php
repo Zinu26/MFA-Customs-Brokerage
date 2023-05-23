@@ -34,6 +34,7 @@
                     <td>{{ date('Y-m-d h:i:s A', strtotime($feedback->created_at)) }}</td>
                     <td class="text-center">
                         @include('admin.feedback-modal')
+                        @include('reply-modal')
                     </td>
                 </tr>
             @endforeach

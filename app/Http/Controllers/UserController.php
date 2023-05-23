@@ -243,7 +243,7 @@ class UserController extends Controller
         $user->isArchived = true;
         $user->save();
 
-        if ($user->type == "0") {
+        if ($user->type == "admin") {
             // Log activity
             $changes = $user->getChanges();
             $activity = 'Admin ' . $user->id . ' were archived';
@@ -258,7 +258,7 @@ class UserController extends Controller
             ActivityLog::create($logData);
 
             return redirect()->back()->with('success', 'Admin data archived successfully.');
-        } else if ($user->type == "1") {
+        } else if ($user->type == "employee") {
 
             // Log activity
             $changes = $user->getChanges();
@@ -284,7 +284,7 @@ class UserController extends Controller
         $user->isArchived = false;
         $user->save();
 
-        if ($user->type == "0") {
+        if ($user->type == "admin") {
             // Log activity
             $changes = $user->getChanges();
             $activity = 'Admin ' . $user->id . ' were restored';
@@ -299,7 +299,7 @@ class UserController extends Controller
             ActivityLog::create($logData);
 
             return redirect()->back()->with('success', 'Admin data restored successfully.');
-        } else if ($user->type == "1") {
+        } else if ($user->type == "employee") {
 
             // Log activity
             $changes = $user->getChanges();

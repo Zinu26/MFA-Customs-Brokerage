@@ -105,6 +105,7 @@ Route::middleware(['auth', 'user-type:admin'])->group(function () {
     Route::get('/admin/feedback', [FeedbackController::class, 'index'])->name('admin.feedback');
     Route::post('/admin/read_feedback/{id}', [FeedbackController::class, 'read'])->name('admin.read');
     Route::post('/admin/unread_feedback/{id}', [FeedbackController::class, 'unread'])->name('admin.unread');
+    Route::post('/admin/feedback/{id}/reply', [FeedbackController::class, 'reply'])->name('admin.feedback.reply');
 
     Route::controller(UserController::class)->group(function () {
         Route::get('/admin/admin_list', 'admin_page')->name('admin_list');
@@ -148,6 +149,7 @@ Route::middleware(['auth', 'user-type:employee'])->group(function () {
     Route::get('/employee/feedback', [FeedbackController::class, 'index'])->name('employee.feedback');
     Route::post('/employee/read_feedback/{id}', [FeedbackController::class, 'read'])->name('employee.read');
     Route::post('/employee/unread_feedback/{id}', [FeedbackController::class, 'unread'])->name('employee.unread');
+    Route::post('/employee/feedback/{id}/reply', [FeedbackController::class, 'reply'])->name('employee.feedback.reply');
 
     Route::controller(ConsigneeController::class)->group(function () {
         Route::get('/employee/client_list', 'client_page')->name('client_list.employee');
