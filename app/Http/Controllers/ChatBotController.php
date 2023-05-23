@@ -211,7 +211,7 @@ class ChatBotController extends Controller
                                     break;
                                 case 'shipment':
                                     $response = 'The current status of this shipment is ' . $shipment->shipment_status . '.';
-                                    $response .= ' Would you like to know more about this shipment? You can also say "reset" to start over or "stop" to end this conversation.';
+                                    $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
                                     break;
                                 case 'do status':
                                     $response = 'The DO status of this shipment is ' . $shipment->do_status . '.';
@@ -230,26 +230,40 @@ class ChatBotController extends Controller
                                     $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
                                     break;
                                 case 'arrival date':
-                                    $response = 'The Arrival date of this shipment is ' . $shipment->arrival . '.';
+                                    $response = 'The Arrival date of this shipment is ' . $shipment->arrival_date . '.';
                                     $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
                                     break;
                                 case 'arrival':
-                                    $response = 'The Arrival date of this shipment is ' . $shipment->arrival . '.';
+                                    $response = 'The Arrival date of this shipment is ' . $shipment->arrival_date . '.';
                                     $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
                                     break;
                                 case 'delivery date':
-                                    if ($shipment->predicted_delivery_date !== null) {
-                                        $response = 'The Delivery date of this shipment is ' . $shipment->predicted_delivery_date . '.';
-                                        $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+                                    if ($shipment->predicted_delivery_date !== null && $shipment->status !== true) {
+                                        $currentDate = date('Y-m-d');
+                                        $predictedDate = $shipment->predicted_delivery_date;
+
+                                        if ($currentDate > $predictedDate) {
+                                            $response = 'Sorry for the delay of your shipment (BL number: ' . $shipment->bl_number . '). Please check other details that may cause the delay. DO status: ' . $shipment->do_status . ', Shipment Status: ' . $shipment->shipment_status . ', Billing status: ' . $shipment->billing_status . ' or you may contact MFA for more info.';
+                                        } else {
+                                            $response = 'The Delivery date of this shipment is ' . $shipment->predicted_delivery_date . '.';
+                                            $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+                                        }
                                     } else {
                                         $response = 'The shipment is currently being processed. We will let you know when it will be delivered.';
                                         $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
                                     }
                                     break;
                                 case 'delivery':
-                                    if ($shipment->predicted_delivery_date !== null) {
-                                        $response = 'The Delivery date of this shipment is ' . $shipment->predicted_delivery_date . '.';
-                                        $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+                                    if ($shipment->predicted_delivery_date !== null && $shipment->status !== true) {
+                                        $currentDate = date('Y-m-d');
+                                        $predictedDate = $shipment->predicted_delivery_date;
+
+                                        if ($currentDate > $predictedDate) {
+                                            $response = 'Sorry for the delay of your shipment (BL number: ' . $shipment->bl_number . '). Please check other details that may cause the delay. DO status: ' . $shipment->do_status . ', Shipment Status: ' . $shipment->shipment_status . ', Billing status: ' . $shipment->billing_status . ' or you may contact MFA for more info.';
+                                        } else {
+                                            $response = 'The Delivery date of this shipment is ' . $shipment->predicted_delivery_date . '.';
+                                            $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+                                        }
                                     } else {
                                         $response = 'The shipment is currently being processed. We will let you know when it will be delivered.';
                                         $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
@@ -319,7 +333,7 @@ class ChatBotController extends Controller
     private function getResponse($input)
     {
         $words  = [
-            'mfa' => ['MFA', 'customs brokerage', 'brokerage'],
+            'MFA' => ['mfa', 'customs brokerage', 'brokerage'],
             'rate' => ['rate', 'pricing', 'cost'],
             'fees' => ['fees', 'charges', 'costs'],
             'bulk' => ['bulk', 'large quantity', 'massive'],
@@ -359,7 +373,7 @@ class ChatBotController extends Controller
             if (!is_null($rootWord)) {
                 // Generate a random response based on the detected word
                 switch ($rootWord) {
-                    case 'mfa':
+                    case 'MFA':
                         $responses = [
                             'MFA Customs Brokerage is a business partner of Sonya Trucking Services.',
                             'MFA Customs Brokerage guarantees the safety and security of the client\'s cargo during transportation.',
