@@ -66,6 +66,12 @@ Route::get('/login', function () {
     return view('login');
 })->name('login');
 
+Route::get('/forgot-password', function () {
+    return view('forgot-pass');
+})->name('forgot-password');
+
+Route::post('/forget', [AuthController::class, 'sendResetlink'])->name('send.link');
+
 Route::get('/client/login', function () {
     return view('client_login');
 })->name('login.client');
