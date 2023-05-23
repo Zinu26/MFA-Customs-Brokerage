@@ -13,17 +13,17 @@ return new class extends Migration
      */
     public function up()
     {
-        // Schema::create('consignees', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->unsignedBigInteger('user_id');
-        //     $table->string('tin')->unique();
-        //     $table->string('contact');
-        //     $table->string('address');
-        //     $table->boolean('status')->default(false);
-        //     $table->timestamps();
+        Schema::create('consignees', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->string('tin')->unique();
+            $table->string('contact');
+            $table->string('address');
+            $table->boolean('status')->default(false);
+            $table->timestamps();
 
-        //     $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-        // });
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+        });
     }
 
     /**

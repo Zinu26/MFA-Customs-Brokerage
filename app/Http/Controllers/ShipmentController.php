@@ -92,7 +92,7 @@ class ShipmentController extends Controller
         }
 
         if ($shipment->process_finished == null) {
-            if($shipment->process_started == null)
+            if ($shipment->process_started == null)
                 return redirect()->back()->with('error', 'Process hasn\'t started yet.');
             if ($request->input('process_ended') != null) {
                 $shipment->process_finished = $request->input('process_ended');
@@ -281,9 +281,13 @@ class ShipmentController extends Controller
     public function download($id)
     {
         $file = File::findOrFail($id);
-        $path = Storage::url($file->location);
+        $path = storage_path('app/' . $file->location);
 
-        return response()->download(public_path($path), $file->name);
+        if (file_exists($path)) {
+            return response()->download($path, $file->name);
+        } else {
+            abort(404, 'File not found');
+        }
     }
 
     // Define a controller method to update the read_at column
