@@ -151,6 +151,8 @@ class ChatBotController extends Controller
     // }
 
     // Sentence
+
+
     public function sendChat(Request $request)
     {
         $user = Auth::user();
@@ -170,7 +172,7 @@ class ChatBotController extends Controller
             $words = preg_split('/\s+/', $input);
             $bl_number = null;
             foreach ($words as $word) {
-                if (preg_match('/^\d+$/', $word)) {
+                if (preg_match('/(\d+)/', $word)) {
                     $bl_number = $word;
                     break;
                 }

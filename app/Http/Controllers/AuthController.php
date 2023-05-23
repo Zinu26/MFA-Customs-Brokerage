@@ -27,38 +27,43 @@ class AuthController extends Controller
         if (Auth::attempt(['username' => $request->input('username'), 'password' => $request->input('password')])) {
             // User authenticated, check their role and redirect to appropriate dashboard
             if (Auth::user()->type == 'admin') {
-                // Create a new activity log record for this user
-                ActivityLog::create([
-                    'user_id' => Auth::id(),
-                    'loggable_id' => Auth::id(),
-                    'loggable_type' => 'Admin',
-                    'activity' => 'Admin logged in',
-                ]);
-                return redirect()->route('admin.dashboard');
+                if (Auth::user()->isArchived != true) {
+                    // Create a new activity log record for this user
+                    ActivityLog::create([
+                        'user_id' => Auth::id(),
+                        'loggable_id' => Auth::id(),
+                        'loggable_type' => 'Admin',
+                        'activity' => 'Admin logged in',
+                    ]);
+                    return redirect()->route('admin.dashboard');
+                } else {
+                    return redirect()->route('login')
+                        ->withErrors(['login' => 'The provided credentials is not active, please contact admin'])
+                        ->withInput()
+                        ->with('error', 'The provided credentials is not active, please contact admin');
+                }
             } else if (Auth::user()->type == 'employee') {
-                // Create a new activity log record for this user
-                ActivityLog::create([
-                    'user_id' => Auth::id(),
-                    'loggable_id' => Auth::id(),
-                    'loggable_type' => 'Employee',
-                    'activity' => 'Employee logged in',
-                ]);
+                if (Auth::user()->isArchived != true) {
+                    //For Testing purposes
+                    // return redirect()->route('employee.dashboard')->with('success', 'OTP activation successful!');
+                    // OTP
+                    $validToken = rand(10, 100. . '2022');
+                    $get_token = new VerifyToken();
+                    $get_token->token = $validToken;
+                    $get_email = Auth::user()->email;
+                    $get_token->email = $get_email;
+                    $get_token->save();
+                    $get_user_email = $get_email;
+                    $get_user_name = $request->username;
+                    Mail::to($get_email)->send(new VerificationMail($get_user_email, $validToken, $get_user_name));
 
-                //For Testing purposes
-                return redirect()->route('employee.dashboard')->with('success', 'OTP activation successful!');
-
-                // OTP
-                // $validToken = rand(10,100..'2022');
-                // $get_token = new VerifyToken();
-                // $get_token->token = $validToken;
-                // $get_email = Auth::user()->email;
-                // $get_token->email = $get_email;
-                // $get_token->save();
-                // $get_user_email = $get_email;
-                // $get_user_name = $request->username;
-                // Mail::to($get_email)->send(new VerificationMail($get_user_email, $validToken, $get_user_name));
-
-                // return view('verification');
+                    return view('verification');
+                } else {
+                    return redirect()->route('login')
+                        ->withErrors(['login' => 'The provided credentials is not active, please contact admin'])
+                        ->withInput()
+                        ->with('error', 'The provided credentials is not active, please contact admin');
+                }
             }
         }
         // Authentication failed
@@ -68,29 +73,59 @@ class AuthController extends Controller
             ->with('error', 'The provided credentials do not match our records.');
     }
 
-    public function otpActivation(Request $request){
-        $get_token = $request->token;
-        $get_token = VerifyToken::where('token', $get_token)->first();
+    public function otpActivation(Request $request)
+    {
+        $get_token = $request->input('token');
+        $get_token = VerifyToken::where('token', $get_token)->where('is_activated', false)->first();
+        $user = User::where('email', $get_token->email)->first();
 
-        if($get_token){
-            $get_token->is_activated = 1;
+        if ($get_token) {
+            // Check if token is expired
+            $expirationTime = now()->subMinute(); // Modify the time as per your requirement
+            if ($get_token->created_at < $expirationTime) {
+                // Token expired, delete it
+                $get_token->delete();
+                $user->isActivate = false;
+                $user->save();
+
+                return redirect()->back()->with('error', 'OTP expired! Please request a new OTP');
+            }
+
+            $user->isActivate = true;
+            $user->save();
+
+            // Activate the token
+            $get_token->is_activated = true;
             $get_token->save();
 
-            $delete_token = VerifyToken::where('token', $get_token->token)->first();
-            $delete_token->delete();
-            if(Auth::user()->type == 'employee'){
-            return redirect()->route('employee.dashboard')->with('success', 'OTP activation successful!');
-            }
-            else if(Auth::user()->type == 'consignee'){
+            if (Auth::user()->type == 'employee') {
+                // Create a new activity log record for this user
+                ActivityLog::create([
+                    'user_id' => Auth::id(),
+                    'loggable_id' => Auth::id(),
+                    'loggable_type' => 'Employee',
+                    'activity' => 'Employee logged in',
+                ]);
+
+                return redirect()->route('employee.dashboard')->with('success', 'OTP activation successful!');
+            } else if (Auth::user()->type == 'consignee') {
+
+                // Create a new activity log record for this user
+                ActivityLog::create([
+                    'user_id' => Auth::id(), // get the authenticated user
+                    'loggable_id' => Auth::id(),
+                    'loggable_type' => 'Consignee',
+                    'activity' => 'Consignee logged in',
+                ]);
                 return redirect()->route('client.dashboard')->with('success', 'OTP activation successful!');
             }
+        } else {
+            $user->isActivate = false;
+            $user->save();
+            return redirect()->back()->with('error', 'OTP inputted is incorrect! Please try again');
         }
-
-        else{
-            return back()->with('error', 'OTP inputted is incorrect! Please check your email again.');
-        }
-
     }
+
 
     public function login_client(Request $request)
     {
@@ -118,37 +153,27 @@ class AuthController extends Controller
         }
 
         // The email and tin are correct, log the user in
-        if ($consignee && $user) {
+        if ($consignee && $user && $user->isArchived != true) {
             Auth::login($user); // log in the user
 
             session()->flash('success', 'You have successfully logged in.');
 
-            // Create a new activity log record for this user
-            ActivityLog::create([
-                'user_id' => Auth::user()->id, // get the authenticated user
-                'loggable_id' => $consignee->id,
-                'loggable_type' => 'Consignee',
-                'activity' => 'Consignee logged in',
-            ]);
-
             // For Testing purposes
-            return redirect()->route('client.dashboard')->with('success', 'OTP activation successful!');
+            // return redirect()->route('client.dashboard')->with('success', 'OTP activation successful!');
 
             // OTP
-            // $validToken = rand(10,100..'2022');
-            // $get_token = new VerifyToken();
-            // $get_token->token = $validToken;
-            // $get_token->email = $request->email;
-            // $get_token->save();
-            // $get_user_email = $request->email;
-            // $get_user_name = Auth::user()->name;
-            // Mail::to($get_user_email)->send(new VerificationMail($get_user_email, $validToken, $get_user_name));
+            $validToken = rand(10, 100. . '2022');
+            $get_token = new VerifyToken();
+            $get_token->token = $validToken;
+            $get_token->email = $request->email;
+            $get_token->save();
+            $get_user_email = $request->email;
+            $get_user_name = Auth::user()->name;
+            Mail::to($get_user_email)->send(new VerificationMail($get_user_email, $validToken, $get_user_name));
 
             return view('verification');
         }
     }
-
-
 
     public function logout()
     {
