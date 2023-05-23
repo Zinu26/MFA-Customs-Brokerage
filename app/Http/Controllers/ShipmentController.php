@@ -87,6 +87,17 @@ class ShipmentController extends Controller
             return redirect()->back()->with('error', 'Process start date cannot be earlier than arrival date.');
         }
 
+        if ($shipment->process_started == null) {
+            $shipment->process_started = $request->input('process_started');
+        }
+
+        if ($shipment->process_finished == null) {
+            if($shipment->process_started == null)
+                return redirect()->back()->with('error', 'Process hasn\'t started yet.');
+            if ($request->input('process_ended') != null) {
+                $shipment->process_finished = $request->input('process_ended');
+            }
+        }
         // Check if process finish date is earlier than process start date
         if ($request->has('process_ended')) {
             $processEndDate = Carbon::parse($request->input('process_ended'));
@@ -100,14 +111,9 @@ class ShipmentController extends Controller
                 return redirect()->back()->with('error', 'Delivered date cannot be earlier than process finish date.');
             }
         }
-        if ($shipment->process_started == null) {
-            $shipment->process_started = $request->input('process_started');
-        }
-        if ($shipment->process_finished == null) {
-            if ($request->input('process_ended') != null) {
-                $shipment->process_finished = $request->input('process_ended');
-            }
-        }
+
+
+
 
         if ($shipment->process_started != null && $shipment->process_finished != null) {
             $url = 'https://api-shipment.onrender.com/predict/';
