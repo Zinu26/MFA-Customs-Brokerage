@@ -42,8 +42,10 @@
                         <td>{{ $user->username }}</td>
                         <td class="text-center">
                             @include('admin.employeePanel.view')
-                            @include('admin.employeePanel.edit')
-                            @include('admin.employeePanel.archive')
+                            @if(Auth::user()->name != $user->name)
+                                @include('admin.employeePanel.edit')
+                                @include('admin.employeePanel.archive')
+                            @endif
                         </td>
                     </tr>
                 @endif

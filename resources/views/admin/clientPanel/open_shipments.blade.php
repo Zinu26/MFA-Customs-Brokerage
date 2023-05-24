@@ -16,6 +16,8 @@
     </div>
 </div>
 
+@include('layouts.inc.message')
+
 <div id="content">
     <table id="datatableid" class="table table-bordered table-dark">
         <thead>
@@ -24,10 +26,9 @@
                 <th class="text-center">Consignees</th>
                 <th class="text-center">Arrival Date</th>
                 <th class="text-center">Predicted Delivery Date</th>
-                <th class="text-center">DO Status</th>
                 <th class="text-center">Shipment Status</th>
-                <th class="text-center">Billing</th>
-                <th class="text-center">Delivery</th>
+                <th class="text-center">DO Status</th>
+                <th class="text-center">Billing Status</th>
                 <th class="text-center">Option</th>
             </tr>
         </thead>
@@ -38,11 +39,16 @@
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $shipment->consignee_name }}</td>
                         <td>{{ $shipment->arrival_date }}</td>
-                        <td>{{ $shipment->predicted_delivery_date }}</td>
-                        <td>{{ $shipment->do_status }}</td>
+                        <td>
+                            @if ($shipment->predicted_delivery_date != null)
+                                {{ $shipment->predicted_delivery_date }}
+                            @else
+                                ----SHIPMENT STILL IN PROCESS----
+                            @endif
+                        </td>
                         <td>{{ $shipment->shipment_status }}</td>
+                        <td>{{ $shipment->do_status }}</td>
                         <td>{{ $shipment->billing_status }}</td>
-                        <td>{{ $shipment->delivery_status }}</td>
                         <td class="text-center col-2">
                             @include('admin.clientPanel.view_open_shipments')
                             @include('admin.clientPanel.edit_open_shipments')

@@ -1,5 +1,5 @@
 <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#unarchiveModal{{ $client->id }}"><i
-        class="fa fa-arrow-up"></i> Restore</button>
+        class="fa fa-arrow-up"></i></button>
 
 <!--Hide modal-->
 <div class="modal fade" id="unarchiveModal{{ $client->id }}" data-bs-backdrop="static" style="color: black;"
@@ -7,7 +7,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel">Archive Data</h1>
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Restore Data</h1>
             </div>
             <form
                 action="@if (Auth::user()->type == 'admin') {{ route('restore_client', $client->id) }}@elseif(Auth::user()->type == 'employee'){{ route('restore_client.employee', $client->id) }} @endif"

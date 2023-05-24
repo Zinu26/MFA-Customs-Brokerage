@@ -34,7 +34,7 @@ body{
     color: #FFFFFF;
     -webkit-text-stroke-width: 1.5px;
     -webkit-text-stroke-color: black;
-    transition: all 0.5s ease;
+    transition: all 0.1s ease;
 }
 
 #content{
@@ -44,10 +44,10 @@ body{
     max-height: 100vh;
     overflow-y: auto;
     margin: 0 100px;
-    transition: all 0.5s ease;
+    transition: all 0.1s ease;
 }
 
-.sidebar.active ~ #content,
-.sidebar.active ~ .table .table-header p{
-    margin-left: 12%;
+.main-menu:hover ~ #content,
+.main-menu:hover ~ .table .table-header p{
+    margin-left: 13%;
 }

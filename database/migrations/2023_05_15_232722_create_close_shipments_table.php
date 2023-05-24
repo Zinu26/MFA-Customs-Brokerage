@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('close_shipments', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('consignee_id');
+            $table->unsignedBigInteger('shipment_id');
             $table->string('consignee_name');
             $table->string('entry_number');
             $table->string('bl_number');
@@ -30,9 +30,9 @@ return new class extends Migration
             $table->string('shipping_line');
             $table->string('port_of_origin');
             $table->string('destination_address');
-            $table->string('status');
+            $table->boolean('status')->default(false);
 
-            $table->foreign('consignee_id')->references('id')->on('consignees')->onDelete('cascade');
+            $table->foreign('shipment_id')->references('id')->on('consignees')->onDelete('cascade');
             $table->timestamps();
         });
     }

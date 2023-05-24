@@ -40,6 +40,11 @@
                             style="background-color: #4EA646; font-weight: 600; color: white;">BL Number</span>
                         <input type="text" name="BL_number" placeholder="BL Number" aria-label="BL Number"
                             class="form-control" required>
+
+                        <span class="input-group-text"
+                            style="background-color: #4EA646; font-weight: 600; color: white;">Entry Number</span>
+                        <input type="text" name="entry_number" placeholder="Entry Number" aria-label="Entry Number"
+                            class="form-control" required>
                     </div></br>
                     <div class="input-group">
                         <span class="input-group-text"
@@ -59,8 +64,8 @@
                     </div></br>
                     <div class="input-group">
                         <span class="input-group-text"
-                            style="background-color: #4EA646; font-weight: 600; color: white;">Arrival Time</span>
-                        <input type="date" name="arrival_time" placeholder="Arrival Time" aria-label="Arrival Time"
+                            style="background-color: #4EA646; font-weight: 600; color: white;">Arrival Date</span>
+                        <input type="date" name="arrival_date" placeholder="Arrival Date" aria-label="Arrival Date"
                             class="form-control" required>
                     </div></br>
                     <div class="row">

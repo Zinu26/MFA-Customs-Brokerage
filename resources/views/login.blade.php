@@ -11,6 +11,7 @@
         top: 200px;
         left: 50%;
         transform: translateX(-50%);
+        z-index: 1;
     }
 
     .notification.success {
@@ -54,6 +55,7 @@
         </div>
     @endif
 </div>
+
 <div class="box">
     <span class="borderLine"></span>
     <form action="{{ route('submit.login') }}" method="POST" autocomplete="off">
@@ -83,8 +85,8 @@
             @enderror
         </div>
         <div class="links">
-            {{-- <a href="#">Forgot Password</a> --}}
-            <a href="{{ route('login.client') }}">Login as Client</a>
+            <a href="{{ route('forgot-password') }}">Forgot Password</a>
+            <a href="{{ route('login.client') }}"><strong><u>Login as Client</u></strong></a>
         </div>
         <input type="submit" name="login" value="Login">
     </form>

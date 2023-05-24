@@ -80,18 +80,43 @@ class ShipmentController extends Controller
     {
         $shipment = Shipment::findOrFail($id);
 
+        // Check if process start date is earlier than arrival date
+        $arrivalDate = Carbon::parse($shipment->arrival_date);
+        $processStartDate = Carbon::parse($request->input('process_started'));
+        if ($processStartDate->lessThan($arrivalDate)) {
+            return redirect()->back()->with('error', 'Process start date cannot be earlier than arrival date.');
+        }
 
         if ($shipment->process_started == null) {
             $shipment->process_started = $request->input('process_started');
         }
+
         if ($shipment->process_finished == null) {
+            if ($shipment->process_started == null)
+                return redirect()->back()->with('error', 'Process hasn\'t started yet.');
             if ($request->input('process_ended') != null) {
                 $shipment->process_finished = $request->input('process_ended');
             }
         }
+        // Check if process finish date is earlier than process start date
+        if ($request->has('process_ended')) {
+            $processEndDate = Carbon::parse($request->input('process_ended'));
+            if ($processEndDate->lessThan($processStartDate)) {
+                return redirect()->back()->with('error', 'Process finish date cannot be earlier than process start date.');
+            }
+
+            // Check if delivered date is earlier than process finish date
+            $deliveredDate = Carbon::parse($request->input('delivered_date'));
+            if ($deliveredDate->lessThan($processEndDate)) {
+                return redirect()->back()->with('error', 'Delivered date cannot be earlier than process finish date.');
+            }
+        }
+
+
+
 
         if ($shipment->process_started != null && $shipment->process_finished != null) {
-            $url = 'https://shipmentapi.onrender.com/predict/';
+            $url = 'https://api-shipment.onrender.com/predict/';
             $data = array(
                 'arrival' => $shipment->arrival_date,
                 'process_start' => $shipment->process_started,
@@ -183,11 +208,11 @@ class ShipmentController extends Controller
                 'delivery_date' => $shipment->delivered_date
             ];
             $consigneeUser = User::find($shipment->user_id);
-            if ($diffInDays < 0) {
-                $consigneeUser->notify(new ShipmentUpdate($shipment, 'The consignment was delivered ' . $formattedDiff . ' early.', json_encode($data), 'update'));
-            } elseif ($diffInDays == 0) {
+            if ($shipment->delivery_status === "Early") {
+                $consigneeUser->notify(new ShipmentUpdate($shipment, 'The consignment was delivered ' . $formattedDiff . ' ahead of the anticipated delivery schedule.', json_encode($data), 'update'));
+            } elseif ($shipment->delivery_status === "On-Time") {
                 $consigneeUser->notify(new ShipmentUpdate($shipment, 'The consignment was delivered on time as per the anticipated delivery date.', json_encode($data), 'update'));
-            } else {
+            } elseif ($shipment->delivery_status === "Delayed") {
                 $consigneeUser->notify(new ShipmentUpdate($shipment, 'The consignment was ' . $formattedDiff . ' delayed from the anticipated delivery date.', json_encode($data), 'update'));
             }
         }
@@ -217,7 +242,12 @@ class ShipmentController extends Controller
             return response()->json([
                 'bl_number' => $shipment->bl_number,
                 'entry_number' => $shipment->entry_number,
-                'arrival' => Carbon::parse($shipment->arrival)->format('F d, Y'),
+                'port_of_origin' => $shipment->port_of_origin,
+                'arrival' => Carbon::parse($shipment->arrival_date)->format('F d, Y'),
+                'process_started' => Carbon::parse($shipment->process_started)->format('F d, Y'),
+                'process_finished' => Carbon::parse($shipment->process_finished)->format('F d, Y'),
+                'predicted_delivery_date' => Carbon::parse($shipment->predicted_delivery_date)->format('F d, Y'),
+                'delivered_date' => Carbon::parse($shipment->delivered_date)->format('F d, Y'),
                 'do_status' => $shipment->do_status,
                 'billing_status' => $shipment->billing_status,
                 'shipment_status' => $shipment->shipment_status,
@@ -251,9 +281,13 @@ class ShipmentController extends Controller
     public function download($id)
     {
         $file = File::findOrFail($id);
-        $path = Storage::url($file->location);
+        $path = storage_path('app/' . $file->location);
 
-        return response()->download(public_path($path), $file->name);
+        if (file_exists($path)) {
+            return response()->download($path, $file->name);
+        } else {
+            abort(404, 'File not found');
+        }
     }
 
     // Define a controller method to update the read_at column

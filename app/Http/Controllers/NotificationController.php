@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Shipment;
+use App\Models\Notification;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class NotificationController extends Controller
 {
@@ -17,5 +20,14 @@ class NotificationController extends Controller
             'predicted_delivery_date' => $shipment->predicted_delivery_date,
         ];
         return response()->json(['shipment_details' => json_encode($shipmentDetails)]);
+    }
+
+    public function markAsRead(Request $request, $id)
+    {
+        $notification = Notification::findOrFail($id);
+        $notification->read_at = now();
+        $notification->save();
+
+        return response()->json(['message' => 'Notification marked as read.']);
     }
 }
