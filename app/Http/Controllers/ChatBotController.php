@@ -354,33 +354,41 @@ class ChatBotController extends Controller
                     $currentDate = date('Y-m-d');
                     $predictedDate = $shipment->predicted_delivery_date;
 
+                    $responses = [];
+
+                    if ($shipment->predicted_delivery_date !== null && $currentDate > $predictedDate) {
+                        $details = "DO status: " . $shipment->do_status . "\n";
+                        $details .= "Shipment Status: " . $shipment->shipment_status . "\n";
+                        $details .= "Billing status: " . $shipment->billing_status . "\n";
+
+                        $responses[] = 'Sorry for the delay of your shipment (BL number: ' . $shipment->bl_number . '). Please check these details that may cause the delay:' . "\n" . $details . 'You may also contact MFA for more information.' . "\n";
+
+                    }
+
                     if ($shipment->arrival_date !== null) {
-                        $conversation[] = $input;
-                        $response = 'Your shipment has already arrived. Arrival date: ' . Carbon::parse($shipment->arrival_date)->format('F d, Y') . '.';
-                        if ($shipment->process_started !== null) {
-                            $conversation[] = $input;
-                            $response = 'The BOC process started on ' . Carbon::parse($shipment->process_started)->format('F d, Y') . '.';
-                            if ($shipment->process_finished !== null) {
-                                $conversation[] = $input;
-                                $response = 'The BOC process finished on ' . Carbon::parse($shipment->process_finished)->format('F d, Y') . '.';
-                                if ($shipment->predicted_delivery_date !== null) {
-                                    $conversation[] = $input;
-                                    $response = 'Your shipment is expected to be delivered on ' . Carbon::parse($shipment->predicted_delivery_date)->format('F d, Y') . '.';
-                                    if ($shipment->delivered_date !== null) {
-                                        $conversation[] = $input;
-                                        $response = 'The shipment was delivered on ' . Carbon::parse($shipment->delivered_date)->format('F d, Y') . ', Thank you for trusting MFA Customs Brokerage.';
-                                    }
-                                }
-                                if ($shipment->predicted_delivery_date !== null && $currentDate > $predictedDate) {
-                                    $conversation[] = $input;
-                                    $response = 'Sorry for the delay of your shipment (BL number: ' . $shipment->bl_number . '). Please check these details that may cause the delay. DO status: ' . $shipment->do_status . ', Shipment Status: ' . $shipment->shipment_status . ', Billing status: ' . $shipment->billing_status . ' or you may contact MFA for more info.';
-                                    if ($shipment->delivered_date !== null) {
-                                        $conversation[] = $input;
-                                        $response = 'The shipment was delivered on ' . Carbon::parse($shipment->delivered_date)->format('F d, Y') . ', Thank you for trusting MFA Customs Brokerage.';
-                                    }
-                                }
-                            }
-                        }
+                        $responses[] = 'Your shipment has already arrived. Arrival date: ' . Carbon::parse($shipment->arrival_date)->format('F d, Y') . '.';
+                    }
+
+                    if ($shipment->process_started !== null) {
+                        $responses[] = 'The BOC process started on ' . Carbon::parse($shipment->process_started)->format('F d, Y') . '.';
+                    }
+
+                    if ($shipment->process_finished !== null) {
+                        $responses[] = 'The BOC process finished on ' . Carbon::parse($shipment->process_finished)->format('F d, Y') . '.';
+                    }
+
+                    if ($shipment->predicted_delivery_date !== null && $currentDate < $predictedDate) {
+                        $responses[] = 'Your shipment is expected to be delivered on ' . Carbon::parse($shipment->predicted_delivery_date)->format('F d, Y') . '.';
+                    }
+
+                    if ($shipment->delivered_date !== null ) {
+                        $responses[] = 'The shipment was delivered on ' . Carbon::parse($shipment->delivered_date)->format('F d, Y') . ', Thank you for trusting MFA Customs Brokerage.';
+                    }
+
+                    if (!empty($responses)) {
+                        $response = implode("\n", $responses);
+                    } else {
+                        $response = 'No relevant information found for the shipment with BL number ' . $bl_number . ' under ' . $user->name . '.';
                     }
                 } else {
                     // The BL number was not found in the database
