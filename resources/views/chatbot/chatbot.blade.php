@@ -5,7 +5,15 @@
         integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
+<style>
+    @media only screen and (max-width: 1080px) {
 
+        .chatbot-img,
+        .chatbot-wrapper {
+            opacity: 0;
+        }
+    }
+</style>
 <div class="chatbot-wrapper">
     <button class="chatbot-toggle" id="chatbot-toggle">
         <img src="/images/chatbot.jpg" class="chatbot-img">

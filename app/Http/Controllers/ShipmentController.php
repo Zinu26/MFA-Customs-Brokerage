@@ -12,6 +12,7 @@ use App\Models\CloseShipment;
 use App\Models\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Auth;
 use App\Models\ActivityLog;
 use DateTime;
@@ -21,6 +22,56 @@ use App\Notifications\ShipmentUpdate;
 
 class ShipmentController extends Controller
 {
+    /**
+     * Get the database name for a specific client.
+     *
+     * @param string $clientName
+     * @return string
+     */
+    private function getClientDatabaseName($clientName)
+    {
+        // Modify the logic to generate the client's database name based on the client's name
+        // You can use the same logic as the previous example to generate the database name
+        return strtolower(str_replace([' ', '-', '.'], '_', $clientName));
+    }
+
+    /**
+     * Switch to the specified database.
+     *
+     * @param string $databaseName
+     * @return void
+     */
+    private function switchToDatabase($databaseName)
+    {
+        // Replace 'your_database_connection' with the name of your database connection in config/database.php
+        $connection = config('database.default');
+
+        // Update the database name in the configuration
+        config(['database.connections.' . $connection . '.database' => $databaseName]);
+
+        // Reconnect to the new database
+        DB::reconnect();
+    }
+
+    /**
+     * Switch back to the current database.
+     *
+     * @return void
+     */
+    private function switchToCurrentDatabase()
+    {
+        // Replace 'your_database_connection' with the name of your database connection in config/database.php
+        $connection = config('database.default');
+
+        // Get the name of the default database from the configuration
+        $defaultDatabaseName = config('database.connections.' . $connection . '.database');
+
+        // Reconnect to the default database
+        DB::purge($connection);
+        config(['database.connections.' . $connection . '.database' => $defaultDatabaseName]);
+        DB::reconnect();
+    }
+
     function index()
     {
         $shipments = Shipment::all();
@@ -34,15 +85,15 @@ class ShipmentController extends Controller
     {
         $shipments = Dataset::all()->merge(CloseShipment::all());
         $consignees = Consignee::all();
-        return view('admin.shipmentPanel.close_shipments', compact('shipments', 'consignees'));
+        $files = File::all();
+        return view('admin.shipmentPanel.close_shipments', compact('shipments', 'consignees','files'));
     }
 
-    function add(Request $request)
+    public function add(Request $request)
     {
         $shipment = new Shipment;
 
         $shipment->consignee_name = $request->input('consignee_name');
-        $shipment->user_id = User::where('name', $shipment->consignee_name)->first()->id;
         $shipment->shipment_details = $request->input('item_description');
         $shipment->size = $request->input('size');
         $shipment->weight = $request->input('weight');
@@ -55,23 +106,40 @@ class ShipmentController extends Controller
         $shipment->do_status = $request->input('do_status');
         $shipment->billing_status = $request->input('billing_status');
 
-        $user = User::where('name', $shipment->consignee_name)->first();
+        $consigneeName = $shipment->consignee_name;
+        $user = User::where('name', $consigneeName)->first();
         $consignee = Consignee::where('user_id', $user->id)->first();
 
+        $shipment->user_id = $consignee->id;
         $shipment->destination_address = $consignee->address;
         $shipment->save();
 
-        $consigneeUser = User::find($shipment->user_id);
-        $consigneeUser->notify(new ShipmentUpdate($shipment, 'A new shipment has been added.', json_encode($shipment->toArray()), 'add'));
-
-
-        // log the activity
+        // Log the activity
         $log = new ActivityLog;
         $log->user_id = Auth::id();
         $log->loggable()->associate($shipment);
         $log->activity = 'Shipment Added';
         $log->changes = $shipment->toJson();
         $log->save();
+
+        // Store the shipment data in the client's database
+        $clientDatabaseName = $this->getClientDatabaseName($consigneeName);
+        $this->switchToDatabase($clientDatabaseName);
+
+        // Exclude user_id column before saving the shipment
+        $clientShipmentData = $shipment->toArray();
+
+        $clientShipment = new Shipment;
+        $clientShipment->id = $shipment->id;
+        $clientShipment->fill($clientShipmentData);
+        $clientShipment->save();
+
+        // Switch back to the current database
+        $this->switchToCurrentDatabase();
+
+        $consigneeUser = User::find($shipment->user_id);
+        $consigneeUser->notify(new ShipmentUpdate($shipment, 'A new shipment has been added.', json_encode($shipment->toArray()), 'add'));
+
 
         return redirect()->back()->with('success', 'Shipment data added successfully.');
     }
@@ -111,9 +179,6 @@ class ShipmentController extends Controller
                 return redirect()->back()->with('error', 'Delivered date cannot be earlier than process finish date.');
             }
         }
-
-
-
 
         if ($shipment->process_started != null && $shipment->process_finished != null) {
             $url = 'https://api-shipment.onrender.com/predict/';
@@ -188,10 +253,78 @@ class ShipmentController extends Controller
             $closed->status = false;
 
             $closed->save();
+
+            $consigneeName = $shipment->consignee_name;
+
+            // Store the shipment data in the client's database
+            $clientDatabaseName = $this->getClientDatabaseName($consigneeName);
+            $this->switchToDatabase($clientDatabaseName);
+
+            // Assuming you have switched to the client's database
+            $clientClosedShipment = new CloseShipment();
+            $clientClosedShipment->shipment_id = $shipment->id;
+            $clientClosedShipment->consignee_name = $shipment->consignee_name;
+            $clientClosedShipment->entry_number = $shipment->entry_number;
+            $clientClosedShipment->bl_number = $shipment->bl_number;
+            $clientClosedShipment->arrival_date = $shipment->arrival_date;
+            $clientClosedShipment->process_started = $shipment->process_started;
+            $clientClosedShipment->process_finished = $shipment->process_finished;
+            $clientClosedShipment->predicted_delivery_date = $shipment->predicted_delivery_date;
+            $clientClosedShipment->delivered_date = $shipment->delivered_date;
+            $clientClosedShipment->size = $shipment->size;
+            $clientClosedShipment->weight = $shipment->weight;
+            $clientClosedShipment->shipment_details = $shipment->shipment_details;
+            $clientClosedShipment->shipping_line = $shipment->shipping_line;
+            $clientClosedShipment->port_of_origin = $shipment->port_of_origin;
+            $clientClosedShipment->destination_address = $shipment->destination_address;
+            $clientClosedShipment->delivery_status = $shipment->delivery_status;
+            $clientClosedShipment->status = false;
+
+            $clientClosedShipment->save();
+
+
+            // Switch back to the current database
+            $this->switchToCurrentDatabase();
         }
 
         $changes = $shipment->getChanges();
 
+        // Log activity
+        $activity = 'Shipment ' . $shipment->id . ' details were updated';
+        $logData = [
+            'user_id' => Auth::id(),
+            'loggable' => $shipment,
+            'activity' => $activity,
+            'changes' => json_encode($changes),
+        ];
+        $logData['loggable_type'] = get_class($shipment);
+        $logData['loggable_id'] = $shipment->id;
+
+        ActivityLog::create($logData);
+
+        $consigneeName = $shipment->consignee_name;
+
+        // Store the shipment data in the client's database
+        $clientDatabaseName = $this->getClientDatabaseName($consigneeName);
+        $this->switchToDatabase($clientDatabaseName);
+
+        // Update the corresponding shipment record in the client's database
+        $clientShipment = Shipment::findOrFail($shipment->id);
+        // Update the necessary fields in the client's shipment record
+        $clientShipment->process_started = $shipment->process_started;
+        $clientShipment->process_finished = $shipment->process_finished;
+        $clientShipment->predicted_delivery_date = $shipment->predicted_delivery_date;
+        $clientShipment->delivered_date = $shipment->delivered_date;
+        $clientShipment->shipment_status = $shipment->shipment_status;
+        $clientShipment->do_status = $shipment->do_status;
+        $clientShipment->billing_status = $shipment->billing_status;
+        $clientShipment->delivery_status = $shipment->delivery_status;
+        $clientShipment->status = $shipment->status;
+        // Save the changes to the client's shipment record
+        $clientShipment->save();
+
+        // Switch back to the current database
+        $this->switchToCurrentDatabase();
 
         if ($shipment->delivered_date == null) {
             $consigneeUser = User::find($shipment->user_id);
@@ -216,19 +349,6 @@ class ShipmentController extends Controller
                 $consigneeUser->notify(new ShipmentUpdate($shipment, 'The consignment was ' . $formattedDiff . ' delayed from the anticipated delivery date.', json_encode($data), 'update'));
             }
         }
-
-        // Log activity
-        $activity = 'Shipment ' . $shipment->id . ' details were updated';
-        $logData = [
-            'user_id' => Auth::id(),
-            'loggable' => $shipment,
-            'activity' => $activity,
-            'changes' => json_encode($changes),
-        ];
-        $logData['loggable_type'] = get_class($shipment);
-        $logData['loggable_id'] = $shipment->id;
-
-        ActivityLog::create($logData);
 
         return redirect()->back()->with('success', 'Shipment data have been updated successfully.');
     }

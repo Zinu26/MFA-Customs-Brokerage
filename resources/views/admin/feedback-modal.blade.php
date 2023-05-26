@@ -6,12 +6,13 @@
     @endif
 </button>
 
-<div class="modal fade" id="viewMessageModal{{ $feedback->id }}" data-backdrop="static" data-keyboard="false"
+<div class="modal fade" id="viewMessageModal{{ $feedback->id }}" data-backdrop="static" style="color: black;" data-keyboard="false"
     tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel" style="color:black">Message</h1>
+            <div class="modal-header mbc3" style="background-color: #4EA646">
+                <h5 class="modal-title">MESSAGE</h5>
+                <a style="cursor: pointer;" data-dismiss="modal"><i class="fa fa-xmark"></i></a>
             </div>
             <form
                 action="@if (Auth::user()->type == 'admin')
@@ -29,12 +30,12 @@
                     <p style="color:black;"> {{ $feedback->message }} </p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">CLOSE</button>
                     <button type="submit" class="btn btn-success">
                         @if ($feedback->isRead == false)
-                            Mark as Read
+                            MARK AS READ
                         @else
-                            Mark as Unread
+                            MARK AS UNREAD
                         @endif
                     </button>
                 </div>

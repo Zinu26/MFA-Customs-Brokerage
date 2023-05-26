@@ -7,9 +7,12 @@ use App\Models\Consignee;
 use App\Models\User;
 use App\Models\Shipment;
 use App\Models\Dataset;
+use App\Models\File;
 use App\Models\CloseShipment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
 use App\Models\ActivityLog;
 use App\Models\Notification;
 use Spatie\Backup\Notifications\Notifiable;
@@ -66,7 +69,7 @@ class ConsigneeController extends Controller
             'employee' => $consignee->toJson(),
         ];
 
-        if (Auth::user()->type == '0') {
+        if (Auth::user()->type == 'admin') {
             // Create activity log
             ActivityLog::create([
                 'user_id' => Auth::id(),
@@ -75,7 +78,7 @@ class ConsigneeController extends Controller
                 'activity' => 'Consignee Added',
                 'changes' => json_encode($changes),
             ]);
-        } else if (Auth::user()->type == '1') {
+        } else if (Auth::user()->type == 'employee') {
             // Create activity log
             ActivityLog::create([
                 'user_id' => Auth::id(),
@@ -86,15 +89,150 @@ class ConsigneeController extends Controller
             ]);
         }
 
-
         // Save the new Consignee instance to the database
         $consignee->save();
+
+        // Generate a new database based on the input name
+        $databaseName = $this->generateDatabaseName($validatedData['name']);
+        $this->createDatabase($databaseName);
+
+        // Switch to the newly created database
+        config(['database.connections.mysql.database' => $databaseName]);
+        DB::reconnect();
+
+        // Create the 'shipments' table in the new database
+        Schema::create('shipments', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->string('consignee_name')->nullable();
+            $table->string('bl_number')->nullable();
+            $table->string('entry_number')->nullable();
+            $table->date('arrival_date')->nullable();
+            $table->date('process_started')->nullable();
+            $table->date('process_finished')->nullable();
+            $table->date('predicted_delivery_date')->nullable();
+            $table->date('delivered_date')->nullable();
+            $table->string('port_of_origin')->nullable();
+            $table->string('destination_address')->nullable();
+            $table->string('size')->nullable();
+            $table->string('shipment_details')->nullable();
+            $table->string('weight')->nullable();
+            $table->string('shipping_line')->nullable();
+            $table->string('do_status')->nullable();
+            $table->string('shipment_status')->nullable();
+            $table->string('billing_status')->nullable();
+            $table->string('delivery_status')->nullable();
+            $table->boolean('status')->default(false);
+            $table->timestamps();
+        });
+
+        // Create the 'close_shipments' table in the new database
+        Schema::create('close_shipments', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('shipment_id');
+            $table->string('consignee_name');
+            $table->string('entry_number');
+            $table->string('bl_number');
+            $table->date('arrival_date');
+            $table->date('process_started');
+            $table->date('process_finished');
+            $table->date('predicted_delivery_date');
+            $table->date('delivered_date');
+            $table->string('size');
+            $table->string('weight');
+            $table->string('shipment_details');
+            $table->string('shipping_line');
+            $table->string('port_of_origin');
+            $table->string('destination_address');
+            $table->boolean('status')->default(false);
+
+            $table->foreign('shipment_id')->references('id')->on('shipments')->onDelete('cascade');
+            $table->timestamps();
+        });
+
+        Schema::create('files', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('shipment_id');
+            $table->string('name');
+            $table->string('size');
+            $table->string('location');
+            $table->timestamps();
+
+            $table->foreign('shipment_id')->references('id')->on('shipments')->onDelete('cascade');
+        });
+
+        Schema::create('notifications', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->string('type');
+            $table->morphs('notifiable');
+            $table->text('data');
+            $table->timestamp('read_at')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('users', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('username')->unique()->nullable();
+            $table->string('email')->unique();
+            // 0 =Admin; 1 =Employee; 2 =Consignee;
+            $table->tinyInteger('type')->default(0);
+            $table->string('address')->nullable();
+            $table->integer('isArchived')->default(0);
+            $table->integer('isActivate')->default(0);
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->rememberToken();
+            $table->timestamps();
+        });
+
+        // Save the user data to the user table of the client's database
+        DB::table('users')->insert([
+            'id' => $user->id,
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'password' => bcrypt($validatedData['tin']),
+            'address' => $validatedData['address'],
+            'type' => 2, // Assuming you want to create a consignee user
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         // Redirect to the index page with a success message
         return redirect()->route('client_list')->with('success', 'Consignee added successfully.');
     }
 
+    /**
+     * Generate a database name based on the input name.
+     *
+     * @param string $name
+     * @return string
+     */
+    private function generateDatabaseName($name)
+    {
+        // Modify the logic to generate a database name based on the client name
+        // For example, you can remove special characters and replace spaces with underscores
+        return strtolower(str_replace([' ', '-', '.'], '_', $name));
+    }
 
+    /**
+     * Create a new database with the given name.
+     *
+     * @param string $databaseName
+     * @return void
+     */
+    private function createDatabase($databaseName)
+    {
+        // Modify the code to create a new database using your Laravel database connection
+        // You can execute SQL queries or use a package like Doctrine DBAL for database operations
+        // Here's an example using Laravel's DB facade and raw SQL queries
+
+        // Replace 'your_database_connection' with the name of your database connection in config/database.php
+        $connection = config('database.connections.your_database_connection');
+
+        // Execute the SQL query to create the database
+        DB::connection($connection)->statement("CREATE DATABASE IF NOT EXISTS `$databaseName`");
+    }
 
     public function update(Request $request, $id)
     {
@@ -253,16 +391,18 @@ class ConsigneeController extends Controller
         $consignee = Consignee::findOrFail($id);
         $shipments = Shipment::where('consignee_name', $consignee->user->name)->get();
         $shipping_lines = DB::table('datasets')->pluck('shipping_line')->unique();
+        $files = File::all();
 
-        return view('admin.clientPanel.open_shipments', compact('consignee', 'shipments', 'shipping_lines'));
+        return view('admin.clientPanel.open_shipments', compact('consignee', 'shipments', 'shipping_lines', 'files'));
     }
 
     function close_shipment($id)
     {
         $consignee = Consignee::findOrFail($id);
         $shipments = Dataset::where('consignee_name', $consignee->user->name)->get();
+        $files = File::all();
 
-        return view('admin.clientPanel.close_shipments', compact('consignee', 'shipments'));
+        return view('admin.clientPanel.close_shipments', compact('consignee', 'shipments', 'files'));
     }
 
     function consignee_dashboard()
@@ -281,15 +421,16 @@ class ConsigneeController extends Controller
     function consignee_open_shipment()
     {
         $shipments = Shipment::where('consignee_name', Auth::user()->name)->get();
-
-        return view('clients.open_shipments', compact('shipments'));
+        $files = File::all();
+        return view('clients.open_shipments', compact('shipments', 'files'));
     }
 
     function consignee_close_shipment()
     {
         $shipments = Dataset::where('consignee_name', Auth::user()->name)->get()->merge(CloseShipment::where('consignee_name', Auth::user()->name)->get());
+        $files = File::all();
 
-        return view('clients.close_shipments', compact('shipments'));
+        return view('clients.close_shipments', compact('shipments','files'));
     }
 
 
@@ -356,7 +497,8 @@ class ConsigneeController extends Controller
         return response()->stream($callback, 200, $headers);
     }
 
-    public function markAsRead($id){
+    public function markAsRead($id)
+    {
         $notification = Notification::findOrFail($id);
 
         $notification->read_at = now();

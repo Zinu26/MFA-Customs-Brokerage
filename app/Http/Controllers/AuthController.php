@@ -105,6 +105,8 @@ class AuthController extends Controller
             $get_token->is_activated = true;
             $get_token->save();
 
+            $get_token->delete();
+
             if (Auth::user()->type == 'employee') {
                 // Create a new activity log record for this user
                 ActivityLog::create([
