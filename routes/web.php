@@ -27,12 +27,6 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
-// Route::get('/', function () {
-//     return view('landing');
-// });
-
-
-
 // Route::get('/users/{user}/activity-logs', [ActivityLogController::class, 'index']);
 
 // Route::post('/chatbot', [ChatBotController::class, 'handleRequest']);
@@ -66,11 +60,6 @@ Route::get('/login', function () {
     return view('login');
 })->name('login');
 
-Route::get('/forgot-password', function () {
-    return view('forgot-pass');
-})->name('forgot-password');
-
-Route::post('/forget', [AuthController::class, 'sendResetlink'])->name('send.link');
 
 Route::get('/client/login', function () {
     return view('client_login');
@@ -91,6 +80,9 @@ Route::post('/otp-verification', [AuthController::class, 'otpActivation'])->name
 Route::get('/user/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/logout', [AuthController::class, 'logout_client'])->name('logout_client');
 
+
+Route::get('/forgot-password', [AuthController::class, 'showForgotPasswordForm'])->name('forgot-password');
+Route::post('/forget', [AuthController::class, 'sendResetlink'])->name('send.link');
 
 //ADMIN PANEL
 Route::middleware(['auth', 'user-type:admin'])->group(function () {

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 16, 2023 at 06:07 AM
+-- Generation Time: May 23, 2023 at 10:57 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.1.17
 
@@ -89,7 +89,7 @@ CREATE TABLE `consignees` (
 --
 
 INSERT INTO `consignees` (`id`, `user_id`, `tin`, `contact`, `address`, `status`, `created_at`, `updated_at`) VALUES
-(1, 3, '146647938000', '9245646', '35 G. Miranda St., Cor G. Marcelo St., Dizon Compound Brgy., Maysan Valenzuela City.', 0, NULL, NULL),
+(1, 3, '146647938000', '9245646', '35 G. Miranda St., Cor G. Marcelo St., Dizon Compound Brgy., Maysan Valenzuela City.', 0, NULL, '2023-05-23 18:27:35'),
 (2, 4, '002786064000', '', 'Lot 4 F2 F3 F. Pasco Avenue, Santolan, Pasig City 1610', 0, NULL, NULL),
 (3, 5, '223768948000', '', '1601 Tanbel Center Bldg., E. Rodriguez Sr. Blvd., Pinagkaisahan, Quezon City, Philippines', 0, NULL, NULL),
 (4, 6, '006974110000', '', 'Unit 801, 8/F The Trade and Financial Tower 7th ave. Cor 32nd St., Bonifacio Global City, Taguig Cit', 0, NULL, NULL),
@@ -1144,17 +1144,19 @@ CREATE TABLE `failed_jobs` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `feedbacks`
+-- Table structure for table `feedback`
 --
 
-CREATE TABLE `feedbacks` (
+CREATE TABLE `feedback` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `name` varchar(191) NOT NULL,
   `email` varchar(191) NOT NULL,
   `contact` varchar(191) NOT NULL,
-  `message` varchar(191) NOT NULL,
+  `message` text NOT NULL,
+  `user_id` bigint(20) UNSIGNED DEFAULT NULL,
   `isRead` tinyint(1) NOT NULL DEFAULT 0,
-  `read_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `read_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `replied_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -1202,10 +1204,10 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (18, '2023_04_26_130206_create_feedbacks_table', 1),
 (19, '2023_05_01_012232_create_activity_log_table', 1),
 (20, '2023_05_06_161349_create_consignees_table', 1),
-(21, '2023_05_09_223918_create_f_a_q_s_table', 2),
 (22, '2023_05_11_191045_create_files_table', 2),
 (23, '2023_05_13_165433_create_notifications_table', 3),
-(24, '2023_05_15_232722_create_close_shipments_table', 4);
+(24, '2023_05_15_232722_create_close_shipments_table', 4),
+(25, '2023_05_16_125948_create_verify_tokens_table', 5);
 
 -- --------------------------------------------------------
 
@@ -1214,7 +1216,7 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 --
 
 CREATE TABLE `notifications` (
-  `id` char(36) NOT NULL,
+  `id` char(48) NOT NULL,
   `type` varchar(191) NOT NULL,
   `notifiable_type` varchar(191) NOT NULL,
   `notifiable_id` bigint(20) UNSIGNED NOT NULL,
@@ -1223,20 +1225,6 @@ CREATE TABLE `notifications` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `notifications`
---
-
-INSERT INTO `notifications` (`id`, `type`, `notifiable_type`, `notifiable_id`, `data`, `read_at`, `created_at`, `updated_at`) VALUES
-('067e6264-a64c-4cf4-85e7-eb1dbc2eb5a9', 'App\\Notifications\\ShipmentUpdate', 'App\\Models\\User', 20, '{\"shipment_id\":2,\"message\":\"The consignment was 2 day\\/s delayed from the anticipated delivery date.\",\"changes\":\"{\\\"predicted_delivery_date\\\":\\\"2023-05-02\\\",\\\"delivery_date\\\":\\\"2023-04-30\\\"}\",\"activity\":\"update\"}', NULL, '2023-05-15 21:12:45', '2023-05-15 21:12:45'),
-('08c53e75-77ac-48ec-a1eb-072b44098d1e', 'App\\Notifications\\ShipmentUpdate', 'App\\Models\\User', 3, '{\"shipment_id\":1,\"message\":\"A shipment has been updated.\",\"changes\":\"{\\\"process_started\\\":\\\"2023-05-05\\\",\\\"process_finished\\\":\\\"2023-05-10\\\",\\\"predicted_delivery_date\\\":\\\"2023-05-18\\\",\\\"updated_at\\\":\\\"2023-05-16 01:23:59\\\"}\",\"activity\":\"update\"}', NULL, '2023-05-15 17:23:59', '2023-05-15 17:23:59'),
-('197e5e3f-3fd7-4fd9-acc2-eb90fe072e6a', 'App\\Notifications\\ShipmentUpdate', 'App\\Models\\User', 9, '{\"shipment_id\":3,\"message\":\"A new shipment has been added.\",\"changes\":\"{\\\"consignee_name\\\":\\\"METRO HUE-TECH CHEMICAL CO. INC.\\\",\\\"user_id\\\":9,\\\"shipment_details\\\":\\\"Eos nemo doloribus\\\",\\\"size\\\":\\\"Qui nulla quod ex sa\\\",\\\"weight\\\":\\\"55\\\",\\\"bl_number\\\":\\\"44\\\",\\\"entry_number\\\":\\\"382\\\",\\\"shipping_line\\\":\\\"LONG SAIL SHIPPING LINE S.A.  LIMITED\\\",\\\"arrival_date\\\":\\\"2023-05-12\\\",\\\"port_of_origin\\\":\\\"MANILA NORTH PORT, PHILIPPINES\\\",\\\"shipment_status\\\":\\\"AG\\\",\\\"do_status\\\":\\\"Pending\\\",\\\"billing_status\\\":\\\"On Going\\\",\\\"destination_address\\\":\\\"103 PROGRESS AVE., PH.1 GIZ, CARMEL RAY INDL. PARK, CANLUBANG, CALAMBA LAGUNA\\\",\\\"updated_at\\\":\\\"2023-05-15T21:27:15.000000Z\\\",\\\"created_at\\\":\\\"2023-05-15T21:27:15.000000Z\\\",\\\"id\\\":3}\",\"activity\":\"add\"}', NULL, '2023-05-15 21:27:15', '2023-05-15 21:27:15'),
-('24394b21-5d62-4871-93a1-21845f0e3aab', 'App\\Notifications\\ShipmentUpdate', 'App\\Models\\User', 20, '{\"shipment_id\":2,\"message\":\"A shipment has been updated.\",\"changes\":\"{\\\"process_started\\\":\\\"2023-04-22\\\",\\\"process_finished\\\":\\\"2023-04-25\\\",\\\"predicted_delivery_date\\\":\\\"2023-05-02\\\",\\\"do_status\\\":\\\"Done\\\",\\\"billing_status\\\":\\\"Done\\\",\\\"updated_at\\\":\\\"2023-05-16 05:04:14\\\"}\",\"activity\":\"update\"}', NULL, '2023-05-15 21:04:14', '2023-05-15 21:04:14'),
-('2b865acd-34f2-403a-9139-0de1a7e49a33', 'App\\Notifications\\ShipmentUpdate', 'App\\Models\\User', 20, '{\"shipment_id\":2,\"message\":\"A new shipment has been added.\",\"changes\":\"{\\\"consignee_name\\\":\\\"TOPFIL INDUSTRIES INC.\\\",\\\"user_id\\\":20,\\\"shipment_details\\\":\\\"Exercitation ut eius\\\",\\\"size\\\":\\\"Provident in nostru\\\",\\\"weight\\\":\\\"77\\\",\\\"bl_number\\\":\\\"870\\\",\\\"entry_number\\\":\\\"483\\\",\\\"shipping_line\\\":\\\"CNC\\\",\\\"arrival_date\\\":\\\"2023-04-21\\\",\\\"port_of_origin\\\":\\\"MANILA NORTH PORT, PHILIPPINES\\\",\\\"shipment_status\\\":\\\"AP\\\",\\\"do_status\\\":\\\"Pending\\\",\\\"billing_status\\\":\\\"On Going\\\",\\\"destination_address\\\":\\\"59 MH DEL PILAR ST ARKONG BATO VALENZUELA\\\",\\\"updated_at\\\":\\\"2023-05-15T21:02:54.000000Z\\\",\\\"created_at\\\":\\\"2023-05-15T21:02:54.000000Z\\\",\\\"id\\\":2}\",\"activity\":\"add\"}', NULL, '2023-05-15 21:02:54', '2023-05-15 21:02:54'),
-('e88f63ce-e0df-4665-80d8-3511d3fc7de8', 'App\\Notifications\\ShipmentUpdate', 'App\\Models\\User', 3, '{\"shipment_id\":1,\"message\":\"A new shipment has been added.\",\"changes\":\"{\\\"consignee_name\\\":\\\"MHYLINK TRADING\\\",\\\"user_id\\\":3,\\\"item_description\\\":\\\"Vero nisi molestiae\\\",\\\"size\\\":\\\"Omnis at magna inven\\\",\\\"weight\\\":\\\"50\\\",\\\"bl_number\\\":\\\"741\\\",\\\"entry_number\\\":\\\"505\\\",\\\"shipping_line\\\":\\\"EVERGREEN\\\",\\\"arrival\\\":\\\"2023-05-03\\\",\\\"port_of_origin\\\":\\\"MANILA NORTH PORT, PHILIPPINES\\\",\\\"shipment_status\\\":\\\"AP\\\",\\\"do_status\\\":\\\"Pending\\\",\\\"billing_status\\\":\\\"Done\\\",\\\"destination_address\\\":\\\"35 G. Miranda St., Cor G. Marcelo St., Dizon Compound Brgy., Maysan Valenzuela City.\\\",\\\"updated_at\\\":\\\"2023-05-15T17:20:06.000000Z\\\",\\\"created_at\\\":\\\"2023-05-15T17:20:06.000000Z\\\",\\\"id\\\":1}\",\"activity\":\"add\"}', NULL, '2023-05-15 17:20:06', '2023-05-15 17:20:06'),
-('eb76d2f3-a6c2-4385-8f18-237aff9b728d', 'App\\Notifications\\ShipmentUpdate', 'App\\Models\\User', 3, '{\"shipment_id\":1,\"message\":\"The consignment was delivered on time as per the anticipated delivery date.\",\"changes\":\"{\\\"predicted_delivery_date\\\":\\\"2023-05-18\\\",\\\"delivery_date\\\":\\\"2023-05-18\\\"}\",\"activity\":\"update\"}', NULL, '2023-05-15 17:24:32', '2023-05-15 17:24:32'),
-('fda0df5a-7235-4f2e-a6a3-57459d5d91dc', 'App\\Notifications\\ShipmentUpdate', 'App\\Models\\User', 20, '{\"shipment_id\":2,\"message\":\"The consignment was 2 day\\/s delayed from the anticipated delivery date.\",\"changes\":\"{\\\"predicted_delivery_date\\\":\\\"2023-05-02\\\",\\\"delivery_date\\\":\\\"2023-04-30\\\"}\",\"activity\":\"update\"}', NULL, '2023-05-15 21:11:07', '2023-05-15 21:11:07');
 
 -- --------------------------------------------------------
 
@@ -1249,6 +1237,13 @@ CREATE TABLE `password_resets` (
   `token` varchar(191) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `password_resets`
+--
+
+INSERT INTO `password_resets` (`email`, `token`, `created_at`) VALUES
+('tetsu.kuro261@gmail.com', '23268', NULL);
 
 -- --------------------------------------------------------
 
@@ -1326,6 +1321,7 @@ CREATE TABLE `users` (
   `email` varchar(191) NOT NULL,
   `type` tinyint(4) NOT NULL DEFAULT 0,
   `isArchived` int(11) NOT NULL DEFAULT 0,
+  `isActivate` tinyint(1) DEFAULT 0,
   `email_verified_at` timestamp NULL DEFAULT NULL,
   `password` varchar(191) NOT NULL,
   `remember_token` varchar(100) DEFAULT NULL,
@@ -1337,23 +1333,38 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `username`, `email`, `type`, `isArchived`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'Admin', 'Admin', 'admin@admin.com', 0, 0, '2023-05-06 01:35:14', '$2y$10$IJhaFejM7INrMl3Gefej2.nYZJPebFyFNJm9HHEGvjNVcA5eDmWcm', NULL, '2023-05-06 01:35:14', '2023-05-06 01:35:14'),
-(2, 'User', 'User', 'user@user.com', 1, 0, '2023-05-06 01:35:14', '$2y$10$V.1jY5XMHPubjYUTJ3jfO.L6iE61NTn6wa40xPlKEYDYXPVlWL5o6', NULL, '2023-05-06 01:35:14', '2023-05-06 01:35:14'),
-(3, 'MHYLINK TRADING', NULL, 'mhylink.trading@gmail.com', 2, 0, NULL, '146647938000', NULL, NULL, NULL),
-(4, 'MEGAMAX CONCEPTS INC.', NULL, 'lai@megamaxconcepts.com', 2, 0, NULL, '002786064000', NULL, NULL, NULL),
-(5, 'INFANTS PRODUCTS GALLERY CORP.', NULL, 'ipgc.infants@growwithme.ph', 2, 0, NULL, '223768948000', NULL, NULL, NULL),
-(6, 'MANUCHAR PHILIPPINES INC.', NULL, 'roxxane.bajaro@manuchar.com', 2, 0, NULL, '006974110000', NULL, NULL, NULL),
-(7, 'SEI DYNAMICS INC.', NULL, 'accounting@solanda.com', 2, 0, NULL, '009942474000', NULL, NULL, NULL),
-(8, 'DREAM VOLTS MARKETING', NULL, 'jane@rawbites.com.ph', 2, 0, NULL, '104006732000', NULL, NULL, NULL),
-(9, 'METRO HUE-TECH CHEMICAL CO. INC.', NULL, 'imports.metrohue.com.ph', 2, 0, NULL, '215843356000', NULL, NULL, NULL),
-(10, 'ISOURCE MARKETING ENTERPRISES CORP', NULL, 'imports@isource.com.ph', 2, 0, NULL, '008826753000', NULL, NULL, NULL),
-(11, 'MENS GALLERY CORPORATION', NULL, 'ipgc.mensgallery@growwithme.ph', 2, 0, NULL, '003940759000', NULL, NULL, NULL),
-(12, 'TERRY SELECTION INC.', NULL, 'terrys.import@terryselection.com', 2, 0, NULL, '203632078000', NULL, NULL, NULL),
-(17, 'CBH INC.', NULL, 'libertykao@yahoo.com', 2, 0, NULL, '004616195000', NULL, NULL, NULL),
-(18, 'ICOOL REFRIGERATION CORPORATION', NULL, 'icoolrefrigeration@yahoo.com', 2, 0, NULL, '008337101000', NULL, NULL, NULL),
-(19, 'PHIL. BIOCHEM PRODUCTS INC.', NULL, 'libertykao@email.com', 2, 0, NULL, '007025011000', NULL, NULL, NULL),
-(20, 'TOPFIL INDUSTRIES INC.', NULL, 'topfil89@gmail.com', 2, 0, NULL, '000240160000', NULL, NULL, NULL);
+INSERT INTO `users` (`id`, `name`, `username`, `email`, `type`, `isArchived`, `isActivate`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
+(1, 'Admin', 'Admin', 'admin@admin.com', 0, 0, 1, '2023-05-06 01:35:14', '$2y$10$IJhaFejM7INrMl3Gefej2.nYZJPebFyFNJm9HHEGvjNVcA5eDmWcm', NULL, '2023-05-06 01:35:14', '2023-05-23 19:06:18'),
+(2, 'User', 'User', 'tetsu.kuro261@gmail.com', 1, 0, 0, '2023-05-06 01:35:14', '$2y$10$V.1jY5XMHPubjYUTJ3jfO.L6iE61NTn6wa40xPlKEYDYXPVlWL5o6', NULL, '2023-05-06 01:35:14', '2023-05-23 18:47:25'),
+(3, 'MHYLINK TRADING', NULL, 'mhylink.trading@gmail.com', 2, 0, 0, NULL, '$2y$10$p4/GB7PZ2lx/rs74tFJfKOusJeI5dXV6MItxkOphRdrcsjqbNCB4K', NULL, NULL, '2023-05-23 18:50:43'),
+(4, 'MEGAMAX CONCEPTS INC.', NULL, 'lai@megamaxconcepts.com', 2, 0, 0, NULL, '002786064000', NULL, NULL, NULL),
+(5, 'INFANTS PRODUCTS GALLERY CORP.', NULL, 'ipgc.infants@growwithme.ph', 2, 0, 0, NULL, '223768948000', NULL, NULL, NULL),
+(6, 'MANUCHAR PHILIPPINES INC.', NULL, 'roxxane.bajaro@manuchar.com', 2, 0, 0, NULL, '006974110000', NULL, NULL, NULL),
+(7, 'SEI DYNAMICS INC.', NULL, 'accounting@solanda.com', 2, 0, 0, NULL, '009942474000', NULL, NULL, NULL),
+(8, 'DREAM VOLTS MARKETING', NULL, 'jane@rawbites.com.ph', 2, 0, 0, NULL, '104006732000', NULL, NULL, NULL),
+(9, 'METRO HUE-TECH CHEMICAL CO. INC.', NULL, 'imports.metrohue.com.ph', 2, 0, 0, NULL, '215843356000', NULL, NULL, NULL),
+(10, 'ISOURCE MARKETING ENTERPRISES CORP', NULL, 'imports@isource.com.ph', 2, 0, 0, NULL, '008826753000', NULL, NULL, NULL),
+(11, 'MENS GALLERY CORPORATION', NULL, 'ipgc.mensgallery@growwithme.ph', 2, 0, 0, NULL, '003940759000', NULL, NULL, NULL),
+(12, 'TERRY SELECTION INC.', NULL, 'terrys.import@terryselection.com', 2, 0, 0, NULL, '203632078000', NULL, NULL, NULL),
+(17, 'CBH INC.', NULL, 'libertykao@yahoo.com', 2, 0, 0, NULL, '004616195000', NULL, NULL, NULL),
+(18, 'ICOOL REFRIGERATION CORPORATION', NULL, 'icoolrefrigeration@yahoo.com', 2, 0, 0, NULL, '008337101000', NULL, NULL, NULL),
+(19, 'PHIL. BIOCHEM PRODUCTS INC.', NULL, 'libertykao@email.com', 2, 0, 0, NULL, '007025011000', NULL, NULL, NULL),
+(20, 'TOPFIL INDUSTRIES INC.', NULL, 'topfil89@gmail.com', 2, 0, 0, NULL, '000240160000', NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `verify_tokens`
+--
+
+CREATE TABLE `verify_tokens` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `token` varchar(191) NOT NULL,
+  `email` varchar(191) DEFAULT NULL,
+  `is_activated` tinyint(1) NOT NULL DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Indexes for dumped tables
@@ -1405,9 +1416,9 @@ ALTER TABLE `failed_jobs`
   ADD UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`);
 
 --
--- Indexes for table `feedbacks`
+-- Indexes for table `feedback`
 --
-ALTER TABLE `feedbacks`
+ALTER TABLE `feedback`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -1466,6 +1477,12 @@ ALTER TABLE `users`
   ADD UNIQUE KEY `users_username_unique` (`username`);
 
 --
+-- Indexes for table `verify_tokens`
+--
+ALTER TABLE `verify_tokens`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -1485,7 +1502,7 @@ ALTER TABLE `close_shipments`
 -- AUTO_INCREMENT for table `consignees`
 --
 ALTER TABLE `consignees`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `datasets`
@@ -1497,7 +1514,7 @@ ALTER TABLE `datasets`
 -- AUTO_INCREMENT for table `employees`
 --
 ALTER TABLE `employees`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `failed_jobs`
@@ -1506,9 +1523,9 @@ ALTER TABLE `failed_jobs`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `feedbacks`
+-- AUTO_INCREMENT for table `feedback`
 --
-ALTER TABLE `feedbacks`
+ALTER TABLE `feedback`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
@@ -1521,7 +1538,7 @@ ALTER TABLE `files`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `personal_access_tokens`
@@ -1539,7 +1556,13 @@ ALTER TABLE `shipments`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+
+--
+-- AUTO_INCREMENT for table `verify_tokens`
+--
+ALTER TABLE `verify_tokens`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables

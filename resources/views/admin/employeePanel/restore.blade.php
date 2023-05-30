@@ -5,7 +5,7 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="staticBackdropLabel">Archive Data</h1>
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Restore Data</h1>
       </div>
       <form action="{{route('restore_user', $user->id)}}" method="POST">
         @csrf

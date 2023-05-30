@@ -36,13 +36,18 @@ class AuthController extends Controller
             if (Auth::user()->type == 'admin') {
                 if (Auth::user()->isArchived != true) {
                     // Create a new activity log record for this user
+
+                    $user = User::where('id', Auth::id())->first();
+                    $user->isActivate = true;
+                    $user->save();
+
                     ActivityLog::create([
                         'user_id' => Auth::id(),
                         'loggable_id' => Auth::id(),
                         'loggable_type' => 'Admin',
                         'activity' => 'Admin logged in',
                     ]);
-                    return redirect()->route('admin.dashboard');
+                    return redirect()->route('admin.dashboard')->with('success', 'Logged in Successfully!');
                 } else {
                     return redirect()->route('login')
                         ->withErrors(['login' => 'The provided credentials is not active, please contact admin'])
@@ -236,30 +241,15 @@ class AuthController extends Controller
         }
     }
 
-    public function sendResetlink(Request $request){
-        $email = $request->email;
-
-        if(User::where('email', $email)->doesntExist()){
-            return back()->with('error', 'Email does not exist!');
-        }
-        //generate a random token
-        $getToken = rand(10, 100000);
-            DB::table('password_resets')->insert([
-                'email' => $email,
-                'token' => $getToken
-            ]);
-
-            //send mail to email provided
-            Mail::to($email)->send(new ForgetMail($getToken));
-
-            return redirect()->back()->with('success', 'Password Reset Link sent to email!');
-
-    }
-
     public function logout()
     {
         // Get the currently authenticated user
         $user = Auth::user();
+
+        $userActivate = User::where('id', $user->id)->first();
+
+        $userActivate->isActivate = false;
+        $userActivate->save();
 
         if ($user->type == 'admin') {
             // Create a new activity log record for this user
@@ -290,6 +280,11 @@ class AuthController extends Controller
         $user = Auth::user();
         $consignee = $user->consignee;
 
+        $userActivate = User::where('id', $user->id)->first();
+
+        $userActivate->isActivate = false;
+        $userActivate->save();
+
         ActivityLog::create([
             'user_id' => $user->id,
             'loggable_id' => $consignee->id,
@@ -299,5 +294,30 @@ class AuthController extends Controller
 
         Auth::logout();
         return redirect()->route('login');;
+    }
+
+    public function showForgotPasswordForm()
+    {
+        return view('forgot-pass');
+    }
+
+    public function sendResetlink(Request $request)
+    {
+        $email = $request->email;
+
+        if (User::where('email', $email)->doesntExist()) {
+            return back()->with('error', 'Email does not exist!');
+        }
+        //generate a random token
+        $getToken = rand(10, 100000);
+        DB::table('password_resets')->insert([
+            'email' => $email,
+            'token' => $getToken
+        ]);
+
+        //send mail to email provided
+        Mail::to($email)->send(new ForgetMail($getToken));
+
+        return redirect()->back()->with('success', 'Password Reset Link sent to email!');
     }
 }
