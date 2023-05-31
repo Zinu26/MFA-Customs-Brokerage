@@ -5,7 +5,7 @@
 
 <div class="table">
     <div class="table-header">
-        <p>Feedbacks</p>
+        <p>FEEDBACKS</p>
     </div>
 </div>
 
@@ -17,11 +17,11 @@
         <thead>
             <tr>
                 <th class="text-center">S.N.</th>
-                <th class="text-center">Name</th>
-                <th class="text-center">Email</th>
-                <th class="text-center">Contact</th>
-                <th class="text-center">Date Added</th>
-                <th class="text-center">Operation</th>
+                <th class="text-center">NAME</th>
+                <th class="text-center">EMAIL</th>
+                <th class="text-center">CONTACT</th>
+                <th class="text-center">DATE SENT</th>
+                <th class="text-center">OPTION</th>
             </tr>
         </thead>
         <tbody>
@@ -31,7 +31,7 @@
                     <td>{{ $feedback->name }}</td>
                     <td>{{ $feedback->email }}</td>
                     <td>{{ $feedback->contact }}</td>
-                    <td>{{ date('Y-m-d h:i:s A', strtotime($feedback->created_at)) }}</td>
+                    <td>{{ date('Y-m-d h:i A', strtotime($feedback->created_at)) }}</td>
                     <td class="text-center">
                         @include('admin.feedback-modal')
                         @include('reply-modal')

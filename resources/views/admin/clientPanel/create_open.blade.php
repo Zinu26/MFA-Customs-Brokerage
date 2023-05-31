@@ -1,13 +1,14 @@
 <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#exampleModal"><i
-        class="fa fa-user-plus"></i> Add Shipment</button>
+        class="fas fa-truck-ramp-box"></i><span class="sr-only"> ADD SHIPMENT</span></button>
 
 <!--Add modal-->
 <div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Add Shipment</h1>
+            <div class="modal-header mbc3" style="background-color: #4EA646">
+                <h5 class="modal-title">ADD SHIPMENT</h5>
+                <a style="cursor: pointer;" data-bs-dismiss="modal"><i class="fa fa-xmark"></i></a>
             </div>
             <form
                 action="@if (Auth::user()->type == 'admin') {{ route('add_shipment') }} @elseif(Auth::user()->type == 'employee'){{ route('add_shipment.employee') }} @endif"
@@ -19,37 +20,37 @@
                             class="form-control" readonly>
                     </div></br>
                     <div class="input-group">
-                        <span class="input-group-text"
-                            style="background-color: #4EA646; font-weight: 600; color: white;">Item Description</span>
+                        <span class="input-group-text w-25 text-white text-center"
+                            style="background-color: #4EA646; font-weight: 600;">Item Description</span>
                         <input type="text" name="item_description" placeholder="Item Description"
                             aria-label="item_description" class="form-control" required>
                     </div></br>
                     <div class="input-group">
-                        <span class="input-group-text"
-                            style="background-color: #4EA646; font-weight: 600; color: white;">Size</span>
+                        <span class="input-group-text w-25 text-white text-center"
+                            style="background-color: #4EA646; font-weight: 600;">Size</span>
                         <input type="text" name="size" placeholder="Size" aria-label="Size" class="form-control"
                             required>
 
-                        <span class="input-group-text"
-                            style="background-color: #4EA646; font-weight: 600; color: white;">Weight</span>
+                        <span class="input-group-text w-25 text-white text-center"
+                            style="background-color: #4EA646; font-weight: 600;">Weight</span>
                         <input type="number" name="weight" placeholder="Weight" aria-label="Weight"
                             class="form-control" required>
                     </div></br>
                     <div class="input-group">
-                        <span class="input-group-text"
-                            style="background-color: #4EA646; font-weight: 600; color: white;">BL Number</span>
+                        <span class="input-group-text w-25 text-white text-center"
+                            style="background-color: #4EA646; font-weight: 600;">BL Number</span>
                         <input type="text" name="BL_number" placeholder="BL Number" aria-label="BL Number"
                             class="form-control" required>
 
-                        <span class="input-group-text"
-                            style="background-color: #4EA646; font-weight: 600; color: white;">Entry Number</span>
+                        <span class="input-group-text w-25 text-white text-center"
+                            style="background-color: #4EA646; font-weight: 600;">Entry Number</span>
                         <input type="text" name="entry_number" placeholder="Entry Number" aria-label="Entry Number"
                             class="form-control" required>
                     </div></br>
                     <div class="input-group">
-                        <span class="input-group-text"
-                            style="background-color: #4EA646; font-weight: 600; color: white;">Shipping Line</span>
-                        <select name="shipping_line" class="form-select" required onchange="showOtherInput(this)">
+                        <span class="input-group-text w-25 text-white text-center"
+                            style="background-color: #4EA646; font-weight: 600;">Shipping Line</span>
+                        <select name="shipping_line" class="form-control" required onchange="showOtherInput(this)">
                             <option value="">Select a shipping line</option>
                             <?php
                             // assuming you have an array of shipping lines called $shipping_lines
@@ -63,13 +64,22 @@
                             aria-label="Other Shipping Line" class="form-control d-none">
                     </div></br>
                     <div class="input-group">
-                        <span class="input-group-text"
-                            style="background-color: #4EA646; font-weight: 600; color: white;">Arrival Date</span>
+                        <span class="input-group-text w-25 text-white text-center"
+                            style="background-color: #4EA646; font-weight: 600;">Arrival Date</span>
                         <input type="date" name="arrival_date" placeholder="Arrival Date" aria-label="Arrival Date"
                             class="form-control" required>
                     </div></br>
+                    <div class="input-group">
+                        <span class="input-group-text w-25 text-white text-center"
+                            style="background-color: #4EA646; font-weight: 600;">Port of Origin</span>
+                        <select class="form-control" id="exampleFormControlSelect1" name="port_of_origin">
+                            <option value="" disabled selected>---Select---</option>
+                            <option value="MANILA NORTH PORT, PHILIPPINES">MANILA NORTH PORT, PHILIPPINES</option>
+                            <option value="MANILA SOUTH PORT, PHILIPPINES">MANILA SOUTH PORT, PHILIPPINES</option>
+                        </select>
+                    </div></br>
                     <div class="row">
-                        <div class="form-group col-md-3">
+                        <div class="form-group col-md-4">
                             <label for="exampleFormControlSelect1">Shipment Status</label>
                             <select class="form-control" id="exampleFormControlSelect1" name="shipment_status">
                                 <option value="" disabled selected>---Select---</option>
@@ -78,7 +88,7 @@
                                 <option value="AP">AP</option>
                             </select>
                         </div>
-                        <div class="form-group col-md-3">
+                        <div class="form-group col-md-4">
                             <label for="exampleFormControlSelect1">DO Status</label>
                             <select class="form-control" id="exampleFormControlSelect1" name="do_status">
                                 <option value="" disabled selected>---Select---</option>
@@ -87,18 +97,9 @@
                                 <option value="Done">Done</option>
                             </select>
                         </div>
-                        <div class="form-group col-md-3">
+                        <div class="form-group col-md-4">
                             <label for="exampleFormControlSelect1">Billing Status</label>
                             <select class="form-control" id="exampleFormControlSelect1" name="billing_status">
-                                <option value="" disabled selected>---Select---</option>
-                                <option value="Pending">Pending</option>
-                                <option value="On Going">On Going</option>
-                                <option value="Done">Done</option>
-                            </select>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="exampleFormControlSelect1">Delivery</label>
-                            <select class="form-control" id="exampleFormControlSelect1" name="delivery_status">
                                 <option value="" disabled selected>---Select---</option>
                                 <option value="Pending">Pending</option>
                                 <option value="On Going">On Going</option>

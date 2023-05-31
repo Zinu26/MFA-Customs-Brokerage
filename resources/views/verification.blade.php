@@ -114,6 +114,21 @@
         input[type="number"] {
             -moz-appearance: textfield;
         }
+
+        @media only screen and (max-width: 1080px) {
+            .container {
+                padding: 20px;
+            }
+
+            form .input-field {
+                flex-direction: column;
+                row-gap: 10px;
+            }
+
+            form button {
+                margin-top: 20px;
+            }
+        }
     </style>
 </header>
 

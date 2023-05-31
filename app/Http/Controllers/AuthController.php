@@ -16,9 +16,10 @@ use App\Mail\ForgetMail;
 use Illuminate\Support\Facades\Mail;
 use Jenssegers\Agent\Agent;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Config;
 
 class AuthController extends Controller
-{   
+{
     public function login(Request $request)
     {
         $agent = new Agent();
@@ -60,11 +61,9 @@ class AuthController extends Controller
 
                     if($agent->isPhone()){
                         $currentDevice = 'phone';
-                    }
-                    else if($agent->isTablet()){
+                    } else if ($agent->isTablet()) {
                         $currentDevice = 'tablet';
-                    }
-                    else if($agent->isDesktop()){
+                    } else if ($agent->isDesktop()) {
                         $currentDevice = 'desktop';
                     }
 
@@ -72,6 +71,28 @@ class AuthController extends Controller
 
                     if($get_currentDevice && Carbon::now()->lessThan($get_currentDevice->otp_duration)){
                         return redirect()->route('employee.dashboard')->with('success', 'Logged in Successfully!');
+                    } else {
+
+                        if (!$get_currentDevice || $savedDevice != $currentDevice) {
+                            $this->deviceDetection();
+                        } else if ($get_currentDevice && Carbon::now()->greaterThan($get_currentDevice->otp_duration)) {
+                            $checkDevice->otp_duration = Carbon::now()->addDays(30);
+                            $checkDevice->save();
+                        }
+                        //For Testing purposes
+                        // return redirect()->route('employee.dashboard')->with('success', 'OTP activation successful!');
+                        // OTP
+                        $validToken = rand(10, 100. . '2022');
+                        $get_token = new VerifyToken();
+                        $get_token->token = $validToken;
+                        $get_email = Auth::user()->email;
+                        $get_token->email = $get_email;
+                        $get_token->save();
+                        $get_user_email = $get_email;
+                        $get_user_name = $request->username;
+                        Mail::to($get_email)->send(new VerificationMail($get_user_email, $validToken, $get_user_name));
+
+                        return view('verification');
                     }
                     
                     else{
@@ -115,29 +136,26 @@ class AuthController extends Controller
             ->with('error', 'The provided credentials do not match our records.');
     }
 
-
-    public function deviceDetection(){
+    public function deviceDetection()
+    {
         $agent = new Agent();
 
 
         if($agent->isPhone()){
             $device_type = 'phone';
-        }
-        else if($agent->isTablet()){
+        } else if ($agent->isTablet()) {
             $device_type = 'tablet';
-        }
-        else if($agent->isDesktop()){
+        } else if ($agent->isDesktop()) {
             $device_type = 'desktop';
         }
 
-            $setDevice = new Device();
-            $setExpiration = Carbon::now()->addDays(30);
+        $setDevice = new Device();
+        $setExpiration = Carbon::now()->addDays(30);
 
-            $setDevice->user_id = Auth::user()->id;
-            $setDevice->device = $device_type;
-            $setDevice->otp_duration = $setExpiration;
-            $setDevice->save();
-
+        $setDevice->user_id = Auth::user()->id;
+        $setDevice->device = $device_type;
+        $setDevice->otp_duration = $setExpiration;
+        $setDevice->save();
     }
 
     public function otpActivation(Request $request)
@@ -161,6 +179,8 @@ class AuthController extends Controller
             // Activate the token
             $get_token->is_activated = true;
             $get_token->save();
+
+            $get_token->delete();
 
             if (Auth::user()->type == 'employee') {
                 // Create a new activity log record for this user
@@ -187,6 +207,71 @@ class AuthController extends Controller
 
             return redirect()->back()->with('error', 'OTP inputted is incorrect! Please try again');
         }
+    }
+
+    /**
+     * Get the database name for a specific client.
+     *
+     * @param string $clientName
+     * @return string
+     */
+    private function getClientDatabaseName($clientName)
+    {
+        // Modify the logic to generate the client's database name based on the client's name
+        // You can use the same logic as the previous example to generate the database name
+        return strtolower(str_replace([' ', '-', '.'], '_', $clientName));
+    }
+
+    /**
+     * Switch to the specified database.
+     *
+     * @param string $databaseName
+     * @return void
+     */
+    private function switchToDatabase($databaseName)
+    {
+        // Replace 'your_database_connection' with the name of your database connection in config/database.php
+        $connection = config('database.default');
+
+        // Update the database name in the configuration
+        config(['database.connections.' . $connection . '.database' => $databaseName]);
+
+        // Reconnect to the new database
+        DB::reconnect();
+    }
+
+    /**
+     * Switch back to the current database.
+     *
+     * @return void
+     */
+    private function switchToCurrentDatabase()
+    {
+        // Replace 'your_database_connection' with the name of your database connection in config/database.php
+        $connection = config('database.default');
+
+        // Get the name of the default database from the configuration
+        $defaultDatabaseName = config('database.connections.' . $connection . '.database');
+
+        // Reconnect to the default database
+        DB::purge($connection);
+        config(['database.connections.' . $connection . '.database' => $defaultDatabaseName]);
+        DB::reconnect();
+    }
+
+    public function connectToClientDatabase()
+    {
+        // Assuming you have the client's name stored in the authenticated user's model
+        $clientName = auth()->user()->name;
+
+        // Assuming you have a consistent naming convention for the client databases
+        $databaseName = strtolower(str_replace(' ', '_', $clientName));
+
+        // Switch the default database connection to the client's database
+        config(['database.connections.mysql.database' => $databaseName]);
+
+        // Reconnect to the new database
+        DB::reconnect();
     }
 
 
@@ -316,7 +401,7 @@ class AuthController extends Controller
         ]);
 
         Auth::logout();
-        return redirect()->route('login');;
+        return redirect()->route('login.client');;
     }
 
     public function showForgotPasswordForm()
