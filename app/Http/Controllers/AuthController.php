@@ -9,15 +9,20 @@ use App\Models\ActivityLog;
 use App\Models\User;
 use App\Models\Consignee;
 use App\Models\VerifyToken;
+use App\Models\Device;
 use App\Mail\VerificationMail;
 use Illuminate\Support\Facades\DB;
 use App\Mail\ForgetMail;
 use Illuminate\Support\Facades\Mail;
+use Jenssegers\Agent\Agent;
+use Carbon\Carbon;
 
 class AuthController extends Controller
-{
+{   
     public function login(Request $request)
     {
+        $agent = new Agent();
+
         $request->validate([
             'username' => 'required',
             'password' => 'required',
@@ -51,6 +56,34 @@ class AuthController extends Controller
                 }
             } else if (Auth::user()->type == 'employee') {
                 if (Auth::user()->isArchived != true) {
+                    if($agent->isPhone()){
+                        $currentDevice = 'phone';
+                    }
+                    else if($agent->isTablet()){
+                        $currentDevice = 'tablet';
+                    }
+                    else if($agent->isDesktop()){
+                        $currentDevice = 'desktop';
+                    }
+
+                    $get_currentDevice = Device::where('device', $currentDevice)->first();
+
+                    $savedDevice = $get_currentDevice->device;
+
+                    if($get_currentDevice && Carbon::now()->lessThan($get_currentDevice->otp_duration) && $savedDevice == $currentDevice){
+                        return redirect()->route('employee.dashboard')->with('success', 'Logged in Successfully!');
+                    }
+                    
+                    else{
+
+                    if(!$get_currentDevice || $savedDevice != $currentDevice){
+                        $this->deviceDetection();
+                    }
+
+                    else if($get_currentDevice && Carbon::now()->greaterThan($get_currentDevice->otp_duration)){
+                        $checkDevice->otp_duration = Carbon::now()->addDays(30);
+                        $checkDevice->save();
+                    }
                     //For Testing purposes
                     // return redirect()->route('employee.dashboard')->with('success', 'OTP activation successful!');
                     // OTP
@@ -65,6 +98,8 @@ class AuthController extends Controller
                     Mail::to($get_email)->send(new VerificationMail($get_user_email, $validToken, $get_user_name));
 
                     return view('verification');
+                }
+
                 } else {
                     return redirect()->route('login')
                         ->withErrors(['login' => 'The provided credentials is not active, please contact admin'])
@@ -78,6 +113,30 @@ class AuthController extends Controller
             ->withErrors(['login' => 'The provided credentials do not match our records.'])
             ->withInput()
             ->with('error', 'The provided credentials do not match our records.');
+    }
+
+
+    public function deviceDetection(){
+        $agent = new Agent();
+
+        if($agent->isPhone()){
+            $device_type = 'phone';
+        }
+        else if($agent->isTablet()){
+            $device_type = 'tablet';
+        }
+        else if($agent->isDesktop()){
+            $device_type = 'desktop';
+        }
+
+            $setDevice = new Device();
+            $setExpiration = Carbon::now()->addDays(30);
+
+            $setDevice->user_id = Auth::user()->id;
+            $setDevice->device = $device_type;
+            $setDevice->otp_duration = $setExpiration;
+            $setDevice->save();
+
     }
 
     public function otpActivation(Request $request)

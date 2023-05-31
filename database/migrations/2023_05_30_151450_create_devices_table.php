@@ -13,16 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('consignees', function (Blueprint $table) {
+        Schema::create('devices', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->string('tin')->unique();
-            $table->string('contact');
-            $table->string('address');
-            $table->boolean('status')->default(false);
-            $table->timestamps();
-
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->string('device')->nullable()->default();
+            $table->string('model')->nullable()->default();
+            $table->string('brand')->nullable()->default();
+            $table->timestamp('otp_duration')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -33,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('consignees');
+        Schema::dropIfExists('devices');
     }
 };

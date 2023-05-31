@@ -20,6 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->boolean('isRead')->default(false);
             $table->timestamp('read_at')->nullable();
+            $table->timestamp('replied_at')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('user')->onDelete('cascade');
