@@ -1,15 +1,57 @@
 @include('layouts.inc.header')
 @include('layouts.inc.sidebarNav')
 <link rel="stylesheet" href="/css/admin-style.css" />
+<style>
+    .table-header p{
+        margin-left: 100px;
+        top: 57px;
 
+        font-family: 'Poppins', 'Helvetica Neue', sans-serif;
+        font-style: normal;
+        font-weight: 700;
+        font-size: 50px;
+
+        color: #FFFFFF;
+        -webkit-text-stroke-width: 1.5px;
+        -webkit-text-stroke-color: black;
+        transition: all 0.1s ease;
+    }
+
+    #content{
+        max-width: 100%;
+        padding: 36px 24px;
+        font-family: var(--poppins);
+        max-height: 100vh;
+        overflow-y: auto;
+        margin: 0 100px;
+        transition: all 0.1s ease;
+    }
+
+    .main-menu:hover ~ #content,
+    .main-menu:hover ~ .table .table-header p{
+        margin-left: 13%;
+    }
+    /* Media query for screens with a maximum width of 767px */
+    @media only screen and (max-width: 1080px) {
+        .table-header p {
+            margin-left: 13%;
+            font-size: 30px;
+        }
+
+        #content {
+            width: 80%;
+            margin-left: 13%;
+        }
+    }
+</style>
 <title>MFA Customs Brokerage</title>
 <div class="table">
     <div class="table-header">
-        <p>Close Shipments</p>
+        <p>CLOSE SHIPMENTS</p>
         <div>
             <a
                 href="@if (Auth::user()->type == 'admin') {{ route('shipments') }}@elseif (Auth::user()->type == 'employee'){{ route('shipments.employee') }} @endif">
-                <button class="btn btn-success"><i class="fa fa-folder-plus"></i> Open Shipments</button>
+                <button class="btn btn-success"><i class="fas fa-folder-plus"></i><span class="sr-only"> OPEN SHIPMENTS</span></button>
             </a>
         </div>
     </div>
@@ -37,6 +79,7 @@
                     <td>{{ date('Y-m-d', strtotime($shipment->delivered_date)) }}</td>
                     <td class="text-center col-1">
                         @include('admin.clientPanel.view_close_shipments')
+                        @include('admin.shipmentPanel.files')
                     </td>
                 </tr>
             @endforeach

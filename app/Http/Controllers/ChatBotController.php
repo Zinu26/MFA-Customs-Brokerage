@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Shipment;
+use Carbon\Carbon;
 
 class ChatBotController extends Controller
 {
@@ -152,6 +153,170 @@ class ChatBotController extends Controller
 
     // Sentence
 
+    // GOODS
+    // public function sendChat(Request $request)
+    // {
+    //     $user = Auth::user();
+    //     $input = preg_replace('/[^a-zA-Z0-9\s]/', '', strtolower($request->input));
+
+    //     $conversation = session('conversation', []);
+    //     $last_message = end($conversation);
+
+    //     $keywords = ['reset', 'stop', 'shipment', 'do', 'billing', 'arrival', 'delivery', 'entry', 'shipping', 'details', 'shipment status', 'do status', 'billing status', 'arrival date', 'delivery date', 'entry number', 'shipping line', 'item description'];
+
+    //     // Start a new conversation if this is the first message or the previous message was a "stop" command
+    //     if (empty($conversation) || $last_message === 'stop') {
+    //         $conversation = [];
+    //         $response = 'Hi, ' . $user->name . '! What BL number are you inquiring about?';
+    //     } else {
+    //         // Check if input matches BL number
+    //         $words = preg_split('/\s+/', $input);
+    //         $bl_number = null;
+    //         foreach ($words as $word) {
+    //             if (preg_match('/(\d+)/', $word)) {
+    //                 $bl_number = $word;
+    //                 break;
+    //             }
+    //         }
+
+    //         if ($bl_number) {
+    //             $shipment = Shipment::where('bl_number', $bl_number)->where('consignee_name', $user->name)->first();
+    //             if ($shipment) {
+    //                 // If the user is asking about a shipment, prompt for details
+    //                 $conversation[] = $input;
+    //                 session(['shipment' => $shipment]);
+    //                 $response = 'What details do you want to know about the shipment? You can ask about its shipment status, DO status, Billing status, arrival date, delivery date, entry number, shipping line or item description.';
+    //             } else {
+    //                 // The BL number was not found in the database
+    //                 $response = 'Sorry, I couldn\'t find any shipments with BL number ' . $bl_number . ' under ' . $user->name . '. Please try again.';
+    //             }
+    //         } elseif ($last_message && $last_message !== 'stop') {
+    //             // If the user is inquiring about shipment details, provide a response based on their input
+    //             $shipment = session('shipment');
+    //             if ($shipment) {
+    //                 $conversation[] = $input;
+
+    //                 foreach ($keywords as $keyword) {
+    //                     if (strpos($input, $keyword) !== false) {
+    //                         switch ($keyword) {
+    //                             case 'reset':
+    //                                 $conversation = [];
+    //                                 $response = 'Okay, let\'s start over. What BL number are you inquiring about?';
+    //                                 break;
+    //                             case 'stop':
+    //                                 $response = 'Okay, have a great day!';
+    //                                 break;
+    //                             case 'shipment status':
+    //                                 $response = 'The current status of this shipment is ' . $shipment->shipment_status . '.';
+    //                                 $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+    //                                 break;
+    //                             case 'shipment':
+    //                                 $response = 'The current status of this shipment is ' . $shipment->shipment_status . '.';
+    //                                 $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+    //                                 break;
+    //                             case 'do status':
+    //                                 $response = 'The DO status of this shipment is ' . $shipment->do_status . '.';
+    //                                 $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+    //                                 break;
+    //                             case 'do':
+    //                                 $response = 'The DO status of this shipment is ' . $shipment->do_status . '.';
+    //                                 $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+    //                                 break;
+    //                             case 'billing':
+    //                                 $response = 'The Billing status of this shipment is ' . $shipment->billing_status . '.';
+    //                                 $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+    //                                 break;
+    //                             case 'billing status':
+    //                                 $response = 'The Billing status of this shipment is ' . $shipment->billing_status . '.';
+    //                                 $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+    //                                 break;
+    //                             case 'arrival date':
+    //                                 $response = 'The Arrival date of this shipment is ' . $shipment->arrival_date . '.';
+    //                                 $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+    //                                 break;
+    //                             case 'arrival':
+    //                                 $response = 'The Arrival date of this shipment is ' . $shipment->arrival_date . '.';
+    //                                 $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+    //                                 break;
+    //                             case 'delivery date':
+    //                                 if ($shipment->predicted_delivery_date !== null && $shipment->status !== true) {
+    //                                     $currentDate = date('Y-m-d');
+    //                                     $predictedDate = $shipment->predicted_delivery_date;
+
+    //                                     if ($currentDate > $predictedDate) {
+    //                                         $response = 'Sorry for the delay of your shipment (BL number: ' . $shipment->bl_number . '). Please check other details that may cause the delay. DO status: ' . $shipment->do_status . ', Shipment Status: ' . $shipment->shipment_status . ', Billing status: ' . $shipment->billing_status . ' or you may contact MFA for more info.';
+    //                                     } else {
+    //                                         $response = 'The Delivery date of this shipment is ' . $shipment->predicted_delivery_date . '.';
+    //                                         $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+    //                                     }
+    //                                 } else {
+    //                                     $response = 'The shipment is currently being processed. We will let you know when it will be delivered.';
+    //                                     $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+    //                                 }
+    //                                 break;
+    //                             case 'delivery':
+    //                                 if ($shipment->predicted_delivery_date !== null && $shipment->status !== true) {
+    //                                     $currentDate = date('Y-m-d');
+    //                                     $predictedDate = $shipment->predicted_delivery_date;
+
+    //                                     if ($currentDate > $predictedDate) {
+    //                                         $response = 'Sorry for the delay of your shipment (BL number: ' . $shipment->bl_number . '). Please check other details that may cause the delay. DO status: ' . $shipment->do_status . ', Shipment Status: ' . $shipment->shipment_status . ', Billing status: ' . $shipment->billing_status . ' or you may contact MFA for more info.';
+    //                                     } else {
+    //                                         $response = 'The Delivery date of this shipment is ' . $shipment->predicted_delivery_date . '.';
+    //                                         $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+    //                                     }
+    //                                 } else {
+    //                                     $response = 'The shipment is currently being processed. We will let you know when it will be delivered.';
+    //                                     $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+    //                                 }
+    //                                 break;
+    //                             case 'entry number':
+    //                                 $response = 'The Entry number of this shipment is ' . $shipment->entry_number . '.';
+    //                                 $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+    //                                 break;
+    //                             case 'entry':
+    //                                 $response = 'The Entry number of this shipment is ' . $shipment->entry_number . '.';
+    //                                 $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+    //                                 break;
+    //                             case 'shipping line':
+    //                                 $response = 'This shipment is under ' . $shipment->shipping_line . '.';
+    //                                 $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+    //                                 break;
+    //                             case 'shipping':
+    //                                 $response = 'This shipment is under ' . $shipment->shipping_line . '.';
+    //                                 $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+    //                                 break;
+    //                             case 'description':
+    //                                 $response =  'Size: ' . $shipment->size . 'Item: ' . $shipment->item_description . ' Weight: ' . $shipment->weight . '.';
+    //                                 $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+    //                                 break;
+    //                             case 'details':
+    //                                 $response =  'Size: ' . $shipment->size . 'Item: ' . $shipment->item_description . ' Weight: ' . $shipment->weight . '.';
+    //                                 $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+    //                                 break;
+    //                             case 'item':
+    //                                 $response =  'Size: ' . $shipment->size . 'Item: ' . $shipment->item_description . ' Weight: ' . $shipment->weight . '.';
+    //                                 $response .= ' Would you like to know more about this shipment? You can also say "reset" or provide another "bl number" to start over or "stop" to end this conversation.';
+    //                                 break;
+    //                             default:
+    //                                 $response = 'Sorry, I didn\'t understand that. You can ask about the shipment\'s status or DO status.';
+    //                                 break;
+    //                         }
+    //                     }
+    //                 }
+    //             } else {
+    //                 // The user needs to provide a valid BL number before requesting shipment details
+    //                 $response = 'Sorry, I don\'t have any shipments to provide details about. Please provide a BL number.';
+    //             }
+    //         } else {
+    //             // If the user has not provided a valid input, ask them to try again
+    //             $response = 'Sorry, I didn\'t understand that. What BL number are you inquiring about?';
+    //         }
+    //     }
+    //     $conversation[] = $input;
+    //     session(['conversation' => $conversation]);
+    //     return $response;
+    // }
 
     public function sendChat(Request $request)
     {
@@ -175,6 +340,8 @@ class ChatBotController extends Controller
                 if (preg_match('/(\d+)/', $word)) {
                     $bl_number = $word;
                     break;
+                } else {
+                    $response = 'Sorry, I didn\'t understand that. What BL number are you inquiring about?';
                 }
             }
 
@@ -184,7 +351,45 @@ class ChatBotController extends Controller
                     // If the user is asking about a shipment, prompt for details
                     $conversation[] = $input;
                     session(['shipment' => $shipment]);
-                    $response = 'What details do you want to know about the shipment? You can ask about its shipment status, DO status, Billing status, arrival date, delivery date, entry number, shipping line or item description.';
+                    $currentDate = date('Y-m-d');
+                    $predictedDate = $shipment->predicted_delivery_date;
+
+                    $responses = [];
+
+                    if ($shipment->predicted_delivery_date !== null && $currentDate > $predictedDate) {
+                        $details = "DO status: " . $shipment->do_status . "\n";
+                        $details .= "Shipment Status: " . $shipment->shipment_status . "\n";
+                        $details .= "Billing status: " . $shipment->billing_status . "\n";
+
+                        $responses[] = 'Sorry for the delay of your shipment (BL number: ' . $shipment->bl_number . '). Please check these details that may cause the delay:' . "\n" . $details . 'You may also contact MFA for more information.' . "\n";
+
+                    }
+
+                    if ($shipment->arrival_date !== null) {
+                        $responses[] = 'Your shipment has already arrived. Arrival date: ' . Carbon::parse($shipment->arrival_date)->format('F d, Y') . '.';
+                    }
+
+                    if ($shipment->process_started !== null) {
+                        $responses[] = 'The BOC process started on ' . Carbon::parse($shipment->process_started)->format('F d, Y') . '.';
+                    }
+
+                    if ($shipment->process_finished !== null) {
+                        $responses[] = 'The BOC process finished on ' . Carbon::parse($shipment->process_finished)->format('F d, Y') . '.';
+                    }
+
+                    if ($shipment->predicted_delivery_date !== null && $currentDate < $predictedDate) {
+                        $responses[] = 'Your shipment is expected to be delivered on ' . Carbon::parse($shipment->predicted_delivery_date)->format('F d, Y') . '.';
+                    }
+
+                    if ($shipment->delivered_date !== null ) {
+                        $responses[] = 'The shipment was delivered on ' . Carbon::parse($shipment->delivered_date)->format('F d, Y') . ', Thank you for trusting MFA Customs Brokerage.';
+                    }
+
+                    if (!empty($responses)) {
+                        $response = implode("\n", $responses);
+                    } else {
+                        $response = 'No relevant information found for the shipment with BL number ' . $bl_number . ' under ' . $user->name . '.';
+                    }
                 } else {
                     // The BL number was not found in the database
                     $response = 'Sorry, I couldn\'t find any shipments with BL number ' . $bl_number . ' under ' . $user->name . '. Please try again.';

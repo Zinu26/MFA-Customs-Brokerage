@@ -10,7 +10,7 @@
         font-weight: bold;
         text-align: center;
         opacity: 1;
-        z-index: 1;
+        z-index: 99999;
         transition: opacity 0.5s ease-in-out;
     }
 

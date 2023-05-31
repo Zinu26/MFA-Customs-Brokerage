@@ -30,9 +30,10 @@ return new class extends Migration
             $table->string('shipping_line');
             $table->string('port_of_origin');
             $table->string('destination_address');
+            $table->boolean('delivery_status')->default(false);
             $table->boolean('status')->default(false);
 
-            $table->foreign('shipment_id')->references('id')->on('consignees')->onDelete('cascade');
+            $table->foreign('shipment_id')->references('id')->on('shipments')->onDelete('cascade');
             $table->timestamps();
         });
     }

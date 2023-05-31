@@ -1,63 +1,64 @@
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#viewModal{{ $shipment->id }}"><i
-        class="fa fa-eye"></i></button>
+        class="fas fa-eye"></i></button>
 
 <!--View modal-->
 <div class="modal fade bd-example-modal-lg" id="viewModal{{ $shipment->id }}" tabindex="-1"
     aria-labelledby="exampleModalLabel" aria-hidden="true" style="color: black;">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">View Shipment</h1>
+            <div class="modal-header mbc3" style="background-color: #4EA646">
+                <h5 class="modal-title">VIEW SHIPMENT</h5>
+                <a style="cursor: pointer;" data-bs-dismiss="modal"><i class="fa fa-xmark"></i></a>
             </div>
             <fieldset disabled>
                 <div class="modal-body">
                     <input type="hidden" name="id" value="{{ $shipment->id }}" />
                     <div class="input-group">
-                        <span class="input-group-text"
-                            style="background-color: #4EA646; font-weight: 600; color: white;">Consignee</span>
+                        <span class="input-group-text w-25 text-white text-center"
+                            style="background-color: #4EA646; font-weight: 600;">Consignee</span>
                         <input type="text" value="{{ $shipment->consignee_name }}" class="form-control" required>
                     </div></br>
                     <div class="input-group">
-                        <span class="input-group-text"
-                            style="background-color: #4EA646; font-weight: 600; color: white;">Item
+                        <span class="input-group-text w-25 text-white text-center"
+                            style="background-color: #4EA646; font-weight: 600;">Item
                             Description</span>
                         <input type="text" value="{{ $shipment->shipment_details }}" class="form-control" required>
                     </div></br>
                     <div class="input-group">
-                        <span class="input-group-text"
-                            style="background-color: #4EA646; font-weight: 600; color: white;">Size</span>
+                        <span class="input-group-text w-25 text-white text-center"
+                            style="background-color: #4EA646; font-weight: 600;">Size</span>
                         <input type="text" value="{{ $shipment->size }}" class="form-control" required>
 
-                        <span class="input-group-text"
-                            style="background-color: #4EA646; font-weight: 600; color: white;">Weight</span>
+                        <span class="input-group-text w-25 text-white text-center"
+                            style="background-color: #4EA646; font-weight: 600;">Weight</span>
                         <input type="text" value="{{ $shipment->weight }}" class="form-control" required>
                     </div></br>
                     <div class="input-group">
-                        <span class="input-group-text"
-                            style="background-color: #4EA646; font-weight: 600; color: white;">Entry Number</span>
+                        <span class="input-group-text w-25 text-white text-center"
+                            style="background-color: #4EA646; font-weight: 600;">Entry Number</span>
                         <input type="text" value="{{ $shipment->entry_number }}" name="entry_number"
                             placeholder="Entry Number" aria-label="Entry Number" class="form-control" required>
 
-                        <span class="input-group-text"
-                            style="background-color: #4EA646; font-weight: 600; color: white;">BL Number</span>
+                        <span class="input-group-text w-25 text-white text-center"
+                            style="background-color: #4EA646; font-weight: 600;">BL Number</span>
                         <input type="text" value="{{ $shipment->bl_number }}" name="BL_number"
                             placeholder="BL Number" aria-label="BL Number" class="form-control" required>
                     </div></br>
                     <div class="input-group">
-                        <span class="input-group-text"
-                            style="background-color: #4EA646; font-weight: 600; color: white;">Shipping Line</span>
+                        <span class="input-group-text w-25 text-white text-center"
+                            style="background-color: #4EA646; font-weight: 600;">Shipping Line</span>
                         <input type="text" value="{{ $shipment->shipping_line }}" class="form-control" required>
                     </div></br>
                     <div class="input-group">
-                        <span class="input-group-text"
-                            style="background-color: #4EA646; font-weight: 600; color: white;">Arrival Date</span>
+                        <span class="input-group-text w-25 text-white text-center"
+                            style="background-color: #4EA646; font-weight: 600;">Arrival Date</span>
                         <input type="date" value="{{ $shipment->arrival_date }}" class="form-control" required>
                     </div></br>
                     @if ($shipment->process_started != null || $shipment->process_finished != null)
                         <div class="input-group">
                             @if ($shipment->process_started != null)
-                                <span class="input-group-text"
-                                    style="background-color: #4EA646; font-weight: 600; color: white;">Process
+                                <span class="input-group-text w-25 text-white text-center"
+                                    style="background-color: #4EA646; font-weight: 600;">Process
                                     Start</span>
                                 <input type="date"
                                     @if ($shipment->process_started != null) value="{{ $shipment->process_started }}" @endif
@@ -65,8 +66,8 @@
                                     class="form-control">
                             @endif
                             @if ($shipment->process_finished != null)
-                                <span class="input-group-text"
-                                    style="background-color: #4EA646; font-weight: 600; color: white;">Process
+                                <span class="input-group-text w-25 text-white text-center"
+                                    style="background-color: #4EA646; font-weight: 600;">Process
                                     End</span>
                                 <input type="date"
                                     @if ($shipment->process_finished != null) value="{{ $shipment->process_finished }}" @endif
@@ -77,8 +78,8 @@
                     @endif
                     @if ($shipment->predicted_delivery_date != null)
                         <div class="input-group">
-                            <span class="input-group-text"
-                                style="background-color: #4EA646; font-weight: 600; color: white;">Predicted
+                            <span class="input-group-text w-25 text-white text-center"
+                                style="background-color: #4EA646; font-weight: 600;">Predicted
                                 Delivery Date</span>
                             <input type="text"
                                 @if ($shipment->predicted_delivery_date != null) value="{{ \Carbon\Carbon::parse($shipment->predicted_delivery_date)->format('d M Y') }}"  readonly @endif
@@ -88,8 +89,8 @@
                     @endif
                     @if ($shipment->delivered_date != null)
                         <div class="input-group">
-                            <span class="input-group-text"
-                                style="background-color: #4EA646; font-weight: 600; color: white;">Actual Delivery
+                            <span class="input-group-text w-25 text-white text-center"
+                                style="background-color: #4EA646; font-weight: 600;">Actual Delivery
                                 Date</span>
                             <input type="text"
                                 @if ($shipment->delivered_date != null) value="{{ \Carbon\Carbon::parse($shipment->delivered_date)->format('d M Y') }}"  readonly @endif
@@ -98,8 +99,8 @@
                         </div></br>
                     @endif
                     <div class="input-group">
-                        <span class="input-group-text"
-                            style="background-color: #4EA646; font-weight: 600; color: white;">Port of
+                        <span class="input-group-text w-25 text-white text-center"
+                            style="background-color: #4EA646; font-weight: 600;">Port of
                             origin</span>
                         <input type="text"
                             @if ($shipment->port_of_origin != null) value="{{ $shipment->port_of_origin }}"  readonly @endif
@@ -107,8 +108,8 @@
                             class="form-control">
                     </div></br>
                     <div class="input-group">
-                        <span class="input-group-text"
-                            style="background-color: #4EA646; font-weight: 600; color: white;">Destination
+                        <span class="input-group-text w-25 text-white text-center"
+                            style="background-color: #4EA646; font-weight: 600;">Destination
                             Address</span>
                         <input type="text"
                             @if ($shipment->destination_address != null) value="{{ $shipment->destination_address }}"  readonly @endif
@@ -134,7 +135,7 @@
                 </div>
             </fieldset>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CLOSE</button>
             </div>
         </div>
     </div>

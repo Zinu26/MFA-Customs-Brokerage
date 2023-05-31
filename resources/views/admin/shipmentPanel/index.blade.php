@@ -1,17 +1,59 @@
 @include('layouts.inc.header')
 @include('layouts.inc.sidebarNav')
 <link rel="stylesheet" href="/css/admin-style.css" />
+<style>
+    .table-header p{
+        margin-left: 100px;
+        top: 57px;
 
+        font-family: 'Poppins', 'Helvetica Neue', sans-serif;
+        font-style: normal;
+        font-weight: 700;
+        font-size: 50px;
+
+        color: #FFFFFF;
+        -webkit-text-stroke-width: 1.5px;
+        -webkit-text-stroke-color: black;
+        transition: all 0.1s ease;
+    }
+
+    #content{
+        max-width: 100%;
+        padding: 36px 24px;
+        font-family: var(--poppins);
+        max-height: 100vh;
+        overflow-y: auto;
+        margin: 0 100px;
+        transition: all 0.1s ease;
+    }
+
+    .main-menu:hover ~ #content,
+    .main-menu:hover ~ .table .table-header p{
+        margin-left: 13%;
+    }
+    /* Media query for screens with a maximum width of 767px */
+    @media only screen and (max-width: 1080px) {
+        .table-header p {
+            margin-left: 13%;
+            font-size: 30px;
+        }
+
+        #content {
+            width: 80%;
+            margin-left: 13%;
+        }
+    }
+</style>
 <title>MFA Customs Brokerage</title>
 
 <div class="table">
     <div class="table-header">
-        <p>Open Shipments</p>
+        <p>OPEN SHIPMENTS</p>
         <div>
             @include('admin.shipmentPanel.create')
             <a
                 href="@if (Auth::user()->type == 'admin') {{ route('close_shipments') }}@elseif(Auth::user()->type == 'employee') {{ route('close_shipments.employee') }} @endif">
-                <button class="btn btn-danger"><i class="fa fa-folder-minus"></i> Close Shipments</button>
+                <button class="btn btn-danger"><i class="fas fa-folder-minus"></i><span class="sr-only"> CLOSE SHIPMENTS</span></button>
             </a>
         </div>
     </div>
@@ -24,14 +66,14 @@
         <thead>
             <tr>
                 <th class="text-center">S.N.</th>
-                <th class="text-center">Consignees</th>
-                <th class="text-center">BL Number</th>
-                <th class="text-center">Arrival Date</th>
-                <th class="text-center">Predicted Delivery Date</th>
-                <th class="text-center">Shipment Status</th>
-                <th class="text-center">DO Status</th>
-                <th class="text-center">Billing Status</th>
-                <th class="text-center">Option</th>
+                <th class="text-center">CONSIGNEE</th>
+                <th class="text-center">BL NUMBER</th>
+                <th class="text-center">ARRIVAL DATE</th>
+                <th class="text-center">PREDICTED DELIVERY DATE</th>
+                <th class="text-center">SHIPMENT STATUS</th>
+                <th class="text-center">DO STATUS</th>
+                <th class="text-center">BILLING STATUS</th>
+                <th class="text-center">OPTION</th>
             </tr>
         </thead>
         <tbody>
@@ -56,7 +98,6 @@
                             @include('admin.shipmentPanel.view')
                             @include('admin.shipmentPanel.edit')
                             @include('admin.shipmentPanel.upload')
-                            @include('admin.shipmentPanel.files')
                         </td>
                     </tr>
                 @endif

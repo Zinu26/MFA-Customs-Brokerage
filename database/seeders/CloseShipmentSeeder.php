@@ -13,7 +13,7 @@ class CloseShipmentSeeder extends Seeder
      */
     public function run()
     {
-        $file = public_path('csv/dataset(1).sql');
+        $file = public_path('csv/datasets.sql');
         $sql = file_get_contents($file);
         DB::unprepared($sql);
     }
