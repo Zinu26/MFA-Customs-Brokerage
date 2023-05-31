@@ -10,7 +10,8 @@
                 <a style="cursor: pointer;" data-bs-dismiss="modal"><i class="fa fa-xmark"></i></a>
             </div>
             <form
-                action="@if (Auth::user()->type == 'admin') {{ route('upload_files') }}@elseif(Auth::user()->type == 'employee'){{ route('upload_files.employee') }} @endif"
+                action="@if (Auth::user()->type == 'admin') {{ route('upload_files') }}
+                        @elseif(Auth::user()->type == 'employee'){{ route('upload_files.employee') }} @endif"
                 method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
@@ -41,7 +42,8 @@
                             <tr class="text-center">
                                 <td>{{ $file->name }}</td>
                                 <td><a
-                                        href="@if (Auth::user()->type == 'admin') {{ route('download_file', $file->id) }}@elseif(Auth::user()->type == 'employee'){{ route('download_file.employee', $file->id) }} @endif"><button
+                                        href="@if (Auth::user()->type == 'admin') {{ route('download_file', $file->id) }}
+                                        @elseif(Auth::user()->type == 'employee'){{ route('download_file.employee', $file->id) }} @endif"><button
                                             class="btn btn-secondary"><i class="fas fa-download"></i>
                                             DOWNLOAD</button></a></td>
                             </tr>
