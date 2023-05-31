@@ -73,30 +73,6 @@ class AuthController extends Controller
                         return redirect()->route('employee.dashboard')->with('success', 'Logged in Successfully!');
                     } else {
 
-                        if (!$get_currentDevice || $savedDevice != $currentDevice) {
-                            $this->deviceDetection();
-                        } else if ($get_currentDevice && Carbon::now()->greaterThan($get_currentDevice->otp_duration)) {
-                            $checkDevice->otp_duration = Carbon::now()->addDays(30);
-                            $checkDevice->save();
-                        }
-                        //For Testing purposes
-                        // return redirect()->route('employee.dashboard')->with('success', 'OTP activation successful!');
-                        // OTP
-                        $validToken = rand(10, 100. . '2022');
-                        $get_token = new VerifyToken();
-                        $get_token->token = $validToken;
-                        $get_email = Auth::user()->email;
-                        $get_token->email = $get_email;
-                        $get_token->save();
-                        $get_user_email = $get_email;
-                        $get_user_name = $request->username;
-                        Mail::to($get_email)->send(new VerificationMail($get_user_email, $validToken, $get_user_name));
-
-                        return view('verification');
-                    }
-                    
-                    else{
-
                     if(!$get_currentDevice || $savedDevice != $currentDevice){
                         $this->deviceDetection();
                     }
