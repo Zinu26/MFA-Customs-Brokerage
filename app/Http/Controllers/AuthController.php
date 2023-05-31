@@ -277,15 +277,36 @@ class AuthController extends Controller
         if ($user && $user->isArchived != true) {
             Auth::login($user); // log in the user
 
-            // Store the shipment data in the client's database
-            $consigneeDatabaseName = $user->name;
-            $this->switchToDatabase($consigneeDatabaseName);
+            // Connect to the client's database
+            $clientDatabaseName = $this->getClientDatabaseName($user->name);
+
+            // Switch to the newly created database
+            config(['database.connections.mysql.database' => $clientDatabaseName]);
+            DB::reconnect();
 
             session()->flash('success', 'You have successfully logged in.');
 
             // Redirect to the client's dashboard
             return redirect()->route('client.dashboard')->with('success', 'OTP activation successful!');
         }
+    }
+
+    /**
+     * Validate if the connection is to the client's database.
+     *
+     * @param string $clientDatabaseName
+     * @return bool
+     */
+    private function isConnectedToClientDatabase($clientDatabaseName)
+    {
+        // Replace 'your_database_connection' with the name of your database connection in config/database.php
+        $connection = config('database.default');
+
+        // Get the name of the current database from the configuration
+        $currentDatabaseName = config('database.connections.' . $connection . '.database');
+
+        // Compare the current database name with the expected client's database name
+        return $currentDatabaseName === $clientDatabaseName;
     }
 
     public function logout()

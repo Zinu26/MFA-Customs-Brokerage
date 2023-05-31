@@ -33,7 +33,6 @@ return new class extends Migration
             $table->string('billing_status')->nullable();
             $table->string('delivery_status')->nullable();
             $table->boolean('status')->default(false);
-
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
