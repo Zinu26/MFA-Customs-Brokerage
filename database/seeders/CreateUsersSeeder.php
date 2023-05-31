@@ -20,14 +20,14 @@ class CreateUsersSeeder extends Seeder
                 'email' => 'admin@admin.com',
                 'type' => 0,
                 'email_verified_at' => now(),
-                'password' => bcrypt('password'),
+                'password' => bcrypt('mfabrokerage123'),
             ], [
                 'name' => 'User',
                 'username' => 'User',
                 'email' => 'user@user.com',
                 'type' => 1,
                 'email_verified_at' => now(),
-                'password' => bcrypt('password'),
+                'password' => bcrypt('mfabrokerage123'),
             ],
         ];
 
