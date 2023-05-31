@@ -185,72 +185,6 @@ class AuthController extends Controller
         }
     }
 
-    /**
-     * Get the database name for a specific client.
-     *
-     * @param string $clientName
-     * @return string
-     */
-    private function getClientDatabaseName($clientName)
-    {
-        // Modify the logic to generate the client's database name based on the client's name
-        // You can use the same logic as the previous example to generate the database name
-        return strtolower(str_replace([' ', '-', '.'], '_', $clientName));
-    }
-
-    /**
-     * Switch to the specified database.
-     *
-     * @param string $databaseName
-     * @return void
-     */
-    private function switchToDatabase($databaseName)
-    {
-        // Replace 'your_database_connection' with the name of your database connection in config/database.php
-        $connection = config('database.default');
-
-        // Update the database name in the configuration
-        config(['database.connections.' . $connection . '.database' => $databaseName]);
-
-        // Reconnect to the new database
-        DB::reconnect();
-    }
-
-    /**
-     * Switch back to the current database.
-     *
-     * @return void
-     */
-    private function switchToCurrentDatabase()
-    {
-        // Replace 'your_database_connection' with the name of your database connection in config/database.php
-        $connection = config('database.default');
-
-        // Get the name of the default database from the configuration
-        $defaultDatabaseName = config('database.connections.' . $connection . '.database');
-
-        // Reconnect to the default database
-        DB::purge($connection);
-        config(['database.connections.' . $connection . '.database' => $defaultDatabaseName]);
-        DB::reconnect();
-    }
-
-    public function connectToClientDatabase()
-    {
-        // Assuming you have the client's name stored in the authenticated user's model
-        $clientName = auth()->user()->name;
-
-        // Assuming you have a consistent naming convention for the client databases
-        $databaseName = strtolower(str_replace(' ', '_', $clientName));
-
-        // Switch the default database connection to the client's database
-        config(['database.connections.mysql.database' => $databaseName]);
-
-        // Reconnect to the new database
-        DB::reconnect();
-    }
-
-
     public function login_client(Request $request)
     {
         $request->validate([
@@ -267,46 +201,41 @@ class AuthController extends Controller
         // Check if the email and tin exist in the consignees table
         $user = User::where('email', $email)->where('type', 2)->first();
 
-        if (!$user) {
-            return back()->withErrors(['login' => 'The provided credentials do not match our records.'])
-                ->withInput()
-                ->with('error', 'The provided credentials do not match our records.');
-        }
-
         // The email and tin are correct, log the user in
         if ($user && $user->isArchived != true) {
+            // Switch to the client's database connection
+            $databaseName = 'client_' . $user->id;
+
+            // Set the client's database connection
+            Config::set('database.default', 'client');
+            Config::set('database.connections.client', [
+                'driver' => 'mysql',
+                'host' => env('DB_HOST', 'localhost'),
+                'port' => env('DB_PORT', '3306'),
+                'database' => $databaseName,
+                'username' => env('DB_USERNAME', 'root'),
+                'password' => env('DB_PASSWORD', ''),
+                'charset' => 'utf8mb4',
+                'collation' => 'utf8mb4_unicode_ci',
+                'prefix' => '',
+                'strict' => false,
+                'engine' => null,
+            ]);
+
+            // Reconnect to the client's database
+            DB::reconnect('client');
+
             Auth::login($user); // log in the user
-
-            // Connect to the client's database
-            $clientDatabaseName = $this->getClientDatabaseName($user->name);
-
-            // Switch to the newly created database
-            config(['database.connections.mysql.database' => $clientDatabaseName]);
-            DB::reconnect();
 
             session()->flash('success', 'You have successfully logged in.');
 
             // Redirect to the client's dashboard
             return redirect()->route('client.dashboard')->with('success', 'OTP activation successful!');
+        } else {
+            return back()->withErrors(['login' => 'The provided credentials do not match our records.'])
+                ->withInput()
+                ->with('error', 'The provided credentials do not match our records.');
         }
-    }
-
-    /**
-     * Validate if the connection is to the client's database.
-     *
-     * @param string $clientDatabaseName
-     * @return bool
-     */
-    private function isConnectedToClientDatabase($clientDatabaseName)
-    {
-        // Replace 'your_database_connection' with the name of your database connection in config/database.php
-        $connection = config('database.default');
-
-        // Get the name of the current database from the configuration
-        $currentDatabaseName = config('database.connections.' . $connection . '.database');
-
-        // Compare the current database name with the expected client's database name
-        return $currentDatabaseName === $clientDatabaseName;
     }
 
     public function logout()

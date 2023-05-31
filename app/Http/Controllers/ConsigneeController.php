@@ -337,28 +337,98 @@ class ConsigneeController extends Controller
 
     function consignee_dashboard()
     {
+        $user = User::where('name', Auth::user()->name)->first();
+        $databaseName = 'client_' . $user->id;
 
-        $shipments = Shipment::orderBy('arrival_date', 'desc')->where('consignee_name', Auth::user()->name)
+        DB::purge('client');
+        Config::set('database.connections.client', [
+            'driver' => 'mysql',
+            'host' => env('DB_HOST', 'localhost'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => $databaseName,
+            'username' => env('DB_USERNAME', 'root'),
+            'password' => env('DB_PASSWORD', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => false,
+            'engine' => null,
+        ]);
+
+        // Reconnect to the client's database
+        DB::reconnect('client');
+
+        $shipments = DB::connection('client')->table('shipments')->orderBy('arrival_date', 'desc')->where('consignee_name', Auth::user()->name)
             ->take(5)
             ->get();
+
+        $OnProcess = DB::connection('client')->table('shipments')->where('status', false)->whereNull('predicted_delivery_date')->count();
+        $ToDeliver = DB::connection('client')->table('shipments')->where('status', false)->whereNotNull('predicted_delivery_date')->count();
+        $Closed = DB::connection('client')->table('shipments')->where('status', true)->count();
 
         $notifications = auth()->user()->notifications->sortByDesc('created_at');
         $latestNotification = $notifications->first();
 
-        return view('clients.dashboard', compact('shipments', 'notifications', 'latestNotification'));
+        return view('clients.dashboard', compact('shipments', 'notifications', 'latestNotification', 'OnProcess', 'ToDeliver', 'Closed'));
     }
 
     function consignee_open_shipment()
     {
-        $shipments = Shipment::where('consignee_name', Auth::user()->name)->get();
-        $files = File::all();
+        $user = User::where('name', Auth::user()->name)->first();
+        $databaseName = 'client_' . $user->id;
+
+        DB::purge('client');
+        Config::set('database.connections.client', [
+            'driver' => 'mysql',
+            'host' => env('DB_HOST', 'localhost'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => $databaseName,
+            'username' => env('DB_USERNAME', 'root'),
+            'password' => env('DB_PASSWORD', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => false,
+            'engine' => null,
+        ]);
+
+        // Reconnect to the client's database
+        DB::reconnect('client');
+
+        // Select shipments with status = true from the shipment table
+        $shipments = DB::connection('client')->table('shipments')->where('status', false)->get();
+
+        $files = DB::connection('client')->table('files')->get();
         return view('clients.open_shipments', compact('shipments', 'files'));
     }
 
     function consignee_close_shipment()
     {
-        $shipments = Dataset::where('consignee_name', Auth::user()->name)->get()->merge(CloseShipment::where('consignee_name', Auth::user()->name)->get());
-        $files = File::all();
+        $user = User::where('name', Auth::user()->name)->first();
+        $databaseName = 'client_' . $user->id;
+
+        DB::purge('client');
+        Config::set('database.connections.client', [
+            'driver' => 'mysql',
+            'host' => env('DB_HOST', 'localhost'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => $databaseName,
+            'username' => env('DB_USERNAME', 'root'),
+            'password' => env('DB_PASSWORD', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => false,
+            'engine' => null,
+        ]);
+
+        // Reconnect to the client's database
+        DB::reconnect('client');
+
+        // Select shipments with status = true from the shipment table
+        $shipments = DB::connection('client')->table('shipments')->where('status', true)->get();
+
+        $files = DB::connection('client')->table('files')->get();
 
         return view('clients.close_shipments', compact('shipments', 'files'));
     }
