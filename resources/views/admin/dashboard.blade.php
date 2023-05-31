@@ -1,7 +1,87 @@
 <link rel="stylesheet" href="/css/dashboard.css" />
 @include('layouts.inc.sidebarNav')
 @include('layouts.inc.message')
+<style>
+    .main-menu:hover~#content {
+        margin-left: 8%;
+    }
 
+    @media only screen and (max-width: 767px) {
+        .main-menu:hover~#content {
+            margin-left: 0;
+        }
+
+        .card {
+            left: 20px;
+            top: 20px;
+            margin: 0;
+        }
+
+        #content main {
+            margin: 0;
+            padding: 24px;
+            margin-left: 13%;
+        }
+
+        #content main .head-title .left h1 {
+            font-size: 24px;
+        }
+
+        #content main .head-title .left .breadcrumb li {
+            font-size: 12px;
+        }
+
+        #content main .head-title .btn-download {
+            margin-right: 0;
+            margin-top: 10px;
+        }
+
+        #content main .box-info li {
+            padding: 16px;
+        }
+
+        #content main .box-info li .bx {
+            width: 60px;
+            height: 60px;
+            font-size: 24px;
+        }
+
+        #content main .box-info li .text h3 {
+            font-size: 20px;
+        }
+
+        #content main .box-info li .text p {
+            font-size: 12px;
+        }
+
+        #content main .table-data .head h3 {
+            font-size: 20px;
+        }
+
+        #content main .table-data .order table th {
+            font-size: 10px;
+            margin-left: 40%;
+        }
+
+        #content main .table-data .order table td {
+            padding: 12px 0;
+        }
+
+        #content main .table-data .order table tr td .status {
+            font-size: 8px;
+            padding: 4px 12px;
+        }
+
+        #content main .table-data .todo .todo-list li {
+            padding: 10px 16px;
+        }
+
+        .no-shipment-found {
+            font-size: 16px;
+            margin-top: 30px;
+        }
+    }
+</style>
 <title>MFA Customs Brokerage</title>
 
 <section id="content">
@@ -14,11 +94,11 @@
                 </div>
             @endif
             <div class="left">
-                <h1>Dashboard</h1>
+                <h1>DASHBOARD</h1>
             </div>
             @if (Auth::user()->type == 'admin')
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#activityLogsModal">
-                    Activity Logs
+                    <i class="fas fa-list"></i> ACTIVITY LOGS
                 </button>
             @endif
 
@@ -28,7 +108,7 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="activityLogsModalLabel">Download Activity Logs</h5>
+                            <h5 class="modal-title" id="activityLogsModalLabel">DOWNLOAD ACTIVITY LOGS</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -89,7 +169,7 @@
                 </a>
                 <span class="text">
                     <h3>{{ \App\Models\User::where('type', 2)->count() }}</h3>
-                    <p>Consignees</p>
+                    <p>CONSIGNEES</p>
                 </span>
             </li>
             <li>
@@ -98,7 +178,7 @@
                 </a>
                 <span class="text">
                     <h3>{{ \App\Models\Shipment::where('status', 0)->count() }}</h3>
-                    <p>In Process Shipments</p>
+                    <p>IN PROCESS SHIPMENTS</p>
                 </span>
             </li>
             <li>
@@ -107,14 +187,14 @@
                 </a>
                 <span class="text">
                     <h3>{{ \App\Models\Dataset::all()->count() + \App\Models\CloseShipment::all()->count() }}</h3>
-                    <p>Closed Shipments</p>
+                    <p>CLOSED SHIPMENTS</p>
                 </span>
             </li>
         </ul>
         <div class="table-data">
             <div class="order">
                 <div class="head">
-                    <h3>Recent Shipments</h3>
+                    <h3>RECENT SHIPMENTS</h3>
                     <i class='bx bx-search'></i>
                     <i class='bx bx-filter'></i>
                 </div>

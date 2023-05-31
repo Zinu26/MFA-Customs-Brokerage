@@ -96,7 +96,7 @@
 </button>
 
 <div id="notification-window" class="notification-window">
-    <h3>Notifications</h3>
+    <h3>NOTIFICATIONS</h3>
     <ul>
         @foreach ($notifications as $notification)
             <li class="notification-card {{ $notification->id === $latestNotification->id ? 'latest-notification' : '' }}"

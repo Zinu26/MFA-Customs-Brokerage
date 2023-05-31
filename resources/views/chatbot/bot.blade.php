@@ -7,7 +7,29 @@
         integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
+<style>
+    @media only screen and (max-width: 1080px) {
+        .chatbot-window {
+            position: relative;
+            bottom: 80px;
+            width: 300px;
+            height: 400px;
+            border-radius: 0;
+            margin-bottom: 0;
+        }
 
+        .chatbot-header {
+            padding: 15px;
+        }
+
+        #chatbot-input {
+            position: relative;
+            bottom: 0;
+            width: 100%;
+            padding: 15px;
+        }
+    }
+</style>
 <div class="chatbot-wrapper">
     <button class="chatbot-toggle" id="chatbot-toggle">
         <img src="/images/chatbot.jpg" class="chatbot-img">
@@ -192,7 +214,7 @@
     function showHelpMessage() {
         var helpMessage = document.querySelector('.help-message');
         helpMessage.style.display = 'block';
-        setTimeout(function () {
+        setTimeout(function() {
             helpMessage.style.display = 'none';
         }, 3000);
     }

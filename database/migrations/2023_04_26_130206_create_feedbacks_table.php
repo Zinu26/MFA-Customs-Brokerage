@@ -23,7 +23,7 @@ return new class extends Migration
             $table->timestamp('replied_at')->nullable();
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('user')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
