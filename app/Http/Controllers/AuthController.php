@@ -18,7 +18,7 @@ use Jenssegers\Agent\Agent;
 use Carbon\Carbon;
 
 class AuthController extends Controller
-{   
+{
     public function login(Request $request)
     {
         $agent = new Agent();
@@ -73,7 +73,7 @@ class AuthController extends Controller
                     if($get_currentDevice && Carbon::now()->lessThan($get_currentDevice->otp_duration) && $savedDevice == $currentDevice){
                         return redirect()->route('employee.dashboard')->with('success', 'Logged in Successfully!');
                     }
-                    
+
                     else{
 
                     if(!$get_currentDevice || $savedDevice != $currentDevice){
@@ -227,19 +227,19 @@ class AuthController extends Controller
             session()->flash('success', 'You have successfully logged in.');
 
             // For Testing purposes
-            // return redirect()->route('client.dashboard')->with('success', 'OTP activation successful!');
+            return redirect()->route('client.dashboard')->with('success', 'OTP activation successful!');
 
             // OTP
-            $validToken = rand(10, 100. . '2022');
-            $get_token = new VerifyToken();
-            $get_token->token = $validToken;
-            $get_token->email = $request->email;
-            $get_token->save();
-            $get_user_email = $request->email;
-            $get_user_name = Auth::user()->name;
-            Mail::to($get_user_email)->send(new VerificationMail($get_user_email, $validToken, $get_user_name));
+            // $validToken = rand(10, 100. . '2022');
+            // $get_token = new VerifyToken();
+            // $get_token->token = $validToken;
+            // $get_token->email = $request->email;
+            // $get_token->save();
+            // $get_user_email = $request->email;
+            // $get_user_name = Auth::user()->name;
+            // Mail::to($get_user_email)->send(new VerificationMail($get_user_email, $validToken, $get_user_name));
 
-            return view('verification');
+            // return view('verification');
         }
     }
 

@@ -110,7 +110,7 @@ class ShipmentController extends Controller
         $user = User::where('name', $consigneeName)->first();
         $consignee = Consignee::where('user_id', $user->id)->first();
 
-        $shipment->user_id = $consignee->id;
+        $shipment->user_id = $user->id;
         $shipment->destination_address = $consignee->address;
         $shipment->save();
 
