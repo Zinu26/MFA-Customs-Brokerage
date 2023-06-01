@@ -30,7 +30,7 @@ return new class extends Migration
             $table->string('shipping_line');
             $table->string('port_of_origin');
             $table->string('destination_address');
-            $table->boolean('delivery_status')->default(false);
+            $table->string('delivery_status');
             $table->boolean('status')->default(false);
 
             $table->foreign('shipment_id')->references('id')->on('shipments')->onDelete('cascade');
