@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Shipment;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Models\User;
+use Illuminate\Support\Facades\Config;
 
 class ChatBotController extends Controller
 {
@@ -346,7 +348,27 @@ class ChatBotController extends Controller
             }
 
             if ($bl_number) {
-                $shipment = Shipment::where('bl_number', $bl_number)->where('consignee_name', $user->name)->first();
+                $user = User::where('name', Auth::user()->name)->first();
+                $databaseName = 'client_' . $user->id;
+
+                DB::purge('client');
+                Config::set('database.connections.client', [
+                    'driver' => 'mysql',
+                    'host' => env('DB_HOST', 'localhost'),
+                    'port' => env('DB_PORT', '3306'),
+                    'database' => $databaseName,
+                    'username' => env('DB_USERNAME', 'root'),
+                    'password' => env('DB_PASSWORD', ''),
+                    'charset' => 'utf8mb4',
+                    'collation' => 'utf8mb4_unicode_ci',
+                    'prefix' => '',
+                    'strict' => false,
+                    'engine' => null,
+                ]);
+
+                // Reconnect to the client's database
+                DB::reconnect('client');
+                $shipment = DB::connection('client')->table('shipments')->where('bl_number', $bl_number)->where('consignee_name', $user->name)->first();
                 if ($shipment) {
                     // If the user is asking about a shipment, prompt for details
                     $conversation[] = $input;
@@ -356,13 +378,18 @@ class ChatBotController extends Controller
 
                     $responses = [];
 
+
+
                     if ($shipment->predicted_delivery_date !== null && $currentDate > $predictedDate) {
-                        $details = "DO status: " . $shipment->do_status . "\n";
-                        $details .= "Shipment Status: " . $shipment->shipment_status . "\n";
-                        $details .= "Billing status: " . $shipment->billing_status . "\n";
+                        if ($shipment->status == true) {
+                            $response = 'Sorry for the delay of your shipment (BL number: ' . $shipment->bl_number . '). The shipment was delivered on ' . Carbon::parse($shipment->delivered_date)->format('F d, Y') . ', Thank you for trusting MFA Customs Brokerage.';
+                        } else {
+                            $details = "DO status: " . $shipment->do_status . "\n";
+                            $details .= "Shipment Status: " . $shipment->shipment_status . "\n";
+                            $details .= "Billing status: " . $shipment->billing_status . "\n";
 
-                        $responses[] = 'Sorry for the delay of your shipment (BL number: ' . $shipment->bl_number . '). Please check these details that may cause the delay:' . "\n" . $details . 'You may also contact MFA for more information.' . "\n";
-
+                            $responses[] = 'Sorry for the delay of your shipment (BL number: ' . $shipment->bl_number . '). Please check these details that may cause the delay:' . "\n" . $details . 'You may also contact MFA for more information.' . "\n";
+                        }
                     }
 
                     if ($shipment->arrival_date !== null) {
@@ -381,7 +408,7 @@ class ChatBotController extends Controller
                         $responses[] = 'Your shipment is expected to be delivered on ' . Carbon::parse($shipment->predicted_delivery_date)->format('F d, Y') . '.';
                     }
 
-                    if ($shipment->delivered_date !== null ) {
+                    if ($shipment->delivered_date !== null) {
                         $responses[] = 'The shipment was delivered on ' . Carbon::parse($shipment->delivered_date)->format('F d, Y') . ', Thank you for trusting MFA Customs Brokerage.';
                     }
 

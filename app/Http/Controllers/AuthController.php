@@ -39,8 +39,7 @@ class AuthController extends Controller
                     // Create a new activity log record for this user
 
                     $user = User::where('id', Auth::id())->first();
-                    $user->isActivate = true;
-                    $user->save();
+
 
                     ActivityLog::create([
                         'user_id' => Auth::id(),
@@ -57,6 +56,9 @@ class AuthController extends Controller
                 }
             } else if (Auth::user()->type == 'employee') {
                 if (Auth::user()->isArchived != true) {
+
+                    $device = Device::all();
+
                     if ($agent->isPhone()) {
                         $currentDevice = 'phone';
                     } else if ($agent->isTablet()) {
@@ -65,19 +67,17 @@ class AuthController extends Controller
                         $currentDevice = 'desktop';
                     }
 
-                    $get_currentDevice = Device::where('device', $currentDevice)->first();
+                    $get_currentDevice = $device->where('user_id', Auth::user()->id)->where('device', $currentDevice)->first();
 
-                    $savedDevice = $get_currentDevice->device;
-
-                    if ($get_currentDevice && Carbon::now()->lessThan($get_currentDevice->otp_duration) && $savedDevice == $currentDevice) {
+                    if ($get_currentDevice && Carbon::now()->lessThan($get_currentDevice->otp_duration)) {
                         return redirect()->route('employee.dashboard')->with('success', 'Logged in Successfully!');
                     } else {
 
                         if (!$get_currentDevice || $savedDevice != $currentDevice) {
                             $this->deviceDetection();
                         } else if ($get_currentDevice && Carbon::now()->greaterThan($get_currentDevice->otp_duration)) {
-                            $checkDevice->otp_duration = Carbon::now()->addDays(30);
-                            $checkDevice->save();
+                            $get_currentDevice->otp_duration = Carbon::now()->addDays(30);
+                            $get_currentDevice->save();
                         }
                         //For Testing purposes
                         // return redirect()->route('employee.dashboard')->with('success', 'OTP activation successful!');
@@ -113,6 +113,7 @@ class AuthController extends Controller
     {
         $agent = new Agent();
 
+
         if ($agent->isPhone()) {
             $device_type = 'phone';
         } else if ($agent->isTablet()) {
@@ -142,14 +143,11 @@ class AuthController extends Controller
             if ($get_token->created_at < $expirationTime) {
                 // Token expired, delete it
                 $get_token->delete();
-                $user->isActivate = false;
-                $user->save();
+
 
                 return redirect()->back()->with('error', 'OTP expired! Please request a new OTP');
             }
 
-            $user->isActivate = true;
-            $user->save();
 
             // Activate the token
             $get_token->is_activated = true;
@@ -179,14 +177,15 @@ class AuthController extends Controller
                 return redirect()->route('client.dashboard')->with('success', 'OTP activation successful!');
             }
         } else {
-            $user->isActivate = false;
-            $user->save();
+
             return redirect()->back()->with('error', 'OTP inputted is incorrect! Please try again');
         }
     }
 
     public function login_client(Request $request)
     {
+        $agent = new Agent();
+
         $request->validate([
             'email' => 'required|email',
             'tin' => 'required',
@@ -203,34 +202,46 @@ class AuthController extends Controller
 
         // The email and tin are correct, log the user in
         if ($user && $user->isArchived != true) {
-            // Switch to the client's database connection
-            $databaseName = 'client_' . $user->id;
-
-            // Set the client's database connection
-            Config::set('database.default', 'client');
-            Config::set('database.connections.client', [
-                'driver' => 'mysql',
-                'host' => env('DB_HOST', 'localhost'),
-                'port' => env('DB_PORT', '3306'),
-                'database' => $databaseName,
-                'username' => env('DB_USERNAME', 'root'),
-                'password' => env('DB_PASSWORD', ''),
-                'charset' => 'utf8mb4',
-                'collation' => 'utf8mb4_unicode_ci',
-                'prefix' => '',
-                'strict' => false,
-                'engine' => null,
-            ]);
-
-            // Reconnect to the client's database
-            DB::reconnect('client');
 
             Auth::login($user); // log in the user
 
-            session()->flash('success', 'You have successfully logged in.');
+            $device = Device::all();
 
-            // Redirect to the client's dashboard
-            return redirect()->route('client.dashboard')->with('success', 'OTP activation successful!');
+            if ($agent->isPhone()) {
+                $currentDevice = 'phone';
+            } else if ($agent->isTablet()) {
+                $currentDevice = 'tablet';
+            } else if ($agent->isDesktop()) {
+                $currentDevice = 'desktop';
+            }
+
+            $get_currentDevice = $device->where('user_id', $user->id)->where('device', $currentDevice)->first();
+
+
+            if ($get_currentDevice && Carbon::now()->lessThan($get_currentDevice->otp_duration)) {
+                // log in the user
+                return redirect()->route('client.dashboard')->with('success', 'Logged in Successfully!');
+            } else {
+                if (!$get_currentDevice) {
+                    $this->deviceDetection();
+                } else if ($get_currentDevice && Carbon::now()->greaterThan($get_currentDevice->otp_duration)) {
+                    $get_currentDevice->otp_duration = Carbon::now()->addDays(30);
+                    $get_currentDevice->save();
+                }
+                // For Testing purposes
+                // return redirect()->route('client.dashboard')->with('success', 'OTP activation successful!');
+
+                // OTP
+                $validToken = rand(10, 100. . '2022');
+                $get_token = new VerifyToken();
+                $get_token->token = $validToken;
+                $get_token->email = $request->email;
+                $get_token->save();
+                $get_user_email = $request->email;
+                $get_user_name = $user->name;
+                Mail::to($get_user_email)->send(new VerificationMail($get_user_email, $validToken, $get_user_name));
+                return view('verification');
+            }
         } else {
             return back()->withErrors(['login' => 'The provided credentials do not match our records.'])
                 ->withInput()
@@ -245,8 +256,7 @@ class AuthController extends Controller
 
         $userActivate = User::where('id', $user->id)->first();
 
-        $userActivate->isActivate = false;
-        $userActivate->save();
+
 
         if ($user->type == 'admin') {
             // Create a new activity log record for this user
@@ -279,8 +289,7 @@ class AuthController extends Controller
 
         $userActivate = User::where('id', $user->id)->first();
 
-        $userActivate->isActivate = false;
-        $userActivate->save();
+
 
         ActivityLog::create([
             'user_id' => $user->id,
