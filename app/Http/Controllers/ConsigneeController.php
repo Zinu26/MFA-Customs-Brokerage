@@ -398,7 +398,7 @@ class ConsigneeController extends Controller
         // Select shipments with status = true from the shipment table
         $shipments = DB::connection('client')->table('shipments')->where('status', false)->get();
 
-        $files = DB::connection('client')->table('files')->get();
+        $files = File::all();
         return view('clients.open_shipments', compact('shipments', 'files'));
     }
 
@@ -428,7 +428,7 @@ class ConsigneeController extends Controller
         // Select shipments with status = true from the shipment table
         $shipments = DB::connection('client')->table('shipments')->where('status', true)->get();
 
-        $files = DB::connection('client')->table('files')->get();
+        $files = File::all();
 
         return view('clients.close_shipments', compact('shipments', 'files'));
     }
