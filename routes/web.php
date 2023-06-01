@@ -175,6 +175,8 @@ Route::middleware(['auth', 'user-type:consignee'])->group(function () {
         Route::get('/clients/download-by-date/report/', 'downloadCsv_by_date')->name('downloadCsv_by_date');
     });
 
+    Route::get('/clients/files/{id}', [ShipmentController::class,'download'])->name('download_file.client');
+
     Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead']);
 
     Route::get('/client/notification', function () {

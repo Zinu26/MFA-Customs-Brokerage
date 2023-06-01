@@ -104,14 +104,14 @@
             <li>
                 <i class='fa fa-clock mb-2' style="font-size: 50px; color:cornflowerblue;"></i>
                 <span class="text">
-                    <h3>{{ Auth::user()->shipments()->where('status', false)->count() }}</h3>
+                    <h3>{{ $OnProcess }}</h3>
                     <p>IN PROCESS SHIPMENTS</p>
                 </span>
             </li>
             <li>
                 <i class='fa fa-truck mb-2' style="font-size: 50px; color:goldenrod;"></i>
                 <span class="text">
-                    <h3>{{ Auth::user()->shipments()->whereNotNull('delivered_date')->whereNull('delivered_date')->count() }}
+                    <h3>{{ $ToDeliver }}
                     </h3>
                     <p>TO DELIVER SHIPMENTS</p>
                 </span>
@@ -119,7 +119,7 @@
             <li>
                 <i class='fa fa-circle-check mb-2' style="font-size: 50px; color:springgreen;"></i>
                 <span class="text">
-                    <h3>{{ Auth::user()->closed()->count() +Auth::user()->dataset()->count() }}</h3>
+                    <h3>{{ $Closed }}</h3>
                     <p>CLOSED SHIPMENTS</p>
                 </span>
             </li>

@@ -38,8 +38,14 @@
                     </div></br>
                     <div class="input-group">
                         <span class="input-group-text w-25 text-white text-center"
+                            style="background-color: #4EA646; font-weight: 600;">Entry Number</span>
+                        <input type="text" value="{{ $shipment->entry_number }}" name="entry_number"
+                            placeholder="Entry Number" aria-label="Entry Number" class="form-control" readonly>
+
+                        <span class="input-group-text w-25 text-white text-center"
                             style="background-color: #4EA646; font-weight: 600;">BL Number</span>
-                        <input type="text" value="{{ $shipment->bl_number }}" class="form-control" readonly>
+                        <input type="text" value="{{ $shipment->bl_number }}" name="BL_number"
+                            placeholder="BL Number" aria-label="BL Number" class="form-control" readonly>
                     </div></br>
                     <div class="input-group">
                         <span class="input-group-text w-25 text-white text-center"

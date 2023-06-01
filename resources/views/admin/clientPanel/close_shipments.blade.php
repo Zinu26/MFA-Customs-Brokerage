@@ -81,7 +81,7 @@
                         <td>{{ date('Y-m-d', strtotime($shipment->delivered_date)) }}</td>
                         <td class="text-center col-1">
                             @include('admin.clientPanel.view_close_shipments')
-                            @include('admin.shipmentPanel.files')
+                            @include('admin.shipmentPanel.upload')
                         </td>
                     </tr>
                 @endif
