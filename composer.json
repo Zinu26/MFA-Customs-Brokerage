@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
+        "ext-zip": "*",
         "consoletvs/charts": "^6.6",
         "google/cloud-dialogflow": "*",
         "guzzlehttp/guzzle": "^7.5",

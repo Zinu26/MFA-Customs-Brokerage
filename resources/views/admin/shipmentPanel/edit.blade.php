@@ -59,13 +59,14 @@
                                 @if ($shipment->process_started != null) value="{{ $shipment->process_started }}"  readonly @endif
                                 name="process_started" placeholder="Process Start" aria-label="Process Start"
                                 class="form-control">
-
+                            @if ($shipment->process_started != null)
                             <span class="input-group-text"
                                 style="background-color: #4EA646; font-weight: 600; color: white;">Process End</span>
                             <input type="date"
                                 @if ($shipment->process_finished != null) value="{{ $shipment->process_finished }}"  readonly @endif
                                 name="process_ended" placeholder="Process End" aria-label="Process End"
                                 class="form-control">
+                            @endif
                         </div></br>
 
                         {{-- Predicted Delivered Date --}}
